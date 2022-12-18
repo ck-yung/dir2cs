@@ -7,4 +7,48 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Title>dir2</Title>
+    <PackageId>dir2</PackageId>
+    <PackageVersion>2.0.0</PackageVersion>
+    <Version>2.0.0</Version>
+    <Authors>Yung, Chun Kau</Authors>
+    <Description>List files by dir or ext, with filter on date and time</Description>
+    <Summary>
+       The tool performs MSDOS DIR command in latest dotnet envronment.
+       Features: Group by File-Ext, Group by Dir, Date Filter, Size Filter, Column Selection.
+       C# source https://github.com/ck-yung/dir2cs.
+   </Summary>
+    <PackageTags>dir; group by file ext; group by dir; file date filter; file size filter; dir size; dir tree</PackageTags>
+    <PackAsTool>true</PackAsTool>
+    <Company>https://github.com/ck-yung/dir2cs</Company>
+    <ToolCommandName>dir2</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <PackageReleaseNotes>Migrate to the common syntax of command-line argument.</PackageReleaseNotes>
+    <PackageTags>easy dir;ls;subdir;size;grand total;simple command</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Copyright>Copyright (c) 2021,2023 Yung, Chun Kau</Copyright>
+    <PackageLicense>GPL-3.0 License</PackageLicense>
+    <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.txt</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/ck-yung/dir2cs</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ck-yung/dir2cs</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageDependencies></PackageDependencies>
+    <PackageDevelopmentDependency></PackageDevelopmentDependency>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
 </Project>
