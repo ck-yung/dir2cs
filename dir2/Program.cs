@@ -23,8 +23,12 @@ public class Program
 
         if (mainArgs.Length == 0)
         {
-            Console.WriteLine(Helper.GetHelpSyntax());
-            return false;
+			var dirThe = $".{Path.DirectorySeparatorChar}";
+			foreach (var filename in Helper.GetFiles(dirThe))
+			{
+				Console.WriteLine(filename.Substring(dirThe.Length));
+			}
+            return true;
         }
 
 		Console.WriteLine($"#arg={mainArgs.Length}");

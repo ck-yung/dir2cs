@@ -1,6 +1,6 @@
 namespace test;
 
-public class UnitTest_Helper
+public class dir2_Helper
 {
     [Fact]
     public void VeresionStringShouldNotContainQuestionMark()

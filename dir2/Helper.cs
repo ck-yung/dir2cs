@@ -2,7 +2,7 @@
 
 namespace dir2;
 
-public static class Helper
+public static partial class Helper
 {
     static internal readonly string ExeName;
     static internal readonly string ExeVersion;
