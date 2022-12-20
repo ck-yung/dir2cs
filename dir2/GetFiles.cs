@@ -27,6 +27,16 @@ public static partial class Helper
         catch { return string.Empty; }
     }
     #endregion
+    static public IEnumerable<string> GetDirs(string path)
+    {
+        var enumFile = SafeGetDirectoryEnumerator(path);
+        while (SafeMoveNext(enumFile))
+        {
+            var currentFilename = SafeGetCurrent(enumFile);
+            if (string.IsNullOrEmpty(currentFilename)) continue;
+            yield return currentFilename;
+        }
+    }
 
     static public IEnumerable<string> GetFiles(string dirname)
     {
@@ -54,9 +64,13 @@ public static partial class Helper
         {
             var currentDirname = SafeGetCurrent(enumDir);
             if (string.IsNullOrEmpty(currentDirname)) continue;
-            // TODO
+            // TODO >>>
             //if (Opts.ExclDirnameFilter.Func(
             //    Path.GetFileName(currentDirname))) continue;
+            var dirnameThe = Path.GetFileName(currentDirname);
+            if (string.IsNullOrEmpty(dirnameThe)) continue;
+            if (dirnameThe[0] == '.') continue;
+            // TODO <<<
             foreach (var filename in GetAllFiles(currentDirname))
             {
                 yield return filename;

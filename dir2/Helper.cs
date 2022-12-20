@@ -19,4 +19,12 @@ public static partial class Helper
         Get help by
           {ExeName} -?
         """;
+
+    public static string GetSyntax() => $"""
+        Syntax: {ExeName} [OPTION ..] [DIRNAME]
+        OPTION:
+          --sub
+          --dir DIR-OPTION
+        DIR-OPTION: both only off
+        """;
 }

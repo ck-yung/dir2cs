@@ -17,3 +17,4 @@ Obj
 Release
 .DS_Store
 **/.DS_Store
+/dir2/Properties/launchSettings.json
