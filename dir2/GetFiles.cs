@@ -1,17 +1,33 @@
 namespace dir2;
 
-public static partial class Helper
+static public partial class Helper
 {
+    static public partial class System
+    {
+        static public Func<string, IEnumerable<string>> EnumerateDirectories
+        { get; private set; } = Directory.EnumerateDirectories;
+        static public Func<string, IEnumerable<string>> EnumerateFiles
+        { get; private set; } = Directory.EnumerateFiles;
+
+        static public void Init(
+            Func<string, IEnumerable<string>> EnumDirs,
+            Func<string, IEnumerable<string>> EnumFiles)
+        {
+            EnumerateDirectories = EnumDirs;
+            EnumerateFiles = EnumFiles;
+        }
+    }
+
     #region Call Enumerator Function Safely
     static IEnumerator<string> SafeGetFileEnumerator(string dirname)
     {
-        try { return Directory.EnumerateFiles(dirname).GetEnumerator(); }
+        try { return Helper.System.EnumerateFiles(dirname).GetEnumerator(); }
         catch { return Enumerable.Empty<string>().GetEnumerator(); }
     }
 
     static IEnumerator<string> SafeGetDirectoryEnumerator(string dirname)
     {
-        try { return Directory.EnumerateDirectories(dirname).GetEnumerator(); }
+        try { return Helper.System.EnumerateDirectories(dirname).GetEnumerator(); }
         catch { return Enumerable.Empty<string>().GetEnumerator(); }
     }
 
@@ -27,6 +43,7 @@ public static partial class Helper
         catch { return string.Empty; }
     }
     #endregion
+
     static public IEnumerable<string> GetDirs(string path)
     {
         var enumFile = SafeGetDirectoryEnumerator(path);
@@ -38,9 +55,9 @@ public static partial class Helper
         }
     }
 
-    static public IEnumerable<string> GetFiles(string dirname)
+    static public IEnumerable<string> GetFiles(string path)
     {
-        var enumFile = SafeGetFileEnumerator(dirname);
+        var enumFile = SafeGetFileEnumerator(path);
         while (SafeMoveNext(enumFile))
         {
             var currentFilename = SafeGetCurrent(enumFile);
@@ -49,9 +66,9 @@ public static partial class Helper
         }
     }
 
-    static public IEnumerable<string> GetAllFiles(string dirname)
+    static public IEnumerable<string> GetAllFiles(string path)
     {
-        var enumFile = SafeGetFileEnumerator(dirname);
+        var enumFile = SafeGetFileEnumerator(path);
         while (SafeMoveNext(enumFile))
         {
             var currentFilename = SafeGetCurrent(enumFile);
@@ -59,7 +76,7 @@ public static partial class Helper
             yield return currentFilename;
         }
 
-        var enumDir = SafeGetDirectoryEnumerator(dirname);
+        var enumDir = SafeGetDirectoryEnumerator(path);
         while (enumDir.MoveNext())
         {
             var currentDirname = SafeGetCurrent(enumDir);
@@ -71,9 +88,9 @@ public static partial class Helper
             if (string.IsNullOrEmpty(dirnameThe)) continue;
             if (dirnameThe[0] == '.') continue;
             // TODO <<<
-            foreach (var filename in GetAllFiles(currentDirname))
+            foreach (var pathThe in GetAllFiles(currentDirname))
             {
-                yield return filename;
+                yield return pathThe;
             }
         }
     }

@@ -54,14 +54,13 @@ public class Program
         {
             pathThe = Path.GetFullPath(pathThe);
             var cntFile = Helper.GetAllFiles(pathThe)
-                .Select((it) => new FileInfo(it))
+                .Select((it) => Helper.System.ToInfoFile(it))
                 .Select((it) =>
                 {
                     Console.Write($"{it.Length,8} ");
                     Console.Write(it.LastWriteTime.ToString("u"));
                     Console.Write(" ");
-                    var a2 = Path.Join(it.DirectoryName, it.Name);
-                    Console.WriteLine(a2.Substring(pathThe.Length));
+                    Console.WriteLine(it.FullName.Substring(pathThe.Length));
                     return it;
                 })
                 .Count();
