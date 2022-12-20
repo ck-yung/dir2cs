@@ -37,7 +37,6 @@ static public partial class MyOptions
                 default:
                     throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
             }
-            parser.Assign(aa);
         });
 
     static public IParse[] Parsers = new IParse[] 
