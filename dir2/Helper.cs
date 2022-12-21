@@ -46,11 +46,11 @@ static public partial class Helper
         {
             if (string.IsNullOrEmpty(parser.Name))
             {
-                rtn.Append($"  {parser.Name}");
+                rtn.Append($"  {parser.Name,28}");
             }
             else
             {
-                rtn.Append($"  {parser.Name}   {parser.Help}");
+                rtn.Append($"  {parser.Name,28}   {parser.Help}");
             }
             rtn.AppendLine();
         }
