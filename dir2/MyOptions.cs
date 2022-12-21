@@ -4,7 +4,7 @@ static public partial class MyOptions
 {
     static public string[] Parse(IEnumerable<string> args)
     {
-        return MyOptions.Parsers.Aggregate(
+        return Parsers.Aggregate(
             seed: args.Select((it) => (false, it)),
             func: (acc, it) => it.Parse(acc))
             .Select((it) => it.Item2).ToArray()!;
@@ -96,8 +96,6 @@ static public partial class MyOptions
 
     internal abstract class Parser: IParse
     {
-        public abstract void Assign(object obj);
-
         public string Name { get; init; }
 
         public string Help { get; init; }
@@ -153,13 +151,6 @@ static public partial class MyOptions
     internal class Invoker<T,R>: Parser
     {
         public Func<T, R> imp { get; private set; }
-        override public void Assign(object obj)
-        {
-            if (obj is Func<T, R> impNew)
-            {
-                imp = impNew;
-            }
-        }
 
         public Invoker(string name, Func<T,R> @init,
             Action<Parser,IEnumerable<string>> parse,
@@ -189,14 +180,6 @@ static public partial class MyOptions
         public void SetImplementation(Func<T, R> impNew)
         {
             imp = impNew;
-        }
-
-        public override void Assign(object obj)
-        {
-            if (obj is Func<T, R> impNew)
-            {
-                SetImplementation(impNew);
-            }
         }
     }
 }

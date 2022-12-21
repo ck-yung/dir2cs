@@ -52,7 +52,7 @@ public class Program
 
         if (ScanSubDir.Flag)
         {
-            pathThe = Path.GetFullPath(pathThe);
+            pathThe = Helper.System.GetFullPath(pathThe);
             var cntFile = Helper.GetAllFiles(pathThe)
                 .Select((it) => Helper.System.ToInfoFile(it))
                 .Select((it) =>

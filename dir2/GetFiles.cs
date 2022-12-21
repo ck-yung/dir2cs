@@ -9,12 +9,25 @@ static public partial class Helper
         static public Func<string, IEnumerable<string>> EnumerateFiles
         { get; private set; } = Directory.EnumerateFiles;
 
-        static public void Init(
+        static public void InitEnum(
             Func<string, IEnumerable<string>> EnumDirs,
             Func<string, IEnumerable<string>> EnumFiles)
         {
             EnumerateDirectories = EnumDirs;
             EnumerateFiles = EnumFiles;
+        }
+
+        static public Func<string, string> GetFullPath
+        { get; private set; } = Path.GetFullPath;
+        static public Func<string, string> GetFileName
+        { get; private set; } = Path.GetFileName;
+
+        static public void InitGetNames(
+            Func<string,string> GetFullPath,
+            Func<string,string> GetFileName)
+        {
+            System.GetFullPath= GetFullPath;
+            System.GetFileName= GetFileName;
         }
     }
 
@@ -84,7 +97,7 @@ static public partial class Helper
             // TODO >>>
             //if (Opts.ExclDirnameFilter.Func(
             //    Path.GetFileName(currentDirname))) continue;
-            var dirnameThe = Path.GetFileName(currentDirname);
+            var dirnameThe = Helper.System.GetFileName(currentDirname);
             if (string.IsNullOrEmpty(dirnameThe)) continue;
             if (dirnameThe[0] == '.') continue;
             // TODO <<<
