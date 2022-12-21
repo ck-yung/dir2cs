@@ -11,10 +11,15 @@ public class Program
 		}
 		catch (Exception ee)
 		{
-			Console.Write(ee.GetType());
-            Console.Write(": ");
-            Console.WriteLine(ee);
-		}
+            if (Helper.GetExeEnvr().Contains(":exception.stack:"))
+            {
+                Console.WriteLine(ee);
+            }
+            else
+            {
+                Console.WriteLine($"Exception: {ee.Message}");
+            }
+        }
     }
 
 	static bool RunMain(string[] mainArgs)
@@ -50,11 +55,12 @@ public class Program
 			return false;
 		}
 
-        if (ScanSubDir.Flag)
+        if (ScanSubDir)
         {
             pathThe = Helper.System.GetFullPath(pathThe);
             var cntFile = Helper.GetAllFiles(pathThe)
                 .Select((it) => Helper.System.ToInfoFile(it))
+                .Invoke(MyOptions.SortFile.Invoke)
                 .Select((it) =>
                 {
                     Console.Write($"{it.Length,8} ");

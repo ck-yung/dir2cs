@@ -5,6 +5,12 @@ namespace dir2;
 
 static public partial class Helper
 {
+    static public IEnumerable<T> Invoke<T>(this IEnumerable<T> seq,
+        Func<IEnumerable<T>, IEnumerable<T>> func)
+    {
+        return func(seq);
+    }
+
     static internal readonly string ExeName;
     static internal readonly string ExeVersion;
 
@@ -13,6 +19,11 @@ static public partial class Helper
         var asm = Assembly.GetExecutingAssembly().GetName();
         ExeName = asm.Name ?? "?";
         ExeVersion = asm.Version?.ToString() ?? "?";
+    }
+
+    static public string GetExeEnvr()
+    {
+        return Environment.GetEnvironmentVariable(ExeName) ?? string.Empty;
     }
 
     static public string GetVersion() => $"{ExeName} v{ExeVersion}";
@@ -68,8 +79,9 @@ static public partial class Helper
 
     static internal int PrintFile(string path)
     {
-        var cntFile = Helper.GetFiles(path)
-            .Select((it) => Helper.System.ToInfoFile(it))
+        var cntFile = GetFiles(path)
+            .Select((it) => System.ToInfoFile(it))
+            .Invoke(MyOptions.SortFile.Invoke)
             .Select((it) =>
             {
                 Console.Write($"{it.Length,8} ");

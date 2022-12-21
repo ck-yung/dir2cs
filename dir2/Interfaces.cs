@@ -17,7 +17,11 @@ public interface IParseInvoke<T, R> : IInovke<T, R>, IParse
     Func<T, R>? ParseValues(IEnumerable<string> args);
 }
 
-public interface IFlag
+public class ImplicitBool
 {
-    bool Flag { get; }
+    protected bool Flag { get; set; } = false;
+    static public implicit operator bool(ImplicitBool the)
+    {
+        return the.Flag;
+    }
 }

@@ -10,16 +10,16 @@ static public partial class MyOptions
             .Select((it) => it.Item2).ToArray()!;
     }
 
-    static public IFlag ScanSubDir = new SwitchParser(name:"--sub");
+    static public ImplicitBool ScanSubDir = new SwitchParser(name:"--sub");
 
     static public IInovke<string, int> PrintDirOption =
-        new ParseInvoker<string,int>(
+        new ParseInvoker<string, int>(
         name: "--dir", help: "both | only | off",
         init: (path) =>
         {
             Helper.PrintDir(path);
             return Helper.PrintFile(path);
-        }, parse: (parser, args) =>
+        }, resolve: (parser, args) =>
         {
             var aa = args.Where((it)=>it.Length>0).ToHashSet().ToArray();
             if (aa.Length > 1)
@@ -29,68 +29,138 @@ static public partial class MyOptions
                 case "both": // default value
                     break;
                 case "only":
-                    parser.SetImplementation((path) => Helper.PrintDir(path));
+                    parser.SetImplementation(Helper.PrintDir);
                     break;
                 case "off":
-                    parser.SetImplementation((path) => Helper.PrintFile(path));
+                    parser.SetImplementation(Helper.PrintFile);
                     break;
                 default:
                     throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
             }
         });
 
+    #region Sort
+    static public IInovke<IEnumerable<InfoFile>, IEnumerable<InfoFile>>
+        SortFile = new ParseInvoker<IEnumerable<InfoFile>, IEnumerable<InfoFile>>(
+            name: "--sort", help: "name | size | date | ext",
+            init: (seq) => seq, resolve: (parser, args) =>
+            {
+                var aa = args.Where((it) => it.Length > 0).ToHashSet().ToArray();
+                if (aa.Length == 1)
+                {
+                    switch (aa[0])
+                    {
+                        case "name":
+                            parser.SetImplementation(
+                                (seq) => seq.OrderBy((it) => it.Name));
+                            break;
+                        case "size":
+                            parser.SetImplementation(
+                                (seq) => seq.OrderBy((it) => it.Length));
+                            break;
+                        case "date":
+                            parser.SetImplementation(
+                                (seq) => seq.OrderBy((it) => it.LastWriteTime));
+                            break;
+                        case "ext":
+                            parser.SetImplementation(
+                                (seq) => seq.OrderBy((it) => it.Extension));
+                            break;
+                        default:
+                            throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
+                    }
+                } else if (aa.Length == 2)
+                {
+                    if (!((aa[0], aa[1]) switch
+                    {
+                        ("ext", "name") => parser.SetImplementation(
+                            (seq) => seq
+                            .OrderBy((it) => it.Extension)
+                            .ThenBy((it) => it.Name)),
+                        ("ext", "size") => parser.SetImplementation(
+                            (seq) => seq
+                            .OrderBy((it) => it.Extension)
+                            .ThenBy((it) => it.Length)),
+                        ("ext", "date") => parser.SetImplementation(
+                            (seq) => seq
+                            .OrderBy((it) => it.Extension)
+                            .ThenBy((it) => it.LastWriteTime)),
+
+                        ("size", "name") => parser.SetImplementation(
+                            (seq) => seq
+                            .OrderBy((it) => it.Length)
+                            .ThenBy((it) => it.Name)),
+                        ("size", "ext") => parser.SetImplementation(
+                            (seq) => seq
+                            .OrderBy((it) => it.Length)
+                            .ThenBy((it) => it.Extension)),
+                        ("size", "date") => parser.SetImplementation(
+                            (seq) => seq
+                            .OrderBy((it) => it.Length)
+                            .ThenBy((it) => it.LastWriteTime)),
+
+                        ("date", "name") => parser.SetImplementation(
+                            (seq) => seq
+                            .OrderBy((it) => it.LastWriteTime)
+                            .ThenBy((it) => it.Name)),
+                        ("date", "ext") => parser.SetImplementation(
+                            (seq) => seq
+                            .OrderBy((it) => it.Length)
+                            .ThenBy((it) => it.LastWriteTime)),
+                        ("date", "size") => parser.SetImplementation(
+                            (seq) => seq
+                            .OrderBy((it) => it.Length)
+                            .ThenBy((it) => it.LastWriteTime)),
+                        _ => false
+                    }))
+                    {
+                        throw new ArgumentException($"Bad values ('{aa[0]}', ..) to {parser.Name}");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException($"Too many values to {parser.Name}");
+                }
+            });
+    #endregion
+
     static public IParse[] Parsers = new IParse[] 
     {
         (IParse) ScanSubDir,
         (IParse) PrintDirOption,
+        (IParse) SortFile,
     };
 
-    static MyOptions()
-    {
-    }
-
-    private class SwitchParser : IParse, IFlag
+    /// <summary>
+    /// Implicit boolean, default false
+    /// </summary>
+    private class SwitchParser : ImplicitBool, IParse
     {
         public string Name { get; init; }
 
         public string Help { get; init; }
-        public bool Flag { get; private set; } = false;
 
         public SwitchParser(string name, string help ="")
         {
             Name = name;
             Help = help;
         }
+
         public IEnumerable<(bool, string)> Parse(IEnumerable<(bool, string)> args)
         {
-            IEnumerable<(bool, string)> ToFlagEnum()
+            var it = args.GetEnumerator();
+            while (it.MoveNext())
             {
-                var it = args.GetEnumerator();
-                while (it.MoveNext())
+                var current = it.Current;
+                if (current.Item2 == Name)
                 {
-                    var current = it.Current;
-                    if (current.Item2 == Name)
-                    {
-                        yield return (true, Name);
-                    }
-                    else
-                    {
-                        yield return it.Current;
-                    }
+                    Flag = true;
+                }
+                else
+                {
+                    yield return current;
                 }
             }
-
-            var groupThe = ToFlagEnum()
-                .GroupBy((it) => it.Item1)
-                .ToDictionary((it) => it.Key, (it) => it.AsEnumerable());
-
-            if (groupThe.ContainsKey(true))
-            {
-                Flag = true;
-            }
-
-            if (groupThe.ContainsKey(false)) return groupThe[false];
-            return Enumerable.Empty<(bool, string)>();
         }
     }
 
@@ -99,17 +169,19 @@ static public partial class MyOptions
         public string Name { get; init; }
 
         public string Help { get; init; }
-        public Action<Parser, IEnumerable<string>> ParseAction { get; init; }
+        public Action<Parser, IEnumerable<string>>
+            Resolve { get; init; }
 
         public Parser(string name, string help,
-            Action<Parser, IEnumerable<string>> parse)
+            Action<Parser, IEnumerable<string>> resolve)
         {
             Name = name;
             Help = help;
-            ParseAction = parse;
+            Resolve = resolve;
         }
 
-        public IEnumerable<(bool, string)> Parse(IEnumerable<(bool, string)> args)
+        public IEnumerable<(bool, string)> Parse(
+            IEnumerable<(bool, string)> args)
         {
             IEnumerable<(bool, string)> ToFlagEnum()
             {
@@ -140,7 +212,7 @@ static public partial class MyOptions
             if (groupThe.ContainsKey(true))
             {
                 var argsFound = groupThe[true].Select((it) => it.Item2);
-                ParseAction(this, argsFound);
+                Resolve(this, argsFound);
             }
 
             if (groupThe.ContainsKey(false)) return groupThe[false];
@@ -148,16 +220,12 @@ static public partial class MyOptions
         }
     }
 
-    internal class Invoker<T,R>: Parser
+    private class SimpleParser : Parser
     {
-        public Func<T, R> imp { get; private set; }
-
-        public Invoker(string name, Func<T,R> @init,
-            Action<Parser,IEnumerable<string>> parse,
-            string help = ""
-            ) : base(name, help, parse)
+        public SimpleParser(string name,
+            Action<Parser, IEnumerable<string>> resolve,
+            string help = "") : base(name, help, resolve)
         {
-            imp = @init;
         }
     }
 
@@ -165,9 +233,10 @@ static public partial class MyOptions
     {
         protected Func<T, R> imp { get; private set; }
         public ParseInvoker(string name, Func<T,R> @init,
-            Action<ParseInvoker<T, R>, IEnumerable<string>> parse,
+            Action<ParseInvoker<T, R>, IEnumerable<string>> resolve,
             string help = ""): base(name, help,
-                parse: (obj, args) => parse( (ParseInvoker<T, R>) obj, args))
+                resolve: (obj, args) =>
+                resolve((ParseInvoker<T, R>) obj, args))
         {
             imp = @init;
         }
@@ -177,9 +246,14 @@ static public partial class MyOptions
             return imp(arg);
         }
 
-        public void SetImplementation(Func<T, R> impNew)
+        public bool SetImplementation(Func<T, R> impNew)
         {
-            imp = impNew;
+            if (impNew != null)
+            {
+                imp = impNew;
+                return true;
+            }
+            return false;
         }
     }
 }
