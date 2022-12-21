@@ -60,7 +60,7 @@ public class Program
             pathThe = Helper.System.GetFullPath(pathThe);
             var cntFile = Helper.GetAllFiles(pathThe)
                 .Select((it) => Helper.System.ToInfoFile(it))
-                .Invoke(MyOptions.SortFile.Invoke)
+                .Invoke(SortFile)
                 .Select((it) =>
                 {
                     Console.Write($"{it.Length,8} ");

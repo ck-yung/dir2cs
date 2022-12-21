@@ -58,8 +58,9 @@ static public partial class Helper
 
     static internal int PrintDir(string path)
     {
-        var cntDir = Helper.GetDirs(path)
-            .Select((it) => Helper.System.ToInfoDir(it))
+        var cntDir = GetDirs(path)
+            .Select((it) => System.ToInfoDir(it))
+            .Invoke(MyOptions.SortDir)
             .Select((it) =>
             {
                 Console.Write("DIR ");
@@ -81,7 +82,7 @@ static public partial class Helper
     {
         var cntFile = GetFiles(path)
             .Select((it) => System.ToInfoFile(it))
-            .Invoke(MyOptions.SortFile.Invoke)
+            .Invoke(MyOptions.SortFile)
             .Select((it) =>
             {
                 Console.Write($"{it.Length,8} ");
