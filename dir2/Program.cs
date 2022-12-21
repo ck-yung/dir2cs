@@ -55,12 +55,13 @@ public class Program
 			return false;
 		}
 
+        pathThe = Helper.System.GetFullPath(pathThe);
+        InfoSum sumThe;
         if (ScanSubDir)
         {
-            pathThe = Helper.System.GetFullPath(pathThe);
-            var cntFile = Helper.GetAllFiles(pathThe)
+            sumThe = Helper.GetAllFiles(pathThe)
                 .Select((it) => Helper.System.ToInfoFile(it))
-                .Invoke(SortFiles)
+                .Invoke(Sort.Files)
                 .Select((it) =>
                 {
                     Helper.Write($"{it.Length,8} ");
@@ -69,16 +70,14 @@ public class Program
                     Helper.WriteLine(it.FullName.Substring(pathThe.Length));
                     return it;
                 })
-                .Count();
-            if (cntFile > 1)
-            {
-                Helper.WriteLine($"{cntFile} files are found.");
-            }
+                .Aggregate(seed: new InfoSum(Helper.GetLastDir(pathThe)),
+                func: (acc, it) => acc.Add(it));
         }
         else
         {
-            PrintDirOption.Invoke(pathThe);
+            sumThe = PrintDirOption.Invoke(pathThe);
         }
+        Helper.PrintInfoSum(sumThe);
 
         return true;
 	}

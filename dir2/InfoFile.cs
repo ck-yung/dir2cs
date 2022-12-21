@@ -5,9 +5,9 @@ public record InfoDir(string Name,
     string FullName,
     DateTime CreationTime,
     DateTime LastWriteTime,
-    string? LinkTarget)
+    string LinkTarget)
 {
-    static public readonly InfoDir Fake = new (string.Empty
+    static internal readonly InfoDir Fake = new (string.Empty
         , string.Empty, string.Empty
         , DateTime.MinValue, DateTime.MinValue, null);
 
@@ -20,19 +20,50 @@ public record InfoDir(string Name,
 public record InfoFile(string Name,
     string Extension,
     string FullName,
-    string? DirectoryName,
+    string DirectoryName,
     long Length,
     DateTime CreationTime,
     DateTime LastWriteTime,
-    string? LinkTarget)
+    string LinkTarget)
 {
-    static public readonly InfoFile Fake = new(string.Empty
+    static internal readonly InfoFile Fake = new(string.Empty
         , string.Empty, string.Empty, string.Empty, 0
         , DateTime.MinValue, DateTime.MinValue, null);
 
     public bool IsNotFake()
     {
         return !Object.ReferenceEquals(Fake, this);
+    }
+}
+
+public class InfoSum
+{
+    public string Name { get; private set; }
+    public int Count { get; private set; } = 0;
+    public long Length { get; private set; } = 0L;
+    public DateTime StartTime { get; private set; } = DateTime.MaxValue;
+    public DateTime EndTime { get; private set; } = DateTime.MinValue;
+    public InfoSum(string Name)
+    {
+        this.Name = Name;
+    }
+
+    static internal readonly InfoSum Fake = new(string.Empty);
+
+    public bool IsNotFake()
+    {
+        return !Object.ReferenceEquals(Fake, this);
+    }
+
+    public InfoSum Add(InfoFile other)
+    {
+        Count += 1;
+        Length += other.Length;
+        if (StartTime > other.LastWriteTime)
+            StartTime = other.LastWriteTime;
+        if (EndTime < other.LastWriteTime)
+            EndTime = other.LastWriteTime;
+        return this;
     }
 }
 
@@ -65,7 +96,7 @@ static public partial class Helper
                 FullName: rtn.FullName,
                 CreationTime: rtn.CreationTime,
                 LastWriteTime: rtn.LastWriteTime,
-                LinkTarget: rtn.LinkTarget);
+                LinkTarget: rtn.LinkTarget ?? string.Empty);
         }
         catch
         {
@@ -81,11 +112,11 @@ static public partial class Helper
             return new InfoFile(Name: rtn.Name,
                 Extension: rtn.Extension,
                 FullName: rtn.FullName,
-                DirectoryName: rtn.DirectoryName,
+                DirectoryName: rtn.DirectoryName ?? string.Empty,
                 Length: rtn.Length,
                 CreationTime: rtn.CreationTime,
                 LastWriteTime: rtn.LastWriteTime,
-                LinkTarget: rtn.LinkTarget);
+                LinkTarget: rtn.LinkTarget ?? string.Empty);
         }
         catch
         {

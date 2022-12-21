@@ -14,7 +14,7 @@ public interface IInovke<T, R>
 
 public interface IParseInvoke<T, R> : IInovke<T, R>, IParse
 {
-    Func<T, R>? ParseValues(IEnumerable<string> args);
+    Func<T, R> ParseValues(IEnumerable<string> args);
 }
 
 public class ImplicitBool

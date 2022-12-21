@@ -7,16 +7,18 @@ static public partial class MyOptions
 {
     static public string[] Parse(IEnumerable<string> args)
     {
-        return Parsers.Aggregate(
+        var rtn = Parsers.Aggregate(
             seed: args.Select((it) => (false, it)),
             func: (acc, it) => it.Parse(acc))
-            .Select((it) => it.Item2).ToArray()!;
+            .Select((it) => it.Item2);
+        if (rtn.Any()) return rtn.ToArray();
+        return Array.Empty<string>();
     }
 
     static public readonly ImplicitBool ScanSubDir = new SwitchParser(name:"--sub");
 
-    static public readonly IInovke<string, int> PrintDirOption =
-        new ParseInvoker<string, int>(
+    static public readonly IInovke<string, InfoSum> PrintDirOption =
+        new ParseInvoker<string, InfoSum>(
         name: "--dir", help: "both | only | off",
         init: (path) =>
         {
@@ -32,6 +34,18 @@ static public partial class MyOptions
                 case "both": // default value
                     break;
                 case "only":
+                    Helper.impPrintSum = (_) => { };
+                    Helper.impPrintDirCount = (cnt) =>
+                    {
+                        if (cnt==0)
+                        {
+                            Helper.WriteLine("No dir is found.");
+                        }
+                        else if (cnt>1)
+                        {
+                            Helper.WriteLine($"{cnt} dir are found.");
+                        }
+                    };
                     parser.SetImplementation(Helper.PrintDir);
                     break;
                 case "off":
@@ -46,7 +60,7 @@ static public partial class MyOptions
     {
         (IParse) ScanSubDir,
         (IParse) PrintDirOption,
-        SortOptions!,
+        Sort.Options,
     };
 
     /// <summary>
@@ -138,7 +152,7 @@ static public partial class MyOptions
         }
     }
 
-    private class SimpleParser : Parser
+    internal class SimpleParser : Parser
     {
         public SimpleParser(string name,
             Action<Parser, IEnumerable<string>> resolve,

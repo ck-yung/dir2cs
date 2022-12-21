@@ -2,15 +2,15 @@ using System.Collections.Immutable;
 
 namespace dir2;
 
-static public partial class MyOptions
+static public class Sort
 {
-    static public Func<IEnumerable<InfoFile>, IEnumerable<InfoFile>> SortFiles
+    static public Func<IEnumerable<InfoFile>, IEnumerable<InfoFile>> Files
     { get; private set; } = (seq) => seq;
 
-    static public Func<IEnumerable<InfoDir>, IEnumerable<InfoDir>> SortDirs
+    static public Func<IEnumerable<InfoDir>, IEnumerable<InfoDir>> Dirs
     { get; private set; } = (seq) => seq;
 
-    static public readonly IParse SortOptions = new SimpleParser(name: "--sort",
+    static public readonly IParse Options = new MyOptions.SimpleParser(name: "--sort",
         help: "name | size | date | ext",
         resolve: (parser, args) =>
         {
@@ -18,8 +18,8 @@ static public partial class MyOptions
 
             if ((aa.Length > 0) && aa[0] == "name")
             {
-                SortDirs = (seq) => seq.OrderBy((it) => it.Name);
-                SortFiles = (seq) => seq.OrderBy((it) => it.Name);
+                Dirs = (seq) => seq.OrderBy((it) => it.Name);
+                Files = (seq) => seq.OrderBy((it) => it.Name);
                 return;
             }
 
@@ -28,15 +28,15 @@ static public partial class MyOptions
                 switch (aa[0])
                 {
                     case "size":
-                        SortFiles = (seq) => seq.OrderBy((it) => it.Length);
+                        Files = (seq) => seq.OrderBy((it) => it.Length);
                         break;
                     case "date":
-                        SortDirs = (seq) => seq.OrderBy((it) => it.LastWriteTime);
-                        SortFiles = (seq) => seq.OrderBy((it) => it.LastWriteTime);
+                        Dirs = (seq) => seq.OrderBy((it) => it.LastWriteTime);
+                        Files = (seq) => seq.OrderBy((it) => it.LastWriteTime);
                         break;
                     case "ext":
-                        SortDirs = (seq) => seq.OrderBy((it) => it.Extension);
-                        SortFiles = (seq) => seq.OrderBy((it) => it.Extension);
+                        Dirs = (seq) => seq.OrderBy((it) => it.Extension);
+                        Files = (seq) => seq.OrderBy((it) => it.Extension);
                         break;
                     default:
                         throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
@@ -112,8 +112,8 @@ static public partial class MyOptions
 
                 if (qq.TryGetValue((aa[0], aa[1]), out var found))
                 {
-                    SortDirs = found.Item1;
-                    SortFiles = found.Item2;
+                    Dirs = found.Item1;
+                    Files = found.Item2;
                     return;
                 }
                 throw new ArgumentException($"Bad values ('{aa[0]}', ..) to {parser.Name}");

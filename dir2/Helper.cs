@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 
 namespace dir2;
@@ -56,11 +57,11 @@ static public partial class Helper
         return rtn.ToString();
     }
 
-    static internal int PrintDir(string path)
+    static internal InfoSum PrintDir(string path)
     {
         var cntDir = GetDirs(path)
             .Select((it) => System.ToInfoDir(it))
-            .Invoke(MyOptions.SortDirs)
+            .Invoke(Sort.Dirs)
             .Select((it) =>
             {
                 Write("DIR ");
@@ -70,19 +71,15 @@ static public partial class Helper
                 return it;
             })
             .Count();
-        if (cntDir > 1)
-        {
-            WriteLine($"{cntDir} directories are found.");
-            WriteLine("");
-        }
-        return 0;
+        PrintDirCount(cntDir);
+        return InfoSum.Fake;
     }
 
-    static internal int PrintFile(string path)
+    static internal InfoSum PrintFile(string path)
     {
-        var cntFile = GetFiles(path)
+        return GetFiles(path)
             .Select((it) => System.ToInfoFile(it))
-            .Invoke(MyOptions.SortFiles)
+            .Invoke(Sort.Files)
             .Select((it) =>
             {
                 Write($"{it.Length,8} ");
@@ -91,11 +88,47 @@ static public partial class Helper
                 WriteLine(it.Name);
                 return it;
             })
-            .Count();
-        if (cntFile > 1)
+            .Aggregate(seed: new InfoSum(Helper.GetLastDir(path)),
+            func: (acc, it) => acc.Add(it));
+    }
+
+    static internal Action<int> impPrintDirCount { get; set; } = (cntDir) =>
+    {
+        if (cntDir>1) WriteLine($"{cntDir} dir are found.");
+        WriteLine("");
+    };
+
+    static internal void PrintDirCount(int count)
+    {
+        impPrintDirCount(count);
+    }
+
+    static internal Action<InfoSum> impPrintSum { get; set; } = (arg) =>
+    {
+        switch (arg.Count)
         {
-            WriteLine($"{cntFile} files are found.");
+            case 0:
+                WriteLine("No file is found.");
+                break;
+            case 1:
+                break;
+            default:
+                WriteLine($"{arg.Length,8} {arg.StartTime.ToString("u")} {arg.EndTime.ToString("u")} {arg.Count,4} {arg.Name}");
+                break;
         }
-        return cntFile;
+    };
+
+    static internal void PrintInfoSum(InfoSum arg)
+    {
+        impPrintSum(arg);
+    }
+
+    static internal string GetLastDir(string arg)
+    {
+        return arg
+            .TrimEnd(Path.DirectorySeparatorChar)
+            .Split(Path.DirectorySeparatorChar)
+            .AsEnumerable()
+            .Last();
     }
 }
