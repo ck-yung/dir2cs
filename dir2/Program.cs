@@ -64,9 +64,8 @@ public class Program
                 .Invoke(Sort.Files)
                 .Select((it) =>
                 {
-                    Helper.Write($"{it.Length,8} ");
-                    Helper.Write(it.LastWriteTime.ToString("u"));
-                    Helper.Write(" ");
+                    Helper.Write($"{LengthFormat.Invoke(it.Length)} ");
+                    Helper.Write($"{DateFormat.Invoke(it.LastWriteTime)} ");
                     Helper.WriteLine(it.FullName.Substring(pathThe.Length));
                     return it;
                 })

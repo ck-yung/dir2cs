@@ -55,137 +55,65 @@ static public partial class MyOptions
                     throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
             }
         });
+    static public string ToKiloUnit(long arg)
+    {
+        var units = new char[] { 'T', 'G', 'M', 'K', ' ' };
+        string toKilo(float arg2, int index)
+        {
+            if (arg2 < 10_000.0F) return $"{arg2,4:F0}{units[index - 1]}";
+            if (index == 1) return $"{arg2,4:F0}{units[0]}";
+            return toKilo(arg2 / 1024.0F, index - 1);
+        }
+        return toKilo((float)arg, units.Length);
+    }
 
-    static public IParse[] Parsers = new IParse[] 
+    static public readonly IInovke<long, string> LengthFormat =
+        new ParseInvoker<long, string>(name: "--size-format",
+            help: "short | long | comma | eight",
+            init: (value) => $"{value,8}", resolve: (parser, args) =>
+            {
+                var aa = args.Where((it) => it.Length > 0).ToHashSet().ToArray();
+                if (aa.Length > 1)
+                    throw new ArgumentException($"Too many values to {parser.Name}");
+                switch (aa[0])
+                {
+                    case "short":
+                        parser.SetImplementation((value) => ToKiloUnit(value));
+                        break;
+                    case "long":
+                        parser.SetImplementation((value) => $"{value,12}");
+                        break;
+                    case "comma":
+                        parser.SetImplementation((value) => $"{value,19:N0}");
+                        break;
+                    case "eight":
+                        parser.SetImplementation((value) => $"{value,8}");
+                        break;
+                    default:
+                        throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
+                }
+            });
+
+    static public readonly IInovke<DateTime, string> DateFormat =
+        new ParseInvoker<DateTime, string>(name: "--date-format",
+            help: "DATE-FORMAT",
+            init: (value) => $"{value:yyyy-MM-dd HH:mm:ss}",
+            resolve: (parser, args) =>
+            {
+                var aa = args.Where((it) => it.Length > 0).ToHashSet().ToArray();
+                if (aa.Length > 1)
+                    throw new ArgumentException($"Too many values to {parser.Name}");
+                Func<DateTime, string> rtn = (value) => value.ToString(aa[0]);
+                _ = rtn(DateTime.MinValue);
+                parser.SetImplementation(rtn);
+            });
+
+    static public IParse[] Parsers = new IParse[]
     {
         (IParse) ScanSubDir,
         (IParse) PrintDirOption,
+        (IParse) LengthFormat,
+        (IParse) DateFormat,
         Sort.Options,
     };
-
-    /// <summary>
-    /// Implicit boolean, default false
-    /// </summary>
-    private class SwitchParser : ImplicitBool, IParse
-    {
-        public string Name { get; init; }
-
-        public string Help { get; init; }
-
-        public SwitchParser(string name, string help ="")
-        {
-            Name = name;
-            Help = help;
-        }
-
-        public IEnumerable<(bool, string)> Parse(IEnumerable<(bool, string)> args)
-        {
-            var it = args.GetEnumerator();
-            while (it.MoveNext())
-            {
-                var current = it.Current;
-                if (current.Item2 == Name)
-                {
-                    Flag = true;
-                }
-                else
-                {
-                    yield return current;
-                }
-            }
-        }
-    }
-
-    internal abstract class Parser: IParse
-    {
-        public string Name { get; init; }
-
-        public string Help { get; init; }
-        public Action<Parser, IEnumerable<string>>
-            Resolve { get; init; }
-
-        public Parser(string name, string help,
-            Action<Parser, IEnumerable<string>> resolve)
-        {
-            Name = name;
-            Help = help;
-            Resolve = resolve;
-        }
-
-        public IEnumerable<(bool, string)> Parse(
-            IEnumerable<(bool, string)> args)
-        {
-            IEnumerable<(bool, string)> ToFlagEnum()
-            {
-                var it = args.GetEnumerator();
-                while (it.MoveNext())
-                {
-                    var current = it.Current;
-                    if (current.Item2 != Name)
-                    {
-                        yield return it.Current;
-                    }
-                    else
-                    {
-                        if (!it.MoveNext())
-                        {
-                            throw new ArgumentException(
-                                $"Missing value to {Name}");
-                        }
-                        yield return (true, it.Current.Item2);
-                    }
-                }
-            }
-
-            var groupThe = ToFlagEnum()
-                .GroupBy((it) => it.Item1)
-                .ToDictionary((it) => it.Key, (it) => it.AsEnumerable());
-
-            if (groupThe.ContainsKey(true))
-            {
-                var argsFound = groupThe[true].Select((it) => it.Item2);
-                Resolve(this, argsFound);
-            }
-
-            if (groupThe.ContainsKey(false)) return groupThe[false];
-            return Enumerable.Empty<(bool, string)>();
-        }
-    }
-
-    internal class SimpleParser : Parser
-    {
-        public SimpleParser(string name,
-            Action<Parser, IEnumerable<string>> resolve,
-            string help = "") : base(name, help, resolve)
-        {
-        }
-    }
-
-    private class ParseInvoker<T,R>: Parser, IInovke<T,R>
-    {
-        protected Func<T, R> imp { get; private set; }
-        public ParseInvoker(string name, Func<T,R> @init,
-            Action<ParseInvoker<T, R>, IEnumerable<string>> resolve,
-            string help = ""): base(name, help,
-                resolve: (obj, args) =>
-                resolve((ParseInvoker<T, R>) obj, args))
-        {
-            imp = @init;
-        }
-
-        public R Invoke(T arg)
-        {
-            return imp(arg);
-        }
-
-        public bool SetImplementation(Func<T, R> impNew)
-        {
-            if (impNew != null)
-            {
-                imp = impNew;
-                return true;
-            }
-            return false;
-        }
-    }
 }

@@ -82,9 +82,8 @@ static public partial class Helper
             .Invoke(Sort.Files)
             .Select((it) =>
             {
-                Write($"{it.Length,8} ");
-                Write(it.LastWriteTime.ToString("u"));
-                Write(" ");
+                Write($"{MyOptions.LengthFormat.Invoke(it.Length)} ");
+                Write($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} ");
                 WriteLine(it.Name);
                 return it;
             })
@@ -113,7 +112,11 @@ static public partial class Helper
             case 1:
                 break;
             default:
-                WriteLine($"{arg.Length,8} {arg.StartTime.ToString("u")} {arg.EndTime.ToString("u")} {arg.Count,4} {arg.Name}");
+                Write($"{MyOptions.LengthFormat.Invoke(arg.Length)} ");
+                Write($"{MyOptions.DateFormat.Invoke(arg.StartTime)} ");
+                Write($"{MyOptions.DateFormat.Invoke(arg.EndTime)} ");
+                Write($"{arg.Count,4} ");
+                WriteLine(arg.Name);
                 break;
         }
     };
