@@ -12,9 +12,14 @@
 TestResults
 packages
 ipch
-Debug
-Obj
-Release
+[oO]bj
+[bB]in
+**/[oO]bj
+**/[bB]in
+[dD]ebug
+[rR]elease
+**/[dD]ebug
+**/[rR]elease
 .DS_Store
 **/.DS_Store
 /dir2/Properties/launchSettings.json

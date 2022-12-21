@@ -64,9 +64,9 @@ public class Program
                 .Invoke(Sort.Files)
                 .Select((it) =>
                 {
-                    Helper.Write($"{LengthFormat.Invoke(it.Length)} ");
-                    Helper.Write($"{DateFormat.Invoke(it.LastWriteTime)} ");
-                    Helper.WriteLine(it.FullName.Substring(pathThe.Length));
+                    Helper.ItemWrite($"{LengthFormat.Invoke(it.Length)} ");
+                    Helper.ItemWrite($"{DateFormat.Invoke(it.LastWriteTime)} ");
+                    Helper.ItemWriteLine(it.FullName.Substring(pathThe.Length));
                     return it;
                 })
                 .Aggregate(seed: new InfoSum(Helper.GetLastDir(pathThe)),

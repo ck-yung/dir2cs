@@ -64,10 +64,9 @@ static public partial class Helper
             .Invoke(Sort.Dirs)
             .Select((it) =>
             {
-                Write("DIR ");
-                Write(it.LastWriteTime.ToString("u"));
-                Write(" ");
-                WriteLine(it.Name);
+                ItemWrite("DIR ");
+                ItemWrite($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} ");
+                ItemWriteLine(it.Name);
                 return it;
             })
             .Count();
@@ -82,14 +81,17 @@ static public partial class Helper
             .Invoke(Sort.Files)
             .Select((it) =>
             {
-                Write($"{MyOptions.LengthFormat.Invoke(it.Length)} ");
-                Write($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} ");
-                WriteLine(it.Name);
+                ItemWrite($"{MyOptions.LengthFormat.Invoke(it.Length)} ");
+                ItemWrite($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} ");
+                ItemWriteLine(it.Name);
                 return it;
             })
             .Aggregate(seed: new InfoSum(Helper.GetLastDir(path)),
             func: (acc, it) => acc.Add(it));
     }
+
+    static internal Action<string> ItemWrite { get; set; } = Write;
+    static internal Action<string> ItemWriteLine { get; set; } = WriteLine;
 
     static internal Action<int> impPrintDirCount { get; set; } = (cntDir) =>
     {
@@ -102,24 +104,33 @@ static public partial class Helper
         impPrintDirCount(count);
     }
 
-    static internal Action<InfoSum> impPrintSum { get; set; } = (arg) =>
+    static internal void PrintFileSumFlag(InfoSum sum, bool printEvenCountOne)
     {
-        switch (arg.Count)
+        switch (sum.Count)
         {
             case 0:
                 WriteLine("No file is found.");
                 break;
             case 1:
+                if (printEvenCountOne)
+                {
+                    Write("One file is found: ");
+                    Write($"{MyOptions.LengthFormat.Invoke(sum.Length)} ");
+                    WriteLine($"{MyOptions.DateFormat.Invoke(sum.StartTime)}");
+                }
                 break;
             default:
-                Write($"{MyOptions.LengthFormat.Invoke(arg.Length)} ");
-                Write($"{MyOptions.DateFormat.Invoke(arg.StartTime)} ");
-                Write($"{MyOptions.DateFormat.Invoke(arg.EndTime)} ");
-                Write($"{arg.Count,4} ");
-                WriteLine(arg.Name);
+                Write($"{MyOptions.LengthFormat.Invoke(sum.Length)} ");
+                Write($"{MyOptions.DateFormat.Invoke(sum.StartTime)} ");
+                Write($"{MyOptions.DateFormat.Invoke(sum.EndTime)} ");
+                Write($"{sum.Count,4} ");
+                WriteLine(sum.Name);
                 break;
         }
-    };
+    }
+
+    static internal Action<InfoSum> impPrintSum { get; set; }
+        = (arg) => PrintFileSumFlag(arg, printEvenCountOne: false);
 
     static internal void PrintInfoSum(InfoSum arg)
     {

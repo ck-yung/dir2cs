@@ -34,7 +34,7 @@ static public partial class MyOptions
                 case "both": // default value
                     break;
                 case "only":
-                    Helper.impPrintSum = (_) => { };
+                    Helper.impPrintSum = InfoSum.DoNothing;
                     Helper.impPrintDirCount = (cnt) =>
                     {
                         if (cnt==0)
@@ -108,6 +108,49 @@ static public partial class MyOptions
                 parser.SetImplementation(rtn);
             });
 
+    static public readonly IParse TotalOption = new MyOptions.SimpleParser(name: "--total",
+        help: "off | only", resolve: (parser, args) =>
+        {
+            var aa = args.Where((it) => it.Length > 0).ToHashSet().ToArray();
+            if (aa.Length > 1)
+                throw new ArgumentException($"Too many values to {parser.Name}");
+            switch (aa[0])
+            {
+                case "off":
+                    Helper.impPrintSum = (_) => { };
+                    Helper.impPrintDirCount = (_) => { };
+                    break;
+                case "only":
+                    Helper.ItemWrite = (_) => { };
+                    Helper.ItemWriteLine = (_) => { };
+
+                    Helper.impPrintDirCount = (cntDir) =>
+                    {
+                        switch (cntDir)
+                        {
+                            case 0:
+                                Helper.WriteLine("No dir is found.");
+                                break;
+                            case 1:
+                                Helper.WriteLine("One dir is found.");
+                                break;
+                            default:
+                                Helper.WriteLine($"{cntDir} dirs are found.");
+                                break;
+                        }
+                    };
+
+                    if (InfoSum.IsNothing(Helper.impPrintSum))
+                    {
+                        Helper.impPrintSum =
+                            (arg) => Helper.PrintFileSumFlag(arg, printEvenCountOne: true);
+                    }
+                    break;
+                default:
+                    throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
+            }
+        });
+
     static public IParse[] Parsers = new IParse[]
     {
         (IParse) ScanSubDir,
@@ -115,5 +158,6 @@ static public partial class MyOptions
         (IParse) LengthFormat,
         (IParse) DateFormat,
         Sort.Options,
+        TotalOption,
     };
 }

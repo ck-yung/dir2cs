@@ -50,6 +50,12 @@ public class InfoSum
 
     static internal readonly InfoSum Fake = new(string.Empty);
 
+    static public readonly Action<InfoSum> DoNothing = (_) => { };
+    static public bool IsNothing(Action<InfoSum> check)
+    {
+        return !Object.ReferenceEquals(check, DoNothing);
+    }
+
     public bool IsNotFake()
     {
         return !Object.ReferenceEquals(Fake, this);
