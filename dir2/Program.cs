@@ -26,14 +26,14 @@ public class Program
 	{
 		if (mainArgs.Contains("--version"))
 		{
-			Console.WriteLine(Helper.GetVersion());
+			Helper.WriteLine(Helper.GetVersion());
 			return false;
 		}
 
         if (mainArgs.Contains("--help") ||
             mainArgs.Contains("-?"))
         {
-            Console.WriteLine(Helper.GetSyntax());
+            Helper.WriteLine(Helper.GetSyntax());
             return false;
         }
 
@@ -51,7 +51,7 @@ public class Program
 
 		if (!Directory.Exists(pathThe))
 		{
-			Console.WriteLine($"'{pathThe}' is NOT a directory.");
+			Helper.WriteLine($"'{pathThe}' is NOT a directory.");
 			return false;
 		}
 
@@ -60,19 +60,19 @@ public class Program
             pathThe = Helper.System.GetFullPath(pathThe);
             var cntFile = Helper.GetAllFiles(pathThe)
                 .Select((it) => Helper.System.ToInfoFile(it))
-                .Invoke(SortFile)
+                .Invoke(SortFiles)
                 .Select((it) =>
                 {
-                    Console.Write($"{it.Length,8} ");
-                    Console.Write(it.LastWriteTime.ToString("u"));
-                    Console.Write(" ");
-                    Console.WriteLine(it.FullName.Substring(pathThe.Length));
+                    Helper.Write($"{it.Length,8} ");
+                    Helper.Write(it.LastWriteTime.ToString("u"));
+                    Helper.Write(" ");
+                    Helper.WriteLine(it.FullName.Substring(pathThe.Length));
                     return it;
                 })
                 .Count();
             if (cntFile > 1)
             {
-                Console.WriteLine($"{cntFile} files are found.");
+                Helper.WriteLine($"{cntFile} files are found.");
             }
         }
         else

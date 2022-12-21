@@ -60,20 +60,20 @@ static public partial class Helper
     {
         var cntDir = GetDirs(path)
             .Select((it) => System.ToInfoDir(it))
-            .Invoke(MyOptions.SortDir)
+            .Invoke(MyOptions.SortDirs)
             .Select((it) =>
             {
-                Console.Write("DIR ");
-                Console.Write(it.LastWriteTime.ToString("u"));
-                Console.Write(" ");
-                Console.WriteLine(it.Name);
+                Write("DIR ");
+                Write(it.LastWriteTime.ToString("u"));
+                Write(" ");
+                WriteLine(it.Name);
                 return it;
             })
             .Count();
         if (cntDir > 1)
         {
-            Console.WriteLine($"{cntDir} directories are found.");
-            Console.WriteLine();
+            WriteLine($"{cntDir} directories are found.");
+            WriteLine("");
         }
         return 0;
     }
@@ -82,19 +82,19 @@ static public partial class Helper
     {
         var cntFile = GetFiles(path)
             .Select((it) => System.ToInfoFile(it))
-            .Invoke(MyOptions.SortFile)
+            .Invoke(MyOptions.SortFiles)
             .Select((it) =>
             {
-                Console.Write($"{it.Length,8} ");
-                Console.Write(it.LastWriteTime.ToString("u"));
-                Console.Write(" ");
-                Console.WriteLine(it.Name);
+                Write($"{it.Length,8} ");
+                Write(it.LastWriteTime.ToString("u"));
+                Write(" ");
+                WriteLine(it.Name);
                 return it;
             })
             .Count();
         if (cntFile > 1)
         {
-            Console.WriteLine($"{cntFile} files are found.");
+            WriteLine($"{cntFile} files are found.");
         }
         return cntFile;
     }

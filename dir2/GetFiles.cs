@@ -2,6 +2,19 @@ namespace dir2;
 
 static public partial class Helper
 {
+    static public Action<string> Write
+    { get; private set; } = (msg) => Console.Write(msg);
+    static public Action<string> WriteLine
+    { get; private set; } = (msg) => Console.WriteLine(msg);
+
+    static public void Init(
+        Action<string> Write,
+        Action<string> WriteLine)
+    {
+        Helper.Write = Write;
+        Helper.WriteLine = WriteLine;
+    }
+
     static public partial class System
     {
         static public Func<string, IEnumerable<string>> EnumerateDirectories
