@@ -41,7 +41,11 @@ static public class Wild
     static public void InitMatchingNames(IEnumerable<string> names,
         bool checkingFilename = true)
     {
-        var matchFuncs = names.Select((it) => ToWildMatch(it)).ToArray();
+        var matchFuncs = names
+            .Where((it) => it.Length>0)
+            .ToHashSet()
+            .Select((it) => ToWildMatch(it))
+            .ToArray();
         if (matchFuncs.Length > 0)
         {
             if (checkingFilename)

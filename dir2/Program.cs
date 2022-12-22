@@ -40,15 +40,31 @@ public class Program
         var args = Parse(mainArgs);
 
         var pathThe = "." + Path.DirectorySeparatorChar;
-		if (args.Length> 0)
+        if (args.Length == 1)
+        {
+            if (Directory.Exists(args[0]))
+            {
+                pathThe = args[0];
+            }
+            else
+            {
+                if (args[0].EndsWith(Path.DirectorySeparatorChar))
+                {
+                    throw new ArgumentException($"Dir '{args[0]}' is NOT found.");
+                }
+                // TODO: PrintDirOnly
+                var path2 = Path.GetDirectoryName(args[0]);
+                pathThe = string.IsNullOrEmpty(path2) ? "." : path2;
+                Wild.InitMatchingNames(
+                    new string[] { Path.GetFileName(args[0])},
+                    !IsPrintDirOnly);
+            }
+        }
+        else if (args.Length> 0)
 		{
             if (Directory.Exists(args[0]))
             {
                 pathThe = args[0];
-                if (!pathThe.EndsWith(Path.DirectorySeparatorChar))
-                {
-                    pathThe += Path.DirectorySeparatorChar;
-                }
                 Wild.InitMatchingNames(args.Skip(1), !IsPrintDirOnly);
             }
             else
@@ -57,9 +73,14 @@ public class Program
             }
         }
 
-		if (!Directory.Exists(pathThe))
+        if (!pathThe.EndsWith(Path.DirectorySeparatorChar))
+        {
+            pathThe += Path.DirectorySeparatorChar;
+        }
+
+        if (!Directory.Exists(pathThe))
 		{
-			Helper.WriteLine($"'{pathThe}' is NOT a directory.");
+			Helper.WriteLine($"Dir '{args[0]}' is NOT found.");
 			return false;
 		}
 
