@@ -42,6 +42,7 @@ static public class Sum
                             seed: new InfoSum(Name:
                             string.IsNullOrEmpty(grp.Key) ? "." : grp.Key),
                             func: (acc, it) => acc.AddWith(it)))
+                        .Invoke((seq) => Sort.Sums(seq))
                         .Select((it) =>
                         {
                             it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
@@ -60,6 +61,7 @@ static public class Sum
                             seed: new InfoSum(Name:
                             string.IsNullOrEmpty(grp.Key) ? "*NO-EXT*" : grp.Key),
                             func: (acc, it) => acc.AddWith(it)))
+                        .Invoke((seq) => Sort.Sums(seq))
                         .Select((it) =>
                         {
                             it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
