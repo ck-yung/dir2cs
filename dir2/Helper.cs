@@ -19,12 +19,24 @@ static public partial class Helper
 
     static internal readonly string ExeName;
     static internal readonly string ExeVersion;
+    static internal readonly string ExeCopyRight;
 
     static Helper()
     {
-        var asm = Assembly.GetExecutingAssembly().GetName();
-        ExeName = asm.Name ?? "?";
-        ExeVersion = asm.Version?.ToString() ?? "?";
+        var asm = Assembly.GetExecutingAssembly();
+        var asmName = asm.GetName();
+        ExeName = asmName.Name ?? "?";
+        ExeVersion = asmName.Version?.ToString() ?? "?";
+        var aa = asm.GetCustomAttributes(typeof(AssemblyCopyrightAttribute),
+            inherit: false);
+        if (aa.Length > 0)
+        {
+            ExeCopyRight = ((AssemblyCopyrightAttribute)aa[0]).Copyright;
+        }
+        else
+        {
+            ExeCopyRight = "?";
+        }
     }
 
     static public string GetExeEnvr()
@@ -32,7 +44,8 @@ static public partial class Helper
         return Environment.GetEnvironmentVariable(ExeName) ?? string.Empty;
     }
 
-    static public string GetVersion() => $"{ExeName} v{ExeVersion}";
+    static public string GetVersion() =>
+        $"{ExeName} v{ExeVersion} {ExeCopyRight}";
 
     static public string GetHelpSyntax() => $"""
         Get help by
@@ -49,13 +62,13 @@ static public partial class Helper
         rtn.AppendLine();
         foreach (var parser in MyOptions.Parsers)
         {
-            if (string.IsNullOrEmpty(parser.Name))
+            if (string.IsNullOrEmpty(parser.Help))
             {
-                rtn.Append($"  {parser.Name,28}");
+                rtn.Append($"  {parser.Name,16}");
             }
             else
             {
-                rtn.Append($"  {parser.Name,28}   {parser.Help}");
+                rtn.Append($"  {parser.Name,16}   {parser.Help}");
             }
             rtn.AppendLine();
         }
@@ -66,6 +79,8 @@ static public partial class Helper
     {
         var cntDir = GetDirs(path)
             .Select((it) => System.ToInfoDir(it))
+            .Where((it) => it.IsNotFake())
+            .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
             .Invoke(Sort.Dirs)
             .Select((it) =>
             {
@@ -84,6 +99,7 @@ static public partial class Helper
         return GetFiles(path)
             .Select((it) => System.ToInfoFile(it))
             .Where((it) => it.IsNotFake())
+            .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
             .Invoke(Sort.Files)
             .Invoke((seq) => Sum.Func(seq, path));
     }

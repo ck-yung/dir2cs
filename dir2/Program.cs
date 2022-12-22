@@ -42,12 +42,20 @@ public class Program
         var pathThe = "." + Path.DirectorySeparatorChar;
 		if (args.Length> 0)
 		{
-			pathThe = args[0];
-			if (!pathThe.EndsWith(Path.DirectorySeparatorChar))
-			{
-                pathThe += Path.DirectorySeparatorChar;
-			}
-		}
+            if (Directory.Exists(args[0]))
+            {
+                pathThe = args[0];
+                if (!pathThe.EndsWith(Path.DirectorySeparatorChar))
+                {
+                    pathThe += Path.DirectorySeparatorChar;
+                }
+                Wild.InitMatchingNames(args.Skip(1), !IsPrintDirOnly);
+            }
+            else
+            {
+                Wild.InitMatchingNames(args, !IsPrintDirOnly);
+            }
+        }
 
 		if (!Directory.Exists(pathThe))
 		{
@@ -62,6 +70,7 @@ public class Program
             sumThe = Helper.GetAllFiles(pathThe)
                 .Select((it) => Helper.System.ToInfoFile(it))
                 .Where((it) => it.IsNotFake())
+                .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
                 .Invoke(Sort.Files)
                 .Invoke((seq) => Sum.Func(seq, pathThe));
         }

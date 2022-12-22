@@ -13,6 +13,7 @@ static public partial class MyOptions
     }
 
     static public readonly ImplicitBool ScanSubDir = new SwitchParser(name:"--sub");
+    static public bool IsPrintDirOnly { get; private set; } = false;
 
     static public readonly IInovke<string, InfoSum> PrintDirOption =
         new ParseInvoker<string, InfoSum>(
@@ -43,6 +44,7 @@ static public partial class MyOptions
                             Helper.WriteLine($"{cnt} dir are found.");
                         }
                     };
+                    IsPrintDirOnly = true;
                     parser.SetImplementation(Helper.PrintDir);
                     break;
                 case "off":
