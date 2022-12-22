@@ -30,8 +30,18 @@ static public partial class Helper
             EnumerateFiles = EnumFiles;
         }
 
-        static public Func<string, string> GetFullPath
+        static public string InitPath { get; private set; } = "?";
+        static public int InitPathLength { get; private set; } = 0;
+
+        static public string GetFullPath(string path)
+        {
+            InitPath = _GetFullPath(path);
+            InitPathLength = InitPath.Length;
+            return InitPath;
+        }
+        static public Func<string, string> _GetFullPath
         { get; private set; } = Path.GetFullPath;
+
         static public Func<string, string> GetFileName
         { get; private set; } = Path.GetFileName;
 
@@ -39,7 +49,7 @@ static public partial class Helper
             Func<string,string> GetFullPath,
             Func<string,string> GetFileName)
         {
-            System.GetFullPath= GetFullPath;
+            _GetFullPath= GetFullPath;
             System.GetFileName= GetFileName;
         }
     }

@@ -1,9 +1,20 @@
+using System.Collections.Immutable;
+
 namespace dir2;
 
 static public class Sum
 {
     static public Func<IEnumerable<InfoFile>, string, InfoSum> Func
-    { get; private set; } = (seq, path) => seq.Aggregate(
+    { get; private set; } = (seq, path)
+        => seq
+    .Select((it) =>
+    {
+        Helper.ItemWrite(Show.Size($"{MyOptions.LengthFormat.Invoke(it.Length)} "));
+        Helper.ItemWrite(Show.Date($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} "));
+        Helper.ItemWriteLine(it.FullName.Substring(Helper.System.InitPathLength));
+        return it;
+    })
+    .Aggregate(
         seed: new InfoSum(Helper.GetLastDir(path)),
         func: (acc, it) => acc.AddWith(it));
 
@@ -11,13 +22,53 @@ static public class Sum
         help: "dir | ext",
         resolve: (parser, args) =>
         {
-            var aa = args.Where((it) => it.Length > 0).ToHashSet().Take(2).ToArray();
-            if (aa.Length>1) throw new ArgumentException($"Too many values to {parser.Name}");
+            var aa = args
+            .Where((it) => it.Length > 0)
+            .ToHashSet()
+            .Take(2)
+            .ToArray();
+
+            if (aa.Length>1)
+                throw new ArgumentException(
+                    $"Too many values to {parser.Name}");
             switch (aa[0])
             {
                 case "dir":
+                    Helper.PrintDir = (_) => InfoSum.Fake;
+                    Func = (seq, path) => seq
+                        .GroupBy((it) => Helper.GetFirstDir(Path.GetDirectoryName(
+                            it.FullName.Substring(Helper.System.InitPathLength))))
+                        .Select((grp) => grp.Aggregate(
+                            seed: new InfoSum(Name:
+                            string.IsNullOrEmpty(grp.Key) ? "." : grp.Key),
+                            func: (acc, it) => acc.AddWith(it)))
+                        .Select((it) =>
+                        {
+                            it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
+                            return it;
+                        })
+                        .Aggregate(
+                            seed: new InfoSum(Helper.GetLastDir(path)),
+                            func: (acc, it) => acc.AddWith(it))
+                        ;
                     break;
                 case "ext":
+                    Helper.PrintDir = (_) => InfoSum.Fake;
+                    Func = (seq, path) => seq
+                        .GroupBy((it) => it.Extension.ToLower())
+                        .Select((grp) => grp.Aggregate(
+                            seed: new InfoSum(Name:
+                            string.IsNullOrEmpty(grp.Key) ? "*NO-EXT*" : grp.Key),
+                            func: (acc, it) => acc.AddWith(it)))
+                        .Select((it) =>
+                        {
+                            it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
+                            return it;
+                        })
+                        .Aggregate(
+                            seed: new InfoSum(Helper.GetLastDir(path)),
+                            func: (acc, it) => acc.AddWith(it))
+                        ;
                     break;
                 default:
                     throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");

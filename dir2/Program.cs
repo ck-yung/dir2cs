@@ -61,21 +61,15 @@ public class Program
         {
             sumThe = Helper.GetAllFiles(pathThe)
                 .Select((it) => Helper.System.ToInfoFile(it))
+                .Where((it) => it.IsNotFake())
                 .Invoke(Sort.Files)
-                .Select((it) =>
-                {
-                    Helper.ItemWrite(Show.Size($"{LengthFormat.Invoke(it.Length)} "));
-                    Helper.ItemWrite(Show.Date($"{DateFormat.Invoke(it.LastWriteTime)} "));
-                    Helper.ItemWriteLine(it.FullName.Substring(pathThe.Length));
-                    return it;
-                })
                 .Invoke((seq) => Sum.Func(seq, pathThe));
         }
         else
         {
             sumThe = PrintDirOption.Invoke(pathThe);
         }
-        Helper.PrintInfoSum(sumThe);
+        Helper.PrintInfoTotal(sumThe);
 
         return true;
 	}

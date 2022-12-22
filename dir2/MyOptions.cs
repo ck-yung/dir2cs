@@ -31,7 +31,7 @@ static public partial class MyOptions
                 case "both": // default value
                     break;
                 case "only":
-                    Helper.impPrintSum = InfoSum.DoNothing;
+                    Helper.impPrintInfoTotal = InfoSum.DoNothing;
                     Helper.impPrintDirCount = (cnt) =>
                     {
                         if (cnt==0)
@@ -114,7 +114,7 @@ static public partial class MyOptions
             switch (aa[0])
             {
                 case "off":
-                    Helper.impPrintSum = (_) => { };
+                    Helper.impPrintInfoTotal = (_) => { };
                     Helper.impPrintDirCount = (_) => { };
                     break;
                 case "only":
@@ -137,10 +137,10 @@ static public partial class MyOptions
                         }
                     };
 
-                    if (InfoSum.IsNothing(Helper.impPrintSum))
+                    if (InfoSum.IsNothing(Helper.impPrintInfoTotal))
                     {
-                        Helper.impPrintSum =
-                            (arg) => Helper.PrintFileSumFlag(arg, printEvenCountOne: true);
+                        Helper.impPrintInfoTotal =
+                            (arg) => Helper.PrintIntoTotalWithFlag(arg, printEvenCountOne: true);
                     }
                     break;
                 default:

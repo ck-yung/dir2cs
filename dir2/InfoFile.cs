@@ -78,6 +78,15 @@ public class InfoSum
         if (EndTime < other.EndTime) EndTime= other.EndTime;
         return this;
     }
+
+    public void Print(Action<string> write, Action<string> writeLine)
+    {
+        write(Show.Size($"{MyOptions.LengthFormat.Invoke(Length)} "));
+        write(Show.Date($"{MyOptions.DateFormat.Invoke(StartTime)} "));
+        write(Show.Date($"{MyOptions.DateFormat.Invoke(EndTime)} "));
+        write(Show.Count($"{Count,4} "));
+        writeLine(Name);
+    }
 }
 
 static public partial class Helper

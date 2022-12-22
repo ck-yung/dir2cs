@@ -62,7 +62,7 @@ static public partial class Helper
         return rtn.ToString();
     }
 
-    static internal InfoSum PrintDir(string path)
+    static internal Func<string, InfoSum> PrintDir { get; set; } = (path) =>
     {
         var cntDir = GetDirs(path)
             .Select((it) => System.ToInfoDir(it))
@@ -77,20 +77,14 @@ static public partial class Helper
             .Count();
         PrintDirCount(cntDir);
         return InfoSum.Fake;
-    }
+    };
 
     static internal InfoSum PrintFile(string path)
     {
         return GetFiles(path)
             .Select((it) => System.ToInfoFile(it))
+            .Where((it) => it.IsNotFake())
             .Invoke(Sort.Files)
-            .Select((it) =>
-            {
-                ItemWrite(Show.Size($"{MyOptions.LengthFormat.Invoke(it.Length)} "));
-                ItemWrite(Show.Date($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} "));
-                ItemWriteLine(it.Name);
-                return it;
-            })
             .Invoke((seq) => Sum.Func(seq, path));
     }
 
@@ -108,7 +102,7 @@ static public partial class Helper
         impPrintDirCount(count);
     }
 
-    static internal void PrintFileSumFlag(InfoSum sum, bool printEvenCountOne)
+    static internal void PrintIntoTotalWithFlag(InfoSum sum, bool printEvenCountOne)
     {
         switch (sum.Count)
         {
@@ -124,26 +118,29 @@ static public partial class Helper
                 }
                 break;
             default:
-                Write(Show.Size($"{MyOptions.LengthFormat.Invoke(sum.Length)} "));
-                Write(Show.Date($"{MyOptions.DateFormat.Invoke(sum.StartTime)} "));
-                Write(Show.Date($"{MyOptions.DateFormat.Invoke(sum.EndTime)} "));
-                Write(Show.Count($"{sum.Count,4} "));
-                WriteLine(sum.Name);
+                sum.Print(Write, WriteLine);
                 break;
         }
     }
 
-    static internal Action<InfoSum> impPrintSum { get; set; }
-        = (arg) => PrintFileSumFlag(arg, printEvenCountOne: false);
+    static internal Action<InfoSum> impPrintInfoTotal { get; set; }
+        = (arg) => PrintIntoTotalWithFlag(arg, printEvenCountOne: false);
 
-    static internal void PrintInfoSum(InfoSum arg)
+    static internal void PrintInfoTotal(InfoSum arg)
     {
-        impPrintSum(arg);
+        impPrintInfoTotal(arg);
     }
 
-    static internal string GetLastDir(string arg)
+    static internal string GetFirstDir(string path)
     {
-        return arg
+        var rtn = path.Split(Path.DirectorySeparatorChar)
+            .Take(2).FirstOrDefault();
+        return string.IsNullOrEmpty(rtn) ? "." : rtn;
+    }
+
+    static internal string GetLastDir(string path)
+    {
+        return path
             .TrimEnd(Path.DirectorySeparatorChar)
             .Split(Path.DirectorySeparatorChar)
             .AsEnumerable()
