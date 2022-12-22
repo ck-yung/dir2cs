@@ -11,6 +11,12 @@ static public partial class Helper
         return func(seq);
     }
 
+    static public R Invoke<T, R>(this IEnumerable<T> seq,
+        Func<IEnumerable<T>, R> func)
+    {
+        return func(seq);
+    }
+
     static internal readonly string ExeName;
     static internal readonly string ExeVersion;
 
@@ -85,8 +91,7 @@ static public partial class Helper
                 ItemWriteLine(it.Name);
                 return it;
             })
-            .Aggregate(seed: new InfoSum(Helper.GetLastDir(path)),
-            func: (acc, it) => acc.Add(it));
+            .Invoke((seq) => Sum.Func(seq, path));
     }
 
     static internal Action<string> ItemWrite { get; set; } = Write;

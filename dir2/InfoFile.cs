@@ -61,14 +61,21 @@ public class InfoSum
         return !Object.ReferenceEquals(Fake, this);
     }
 
-    public InfoSum Add(InfoFile other)
+    public InfoSum AddWith(InfoFile other)
     {
         Count += 1;
         Length += other.Length;
-        if (StartTime > other.LastWriteTime)
-            StartTime = other.LastWriteTime;
-        if (EndTime < other.LastWriteTime)
-            EndTime = other.LastWriteTime;
+        if (StartTime > other.LastWriteTime) StartTime = other.LastWriteTime;
+        if (EndTime < other.LastWriteTime) EndTime = other.LastWriteTime;
+        return this;
+    }
+
+    public InfoSum AddWith(InfoSum other)
+    {
+        Count += other.Count;
+        Length += other.Length;
+        if (StartTime > other.StartTime) StartTime = other.StartTime;
+        if (EndTime < other.EndTime) EndTime= other.EndTime;
         return this;
     }
 }

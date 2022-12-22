@@ -156,6 +156,7 @@ static public partial class MyOptions
         (IParse) DateFormat,
         Sort.Options,
         Show.Options,
+        Sum.Options,
         TotalOption,
     };
 }

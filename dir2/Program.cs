@@ -17,7 +17,7 @@ public class Program
             }
             else
             {
-                Console.WriteLine($"Exception: {ee.Message}");
+                Console.WriteLine($"{ee.GetType()}: {ee.Message}");
             }
         }
     }
@@ -69,8 +69,7 @@ public class Program
                     Helper.ItemWriteLine(it.FullName.Substring(pathThe.Length));
                     return it;
                 })
-                .Aggregate(seed: new InfoSum(Helper.GetLastDir(pathThe)),
-                func: (acc, it) => acc.Add(it));
+                .Invoke((seq) => Sum.Func(seq, pathThe));
         }
         else
         {
