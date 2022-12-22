@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using static dir2.MyOptions;
-
 namespace dir2;
 
 static public partial class MyOptions
@@ -158,6 +155,7 @@ static public partial class MyOptions
         (IParse) LengthFormat,
         (IParse) DateFormat,
         Sort.Options,
+        Show.Options,
         TotalOption,
     };
 }

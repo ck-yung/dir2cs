@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 
 namespace dir2;
@@ -65,7 +64,7 @@ static public partial class Helper
             .Select((it) =>
             {
                 ItemWrite("DIR ");
-                ItemWrite($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} ");
+                ItemWrite(Show.Date($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} "));
                 ItemWriteLine(it.Name);
                 return it;
             })
@@ -81,8 +80,8 @@ static public partial class Helper
             .Invoke(Sort.Files)
             .Select((it) =>
             {
-                ItemWrite($"{MyOptions.LengthFormat.Invoke(it.Length)} ");
-                ItemWrite($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} ");
+                ItemWrite(Show.Size($"{MyOptions.LengthFormat.Invoke(it.Length)} "));
+                ItemWrite(Show.Date($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} "));
                 ItemWriteLine(it.Name);
                 return it;
             })
@@ -115,15 +114,15 @@ static public partial class Helper
                 if (printEvenCountOne)
                 {
                     Write("One file is found: ");
-                    Write($"{MyOptions.LengthFormat.Invoke(sum.Length)} ");
-                    WriteLine($"{MyOptions.DateFormat.Invoke(sum.StartTime)}");
+                    Write(Show.Size($"{MyOptions.LengthFormat.Invoke(sum.Length)} "));
+                    WriteLine(Show.Date($"{MyOptions.DateFormat.Invoke(sum.StartTime)}"));
                 }
                 break;
             default:
-                Write($"{MyOptions.LengthFormat.Invoke(sum.Length)} ");
-                Write($"{MyOptions.DateFormat.Invoke(sum.StartTime)} ");
-                Write($"{MyOptions.DateFormat.Invoke(sum.EndTime)} ");
-                Write($"{sum.Count,4} ");
+                Write(Show.Size($"{MyOptions.LengthFormat.Invoke(sum.Length)} "));
+                Write(Show.Date($"{MyOptions.DateFormat.Invoke(sum.StartTime)} "));
+                Write(Show.Date($"{MyOptions.DateFormat.Invoke(sum.EndTime)} "));
+                Write(Show.Count($"{sum.Count,4} "));
                 WriteLine(sum.Name);
                 break;
         }
