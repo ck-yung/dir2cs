@@ -52,7 +52,8 @@ public class Program
                 {
                     throw new ArgumentException($"Dir '{args[0]}' is NOT found.");
                 }
-                // TODO: PrintDirOnly
+
+                PrintDirTurn(both: false);
                 var path2 = Path.GetDirectoryName(args[0]);
                 pathThe = string.IsNullOrEmpty(path2) ? "." : path2;
                 Wild.InitMatchingNames(
@@ -69,6 +70,7 @@ public class Program
             }
             else
             {
+                PrintDirTurn(both: false);
                 Wild.InitMatchingNames(args, !IsPrintDirOnly);
             }
         }

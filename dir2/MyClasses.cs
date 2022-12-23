@@ -102,7 +102,7 @@ static public partial class MyOptions
         }
     }
 
-    private class ParseInvoker<T, R> : Parser, IInovke<T, R>
+    internal class ParseInvoker<T, R> : Parser, IInovke<T, R>
     {
         protected Func<T, R> imp { get; private set; }
         public ParseInvoker(string name, Func<T, R> @init,
@@ -127,6 +127,20 @@ static public partial class MyOptions
                 return true;
             }
             return false;
+        }
+    }
+
+    internal class ParseInvokerWithGet<T, R> : ParseInvoker<T, R>
+    {
+        public ParseInvokerWithGet(string name, Func<T, R> init,
+            Action<ParseInvoker<T, R>, IEnumerable<string>> resolve,
+            string help = "") : base(name, init, resolve, help)
+        {
+        }
+
+        public Func<T, R> GetInvoke()
+        {
+            return imp;
         }
     }
 }

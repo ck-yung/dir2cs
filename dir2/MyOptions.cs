@@ -13,10 +13,31 @@ static public partial class MyOptions
     }
 
     static public readonly ImplicitBool ScanSubDir = new SwitchParser(name:"--sub");
+
     static public bool IsPrintDirOnly { get; private set; } = false;
+    static public void PrintDirTurn(bool both)
+    {
+        var a2 = (ParseInvokerWithGet<string, InfoSum>)PrintDirOption;
+        if (both)
+        {
+            a2.SetImplementation((path) =>
+            {
+                Helper.PrintDir(path);
+                return Helper.PrintFile(path);
+            });
+        }
+        else
+        {
+            var a3 = a2.GetInvoke();
+            if ((a3 != Helper.PrintDir) && (a3!= Helper.PrintFile))
+            {
+                a2.SetImplementation(Helper.PrintFile);
+            }
+        }
+    }
 
     static public readonly IInovke<string, InfoSum> PrintDirOption =
-        new ParseInvoker<string, InfoSum>(
+        new ParseInvokerWithGet<string, InfoSum>(
         name: "--dir", help: "both | only | off",
         init: (path) =>
         {
