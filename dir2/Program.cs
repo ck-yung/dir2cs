@@ -40,6 +40,7 @@ public class Program
         var args = Parse(mainArgs);
 
         var pathThe = "." + Path.DirectorySeparatorChar;
+
         if (args.Length == 1)
         {
             if (Directory.Exists(args[0]))
@@ -63,6 +64,18 @@ public class Program
         }
         else if (args.Length> 0)
 		{
+            PrintDirTurn(both: false);
+            if (args.Where((it) => it.Contains(Path.DirectorySeparatorChar)).Any())
+            {
+                Helper.WriteLine($"""
+                    Syntax: {Helper.ExeName} DIR{Path.DirectorySeparatorChar}WILD [OPTION ..]
+                    Syntax: {Helper.ExeName} WILD [WILD ..] [OPTION ..]
+
+                    But WILD cannot contain '{Path.DirectorySeparatorChar}'
+                    """);
+                return false;
+            }
+
             if (Directory.Exists(args[0]))
             {
                 pathThe = args[0];
