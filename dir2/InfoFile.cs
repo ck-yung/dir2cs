@@ -91,7 +91,7 @@ public class InfoSum
 
 static public partial class Helper
 {
-    static public partial class System
+    static public partial class Sys
     {
         static public Func<string, InfoDir> ToInfoDir
         { get; private set; } = toInfoDir;
@@ -103,8 +103,8 @@ static public partial class Helper
             Func<string, InfoDir> ToInfoDir,
             Func<string, InfoFile> ToInfoFile)
         {
-            System.ToInfoDir = ToInfoDir;
-            System.ToInfoFile = ToInfoFile;
+            Sys.ToInfoDir = ToInfoDir;
+            Sys.ToInfoFile = ToInfoFile;
         }
     }
 

@@ -110,16 +110,34 @@ public class Program
 			return false;
 		}
 
-        pathThe = Helper.System.GetFullPath(pathThe);
-        InfoSum sumThe;
+        pathThe = Helper.Sys.GetFullPath(pathThe);
+        InfoSum sumThe = InfoSum.Fake;
         if (ScanSubDir)
         {
-            sumThe = Helper.GetAllFiles(pathThe)
-                .Select((it) => Helper.System.ToInfoFile(it))
-                .Where((it) => it.IsNotFake())
-                .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
-                .Invoke(Sort.Files)
-                .Invoke((seq) => Sum.Func(seq, pathThe));
+            if (IsPrintDirOnly)
+            {
+                var cntDir = Helper.GetAllDirs(pathThe)
+                    .Select((it) => Helper.Sys.ToInfoDir(it))
+                    .Where((it) => it.IsNotFake())
+                    .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
+                    .Invoke(Sort.Dirs)
+                    .Select((it) =>
+                    {
+                        Helper.ItemWriteLine(Helper.Sys.GetRelativeName(it.FullName));
+                        return it;
+                    })
+                    .Count();
+                Helper.PrintDirCount(cntDir);
+            }
+            else
+            {
+                sumThe = Helper.GetAllFiles(pathThe)
+                    .Select((it) => Helper.Sys.ToInfoFile(it))
+                    .Where((it) => it.IsNotFake())
+                    .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
+                    .Invoke(Sort.Files)
+                    .Invoke((seq) => Sum.Func(seq, pathThe));
+            }
         }
         else
         {

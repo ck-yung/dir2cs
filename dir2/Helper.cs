@@ -78,7 +78,7 @@ static public partial class Helper
     static internal Func<string, InfoSum> PrintDir { get; set; } = (path) =>
     {
         var cntDir = GetDirs(path)
-            .Select((it) => System.ToInfoDir(it))
+            .Select((it) => Sys.ToInfoDir(it))
             .Where((it) => it.IsNotFake())
             .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
             .Invoke(Sort.Dirs)
@@ -97,7 +97,7 @@ static public partial class Helper
     static internal InfoSum PrintFile(string path)
     {
         return GetFiles(path)
-            .Select((it) => System.ToInfoFile(it))
+            .Select((it) => Sys.ToInfoFile(it))
             .Where((it) => it.IsNotFake())
             .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
             .Invoke(Sort.Files)
@@ -144,7 +144,7 @@ static public partial class Helper
 
     static internal void PrintInfoTotal(InfoSum arg)
     {
-        impPrintInfoTotal(arg);
+        if (arg.IsNotFake()) impPrintInfoTotal(arg);
     }
 
     static internal string GetFirstDir(string path)
