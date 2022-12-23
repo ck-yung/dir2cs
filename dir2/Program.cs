@@ -1,4 +1,5 @@
-﻿using static dir2.MyOptions;
+﻿using System.Collections.Immutable;
+using static dir2.MyOptions;
 
 namespace dir2;
 public class Program
@@ -67,13 +68,23 @@ public class Program
             PrintDirTurn(both: false);
             if (args.Where((it) => it.Contains(Path.DirectorySeparatorChar)).Any())
             {
-                Helper.WriteLine($"""
+                var bb = args
+                    .GroupBy((it) => Path.GetDirectoryName(it))
+                    .ToImmutableDictionary((grp)=>grp.Key, (grp)=>grp.ToArray());
+                if (bb.Count>1)
+                {
+                    Helper.WriteLine($"""
                     Syntax: {Helper.ExeName} DIR{Path.DirectorySeparatorChar}WILD [OPTION ..]
+                    
                     Syntax: {Helper.ExeName} WILD [WILD ..] [OPTION ..]
-
-                    But WILD cannot contain '{Path.DirectorySeparatorChar}'
+                    where all WILD have same directory.
                     """);
-                return false;
+                    return false;
+                }
+
+                var cc = new List<string>() { bb.Keys.First() };
+                cc.AddRange(args.Select((it) => Path.GetFileName(it)));
+                args = cc.ToArray();
             }
 
             if (Directory.Exists(args[0]))

@@ -8,7 +8,7 @@ static public partial class MyOptions
             seed: args.Select((it) => (false, it)),
             func: (acc, it) => it.Parse(acc))
             .Select((it) => it.Item2);
-        if (rtn.Any()) return rtn.ToArray();
+        if (rtn.Any()) return rtn.Where((it) => it.Length>0).ToArray();
         return Array.Empty<string>();
     }
 
@@ -128,7 +128,7 @@ static public partial class MyOptions
                 parser.SetImplementation(rtn);
             });
 
-    static public readonly IParse TotalOption = new MyOptions.SimpleParser(name: "--total",
+    static public readonly IParse TotalOption = new SimpleParser(name: "--total",
         help: "off | only", resolve: (parser, args) =>
         {
             var aa = args.Where((it) => it.Length > 0).ToHashSet().ToArray();
