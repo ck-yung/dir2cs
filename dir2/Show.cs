@@ -15,7 +15,7 @@ static internal class Show
         help: "date  size  count",
         resolve: (parser, args) =>
         {
-            foreach (var arg in args.Where((it) => it.Length > 0).ToHashSet())
+            foreach (var arg in args.Where((it) => it.Length > 0).Distinct())
             {
                 switch (arg)
                 {

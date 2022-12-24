@@ -24,7 +24,7 @@ static public class Sum
         {
             var aa = args
             .Where((it) => it.Length > 0)
-            .ToHashSet()
+            .Distinct()
             .Take(2)
             .ToArray();
 

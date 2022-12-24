@@ -117,8 +117,8 @@ static public partial class Helper
 
     static internal Action<int> impPrintDirCount { get; set; } = (cntDir) =>
     {
-        if (cntDir>1) WriteLine($"{cntDir} dir are found.");
-        WriteLine("");
+        if (cntDir > 1) WriteLine($"{cntDir} dir are found.");
+        if (cntDir > 0) WriteLine("");
     };
 
     static internal void PrintDirCount(int count)

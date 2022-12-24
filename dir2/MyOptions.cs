@@ -39,7 +39,7 @@ static public partial class MyOptions
             return Helper.GetFiles(path);
         }, resolve: (parser, args) =>
         {
-            var aa = args.Where((it)=>it.Length>0).ToHashSet().ToArray();
+            var aa = args.Where((it)=>it.Length>0).Distinct().Take(2).ToArray();
             if (aa.Length > 1)
                 throw new ArgumentException($"Too many values to {parser.Name}");
             switch (aa[0])
@@ -94,7 +94,7 @@ static public partial class MyOptions
             help: "short | long | comma | eight",
             init: (value) => $"{value,8}", resolve: (parser, args) =>
             {
-                var aa = args.Where((it) => it.Length > 0).ToHashSet().ToArray();
+                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
                 if (aa.Length > 1)
                     throw new ArgumentException($"Too many values to {parser.Name}");
                 switch (aa[0])
@@ -122,7 +122,7 @@ static public partial class MyOptions
             init: (value) => $"{value:yyyy-MM-dd HH:mm:ss}",
             resolve: (parser, args) =>
             {
-                var aa = args.Where((it) => it.Length > 0).ToHashSet().ToArray();
+                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
                 if (aa.Length > 1)
                     throw new ArgumentException($"Too many values to {parser.Name}");
                 Func<DateTime, string> rtn = (value) => value.ToString(aa[0]);
@@ -133,7 +133,7 @@ static public partial class MyOptions
     static public readonly IParse TotalOption = new SimpleParser(name: "--total",
         help: "off | only", resolve: (parser, args) =>
         {
-            var aa = args.Where((it) => it.Length > 0).ToHashSet().ToArray();
+            var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
             if (aa.Length > 1)
                 throw new ArgumentException($"Too many values to {parser.Name}");
             switch (aa[0])

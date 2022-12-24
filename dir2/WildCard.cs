@@ -43,7 +43,7 @@ static public class Wild
     {
         var matchFuncs = names
             .Where((it) => it.Length>0)
-            .ToHashSet()
+            .Distinct()
             .Select((it) => ToWildMatch(it))
             .ToArray();
         if (matchFuncs.Length > 0)

@@ -16,9 +16,9 @@ static public class Sort
     static (Func<IEnumerable<InfoDir>, IEnumerable<InfoDir>>,
         Func<IEnumerable<InfoFile>, IEnumerable<InfoFile>>,
         Func<IEnumerable<InfoSum>, IEnumerable<InfoSum>>)
-        makeException(string badValue, string name)
+        unknownValues(string name, string bad1, string bad2)
     {
-        throw new ArgumentException($"Bad values ('{badValue}', ..) to {name}");
+        throw new ArgumentException($"Value pair ({bad1},{bad2}) is UNKNOWN to {name}.");
     }
 
     static public readonly IParse Options = new SimpleParser(name: "--sort",
@@ -29,8 +29,7 @@ static public class Sort
             .Select((it) => it.Split(':', ',', ';'))
             .SelectMany((it) => it)
             .Where((it) => it.Length > 0)
-            .Distinct()
-            .ToArray();
+            .Distinct().Take(3).ToArray();
 
             if ((aa.Length > 0) && aa[0] == "name")
             {
@@ -197,7 +196,7 @@ static public class Sort
                     (seq2) => seq2.OrderBy((it) => it.LastWriteTime),
                     (seq3) => seq3.OrderBy((it) => it.EndTime).ThenBy((it) => it.StartTime)),
 
-                    _ => makeException(aa[0], name: parser.Name)
+                    _ => unknownValues(name: parser.Name, aa[0], aa[1])
                 };
             }
             else
