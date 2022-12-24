@@ -93,6 +93,7 @@ static public partial class Helper
             .Select((it) => io.ToInfoDir(it))
             .Where((it) => it.IsNotFake())
             .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
+            .Where((it) => (false == Wild.ExcludeDirName.Invoke(it.Name)))
             .Invoke(Sort.Dirs)
             .Select((it) =>
             {
@@ -112,7 +113,7 @@ static public partial class Helper
             .Select((it) => io.ToInfoFile(it))
             .Where((it) => it.IsNotFake())
             .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
-            .Where((it) => (false == Wild.ExcludeFileOption.Invoke(it.Name)))
+            .Where((it) => (false == Wild.ExcludeFileName.Invoke(it.Name)))
             .Invoke(Sort.Files)
             .Invoke((seq) => Sum.Func(seq, path));
     }

@@ -60,7 +60,7 @@ static public class Wild
         }
     }
 
-    static public readonly IInovke<string, bool> ExcludeFileOption =
+    static public readonly IInovke<string, bool> ExcludeFileName =
         new ParseInvoker<string, bool>("--excl", help: "FILE[;FILE ..]",
             init: Helper.Never,
             resolve: (parser, args) =>
@@ -69,6 +69,21 @@ static public class Wild
                 .Select((it) => it.Split(':',';'))
                 .SelectMany((it) => it)
                 .Where((it) => it.Length>0)
+                .Distinct()
+                .Select((it) => ToWildMatch(it))
+                .ToArray();
+                parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
+            });
+
+    static public readonly IInovke<string, bool> ExcludeDirName =
+        new ParseInvoker<string, bool>("--excl-dir", help: "DIR[;DIR ..]",
+            init: Helper.Never,
+            resolve: (parser, args) =>
+            {
+                var checkFuncs = args
+                .Select((it) => it.Split(':', ';'))
+                .SelectMany((it) => it)
+                .Where((it) => it.Length > 0)
                 .Distinct()
                 .Select((it) => ToWildMatch(it))
                 .ToArray();

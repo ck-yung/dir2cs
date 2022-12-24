@@ -121,13 +121,9 @@ static public partial class Helper
         {
             var currentDirname = SafeGetCurrent(enumDir);
             if (string.IsNullOrEmpty(currentDirname)) continue;
-            // TODO >>>
-            //if (Opts.ExclDirnameFilter.Func(
-            //    Path.GetFileName(currentDirname))) continue;
-            var dirnameThe = Helper.io.GetFileName(currentDirname);
+            var dirnameThe = io.GetFileName(currentDirname);
             if (string.IsNullOrEmpty(dirnameThe)) continue;
-            if (dirnameThe[0] == '.') continue;
-            // TODO <<<
+            if (Wild.ExcludeDirName.Invoke(dirnameThe)) continue;
             foreach (var pathThe in GetAllFiles(currentDirname))
             {
                 yield return pathThe;
