@@ -84,6 +84,16 @@ static public partial class Helper
             }
             rtn.AppendLine();
         }
+        rtn.AppendLine("SHORTCUT:");
+        foreach (var kvThe in MyOptions.ShortcutOptions
+            .OrderBy((it) => it.Key))
+        {
+            var textThe = new StringBuilder($"  {kvThe.Key}  ");
+            var text2The = string.Join(" ", kvThe.Value.Item2);
+            textThe.Append($"{text2The,-12}  {kvThe.Value.Item1}");
+            rtn.AppendLine(textThe.ToString());
+        }
+        rtn.AppendLine();
         return rtn.ToString();
     }
 

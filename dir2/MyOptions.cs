@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace dir2;
 
 static public partial class MyOptions
@@ -186,4 +188,56 @@ static public partial class MyOptions
         Sum.Options,
         TotalOption,
     };
+
+    static public IEnumerable<string> ExpandFromShortCut(IEnumerable<string> args)
+    {
+        IEnumerable<string> ExpandCombiningShortCut()
+        {
+            var it = args.GetEnumerator();
+            while (it.MoveNext())
+            {
+                var current = it.Current;
+                if (current.StartsWith("--"))
+                {
+                    yield return current;
+                }
+                else if (current.Length < 3 || current[0] != '-')
+                {
+                    yield return current;
+                }
+                else
+                {
+                    foreach (var chThe in current.Substring(1))
+                    {
+                        yield return $"-{chThe}";
+                    }
+                }
+            }
+        }
+
+        var it2 = ExpandCombiningShortCut().GetEnumerator();
+        while (it2.MoveNext())
+        {
+            var current = it2.Current;
+            if (ShortcutOptions.TryGetValue(current, out (string, string[]) found))
+            {
+                foreach (var opt in found.Item2)
+                    yield return opt;
+            }
+            else
+            {
+                yield return current;
+            }
+        }
+    }
+
+    static internal ImmutableDictionary<string, (string, string[])> ShortcutOptions
+        = new Dictionary<string, (string, string[])>
+        {
+            ["-s"] = ("Scan sub dir", new[] { "--sub" }),
+            ["-f"] = ("File only", new[] { "--dir", "off" }),
+            ["-d"] = ("Dir only", new[] { "--dir", "only" }),
+            ["-x"] = ("Excluding file name", new[] { "--excl" }),
+            ["-X"] = ("Excluding dir name", new[] { "--excl-dir" }),
+        }.ToImmutableDictionary();
 }

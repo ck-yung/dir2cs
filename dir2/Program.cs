@@ -38,7 +38,7 @@ public class Program
             return false;
         }
 
-        var args = Parse(mainArgs);
+        var args = Parse(ExpandFromShortCut(mainArgs));
 
         var pathThe = "." + Path.DirectorySeparatorChar;
 
