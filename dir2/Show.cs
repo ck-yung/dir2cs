@@ -6,6 +6,8 @@ static internal class Show
 {
     static readonly Func<string, string> itself = (arg) => arg;
     static readonly Func<string, string> blank = (arg) => string.Empty;
+    static public Func<string, string> GetDirName
+    { get; private set; } = itself;
 
     static public Func<string, string> Date { get; private set; } = itself;
     static public Func<string, string> Size { get; private set; } = itself;
@@ -15,7 +17,7 @@ static internal class Show
         help: "date  size  count",
         resolve: (parser, args) =>
         {
-            foreach (var arg in args.Where((it) => it.Length > 0).Distinct())
+            foreach (var arg in Helper.CommonSplit(args))
             {
                 switch (arg)
                 {
@@ -24,6 +26,7 @@ static internal class Show
                         break;
                     case "size":
                         Size = blank;
+                        GetDirName = (arg) => arg + Path.DirectorySeparatorChar;
                         break;
                     case "count":
                         Count = blank;

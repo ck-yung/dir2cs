@@ -29,6 +29,12 @@ static public partial class Helper
     /// </summary>
     static public bool Never<T>(T _) { return false; }
 
+    static public IEnumerable<string> CommonSplit(IEnumerable<string> args) => args
+        .Select((it) => it.Split(';', ':', ','))
+        .SelectMany((it) => it)
+        .Where((it) => it.Length > 0)
+        .Distinct();
+
     static internal readonly string ExeName;
     static internal readonly string ExeVersion;
     static internal readonly string ExeCopyRight;
@@ -93,7 +99,6 @@ static public partial class Helper
             textThe.Append($"{text2The,-12}  {kvThe.Value.Item1}");
             rtn.AppendLine(textThe.ToString());
         }
-        rtn.AppendLine();
         return rtn.ToString();
     }
 
@@ -107,9 +112,9 @@ static public partial class Helper
             .Invoke(Sort.Dirs)
             .Select((it) =>
             {
-                ItemWrite("DIR ");
+                ItemWrite(Show.Size("DIR "));
                 ItemWrite(Show.Date($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} "));
-                ItemWriteLine(it.Name);
+                ItemWriteLine(Show.GetDirName(io.GetRelativeName(it.FullName)));
                 return it;
             })
             .Count();

@@ -39,24 +39,22 @@ static public class Wild
     static public Func<string, bool> CheckIfDirNameMatched
     { get; private set; } = Always<string>.True;
 
-    static public void InitMatchingNames(IEnumerable<string> names,
-        bool checkingFilename = true)
+    static public void InitMatchingNames(IEnumerable<string> names)
     {
+        var a2 = PrintDirOpt != PrintDir.Only;
         var matchFuncs = names
             .Where((it) => it.Length>0)
             .Distinct()
             .Select((it) => ToWildMatch(it))
             .ToArray();
-        if (matchFuncs.Length > 0)
+        if (matchFuncs.Length == 0) return;
+        if (PrintDirOpt != PrintDir.Only)
         {
-            if (checkingFilename)
-            {
-                CheckIfFileNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
-            }
-            else
-            {
-                CheckIfDirNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
-            }
+            CheckIfFileNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
+        }
+        else
+        {
+            CheckIfDirNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
         }
     }
 
@@ -65,11 +63,7 @@ static public class Wild
             init: Helper.Never,
             resolve: (parser, args) =>
             {
-                var checkFuncs = args
-                .Select((it) => it.Split(':',';'))
-                .SelectMany((it) => it)
-                .Where((it) => it.Length>0)
-                .Distinct()
+                var checkFuncs = Helper.CommonSplit(args)
                 .Select((it) => ToWildMatch(it))
                 .ToArray();
                 parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
@@ -80,11 +74,7 @@ static public class Wild
             init: Helper.Never,
             resolve: (parser, args) =>
             {
-                var checkFuncs = args
-                .Select((it) => it.Split(':', ';'))
-                .SelectMany((it) => it)
-                .Where((it) => it.Length > 0)
-                .Distinct()
+                var checkFuncs = Helper.CommonSplit(args)
                 .Select((it) => ToWildMatch(it))
                 .ToArray();
                 parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));

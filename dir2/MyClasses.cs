@@ -6,7 +6,7 @@ static public partial class MyOptions
     /// <summary>
     /// Implicit boolean, default false
     /// </summary>
-    private class SwitchParser : ImplicitBool, IParse
+    internal class SwitchParser : ImplicitBool, IParse
     {
         public string Name { get; init; }
 

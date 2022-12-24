@@ -1,3 +1,5 @@
+using static dir2.MyOptions;
+
 namespace dir2;
 
 static public partial class Helper
@@ -38,9 +40,18 @@ static public partial class Helper
         {
             InitPath = _GetFullPath(path);
             var lenThe = InitPath.Length;
+            if (KeepDirOpt && (lenThe > path.Length))
+            {
+                lenThe -= path.Length;
+            }
+
             GetRelativeName = (arg) => arg.Substring(lenThe);
             return InitPath;
         }
+
+        static public readonly ImplicitBool KeepDirOpt =
+            new SwitchParser(name: "--keep-dir");
+
         static public Func<string, string> _GetFullPath
         { get; private set; } = Path.GetFullPath;
 
@@ -133,8 +144,15 @@ static public partial class Helper
 
     static public IEnumerable<string> GetAllDirs(string path)
     {
+        var dirThe = io.GetFileName(path);
+        if (Wild.ExcludeDirName.Invoke(dirThe))
+        {
+            yield break;
+        }
+
         var enumDir = SafeGetDirectoryEnumerator(path);
-        if (enumDir!=Helper.EmptyEnumStrings)
+
+        if (enumDir != EmptyEnumStrings)
         {
             yield return path;
         }
@@ -143,13 +161,8 @@ static public partial class Helper
         {
             var currentDirname = SafeGetCurrent(enumDir);
             if (string.IsNullOrEmpty(currentDirname)) continue;
-            // TODO >>>
-            //if (Opts.ExclDirnameFilter.Func(
-            //    Path.GetFileName(currentDirname))) continue;
-            var dirnameThe = Helper.io.GetFileName(currentDirname);
+            var dirnameThe = io.GetFileName(currentDirname);
             if (string.IsNullOrEmpty(dirnameThe)) continue;
-            if (dirnameThe[0] == '.') continue;
-            // TODO <<<
             foreach (var pathThe in GetAllDirs(currentDirname))
             {
                 yield return pathThe;

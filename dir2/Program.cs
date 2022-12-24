@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using static dir2.MyOptions;
+using static dir2.Helper;
 
 namespace dir2;
 public class Program
@@ -27,14 +28,14 @@ public class Program
 	{
 		if (mainArgs.Contains("--version"))
 		{
-			Helper.WriteLine(Helper.GetVersion());
+			WriteLine(GetVersion());
 			return false;
 		}
 
         if (mainArgs.Contains("--help") ||
             mainArgs.Contains("-?"))
         {
-            Helper.WriteLine(Helper.GetSyntax());
+            Write(GetSyntax());
             return false;
         }
 
@@ -59,8 +60,7 @@ public class Program
                 var path2 = Path.GetDirectoryName(args[0]);
                 pathThe = string.IsNullOrEmpty(path2) ? "." : path2;
                 Wild.InitMatchingNames(
-                    new string[] { Path.GetFileName(args[0])},
-                    checkingFilename: PrintDirOpt != PrintDir.Only);
+                    new string[] { Path.GetFileName(args[0])});
             }
         }
         else if (args.Length> 0)
@@ -73,10 +73,10 @@ public class Program
                     .ToImmutableDictionary((grp)=>grp.Key, (grp)=>grp.ToArray());
                 if (bb.Count>1)
                 {
-                    Helper.WriteLine($"""
-                    Syntax: {Helper.ExeName} DIR{Path.DirectorySeparatorChar}WILD [OPTION ..]
+                    WriteLine($"""
+                    Syntax: {ExeName} DIR{Path.DirectorySeparatorChar}WILD [OPTION ..]
                     
-                    Syntax: {Helper.ExeName} WILD [WILD ..] [OPTION ..]
+                    Syntax: {ExeName} WILD [WILD ..] [OPTION ..]
                     where all WILD have same directory.
                     """);
                     return false;
@@ -90,14 +90,12 @@ public class Program
             if (Directory.Exists(args[0]))
             {
                 pathThe = args[0];
-                Wild.InitMatchingNames(args.Skip(1),
-                    checkingFilename: PrintDirOpt != PrintDir.Only);
+                Wild.InitMatchingNames(args.Skip(1));
             }
             else
             {
                 PrintDirOptBothOff();
-                Wild.InitMatchingNames(args,
-                    checkingFilename: PrintDirOpt != PrintDir.Only);
+                Wild.InitMatchingNames(args);
             }
         }
 
@@ -108,33 +106,35 @@ public class Program
 
         if (!Directory.Exists(pathThe))
 		{
-			Helper.WriteLine($"Dir '{args[0]}' is NOT found.");
+			WriteLine($"Dir '{args[0]}' is NOT found.");
 			return false;
 		}
 
-        pathThe = Helper.io.GetFullPath(pathThe);
+        pathThe = io.GetFullPath(pathThe);
         InfoSum sumThe = InfoSum.Fake;
         if (ScanSubDir)
         {
-            if (PrintDirOpt == PrintDir.Only)
+            if (PrintDirOpt == MyOptions.PrintDir.Only)
             {
-                var cntDir = Helper.GetAllDirs(pathThe)
-                    .Select((it) => Helper.io.ToInfoDir(it))
+                var cntDir = GetAllDirs(pathThe)
+                    .Select((it) => io.ToInfoDir(it))
                     .Where((it) => it.IsNotFake())
+                    .Where((it) => (false ==
+                    string.IsNullOrEmpty(io.GetRelativeName(it.FullName))))
                     .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
                     .Invoke(Sort.Dirs)
                     .Select((it) =>
                     {
-                        Helper.ItemWriteLine(Helper.io.GetRelativeName(it.FullName));
+                        ItemWriteLine(io.GetRelativeName(it.FullName));
                         return it;
                     })
                     .Count();
-                Helper.PrintDirCount(cntDir);
+                PrintDirCount(cntDir);
             }
             else
             {
-                sumThe = Helper.GetAllFiles(pathThe)
-                    .Select((it) => Helper.io.ToInfoFile(it))
+                sumThe = GetAllFiles(pathThe)
+                    .Select((it) => io.ToInfoFile(it))
                     .Where((it) => it.IsNotFake())
                     .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
                     .Where((it) => (false == Wild.ExcludeFileName.Invoke(it.Name)))
@@ -146,7 +146,7 @@ public class Program
         {
             sumThe = PrintDirOption.Invoke(pathThe);
         }
-        Helper.PrintInfoTotal(sumThe);
+        PrintInfoTotal(sumThe);
 
         return true;
 	}

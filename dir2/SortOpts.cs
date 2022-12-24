@@ -25,11 +25,7 @@ static public class Sort
         help: "name | size | date | ext | count | last",
         resolve: (parser, args) =>
         {
-            var aa = args
-            .Select((it) => it.Split(':', ',', ';'))
-            .SelectMany((it) => it)
-            .Where((it) => it.Length > 0)
-            .Distinct().Take(3).ToArray();
+            var aa = Helper.CommonSplit(args).Take(3).ToArray();
 
             if ((aa.Length > 0) && aa[0] == "name")
             {

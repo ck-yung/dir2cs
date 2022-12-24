@@ -186,6 +186,7 @@ static public partial class MyOptions
         Sort.Options,
         Show.Options,
         Sum.Options,
+        (IParse) Helper.io.KeepDirOpt,
         TotalOption,
     };
 
@@ -237,6 +238,8 @@ static public partial class MyOptions
             ["-s"] = ("Scan sub dir", new[] { "--sub" }),
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
+            ["-t"] = ("", new[] { "--total", "only" }),
+            ["-b"] = ("Brief path name", new[] { "--total", "off", "--hide", "date,size,count" }),
             ["-x"] = ("Excluding file name", new[] { "--excl" }),
             ["-X"] = ("Excluding dir name", new[] { "--excl-dir" }),
         }.ToImmutableDictionary();
