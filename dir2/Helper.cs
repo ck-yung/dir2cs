@@ -23,6 +23,10 @@ static public partial class Helper
     }
 
     static public void DoNothing<T>(T _) { }
+
+    /// <summary>
+    /// Always return false
+    /// </summary>
     static public bool Never<T>(T _) { return false; }
 
     static internal readonly string ExeName;
@@ -108,6 +112,7 @@ static public partial class Helper
             .Select((it) => io.ToInfoFile(it))
             .Where((it) => it.IsNotFake())
             .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
+            .Where((it) => (false == Wild.ExcludeFileOption.Invoke(it.Name)))
             .Invoke(Sort.Files)
             .Invoke((seq) => Sum.Func(seq, path));
     }

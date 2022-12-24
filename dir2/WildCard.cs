@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using static dir2.MyOptions;
 
 namespace dir2;
 
@@ -58,4 +59,19 @@ static public class Wild
             }
         }
     }
+
+    static public readonly IInovke<string, bool> ExcludeFileOption =
+        new ParseInvoker<string, bool>("--excl", help: "FILE[;FILE ..]",
+            init: Helper.Never,
+            resolve: (parser, args) =>
+            {
+                var checkFuncs = args
+                .Select((it) => it.Split(':',';'))
+                .SelectMany((it) => it)
+                .Where((it) => it.Length>0)
+                .Distinct()
+                .Select((it) => ToWildMatch(it))
+                .ToArray();
+                parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
+            });
 }

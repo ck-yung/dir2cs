@@ -179,6 +179,7 @@ static public partial class MyOptions
         (IParse) PrintDirOption,
         (IParse) LengthFormat,
         (IParse) DateFormat,
+        (IParse) Wild.ExcludeFileOption,
         Sort.Options,
         Show.Options,
         Sum.Options,

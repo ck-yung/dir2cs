@@ -137,6 +137,7 @@ public class Program
                     .Select((it) => Helper.io.ToInfoFile(it))
                     .Where((it) => it.IsNotFake())
                     .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
+                    .Where((it) => (false == Wild.ExcludeFileOption.Invoke(it.Name)))
                     .Invoke(Sort.Files)
                     .Invoke((seq) => Sum.Func(seq, pathThe));
             }
