@@ -49,11 +49,11 @@ public class InfoSum
     }
 
     static internal readonly InfoSum Fake = new(string.Empty);
+    static internal readonly Action<InfoSum> DoNothing = Helper.DoNothing;
 
-    static public readonly Action<InfoSum> DoNothing = (_) => { };
     static public bool IsNothing(Action<InfoSum> check)
     {
-        return !Object.ReferenceEquals(check, DoNothing);
+        return Object.ReferenceEquals(check, DoNothing);
     }
 
     public bool IsNotFake()
@@ -83,6 +83,7 @@ public class InfoSum
     {
         write(Show.Size($"{MyOptions.LengthFormat.Invoke(Length)} "));
         write(Show.Date($"{MyOptions.DateFormat.Invoke(StartTime)} "));
+        write(Show.Date($"- "));
         write(Show.Date($"{MyOptions.DateFormat.Invoke(EndTime)} "));
         write(Show.Count($"{Count,4} "));
         writeLine(Name);
@@ -91,7 +92,7 @@ public class InfoSum
 
 static public partial class Helper
 {
-    static public partial class Sys
+    static public partial class io
     {
         static public Func<string, InfoDir> ToInfoDir
         { get; private set; } = toInfoDir;
@@ -103,8 +104,8 @@ static public partial class Helper
             Func<string, InfoDir> ToInfoDir,
             Func<string, InfoFile> ToInfoFile)
         {
-            Sys.ToInfoDir = ToInfoDir;
-            Sys.ToInfoFile = ToInfoFile;
+            io.ToInfoDir = ToInfoDir;
+            io.ToInfoFile = ToInfoFile;
         }
     }
 

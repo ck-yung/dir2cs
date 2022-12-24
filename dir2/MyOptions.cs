@@ -14,35 +14,29 @@ static public partial class MyOptions
 
     static public readonly ImplicitBool ScanSubDir = new SwitchParser(name:"--sub");
 
-    static public bool IsPrintDirOnly { get; private set; } = false;
-    static public void PrintDirTurn(bool both)
+    public enum PrintDir
     {
-        var a2 = (ParseInvokerWithGet<string, InfoSum>)PrintDirOption;
-        if (both)
+        Both,
+        Only,
+        Off,
+    };
+
+    static public PrintDir PrintDirOpt { get; private set; } = PrintDir.Both;
+    static public void PrintDirOptBothOff()
+    {
+        if (PrintDirOpt == PrintDir.Both)
         {
-            a2.SetImplementation((path) =>
-            {
-                Helper.PrintDir(path);
-                return Helper.PrintFile(path);
-            });
-        }
-        else
-        {
-            var a3 = a2.GetInvoke();
-            if ((a3 != Helper.PrintDir) && (a3!= Helper.PrintFile))
-            {
-                a2.SetImplementation(Helper.PrintFile);
-            }
+            ((ParseInvoker<string, InfoSum>)PrintDirOption).SetImplementation(Helper.GetFiles);
         }
     }
 
     static public readonly IInovke<string, InfoSum> PrintDirOption =
-        new ParseInvokerWithGet<string, InfoSum>(
+        new ParseInvoker<string, InfoSum>(
         name: "--dir", help: "both | only | off",
         init: (path) =>
         {
             Helper.PrintDir(path);
-            return Helper.PrintFile(path);
+            return Helper.GetFiles(path);
         }, resolve: (parser, args) =>
         {
             var aa = args.Where((it)=>it.Length>0).ToHashSet().ToArray();
@@ -50,7 +44,13 @@ static public partial class MyOptions
                 throw new ArgumentException($"Too many values to {parser.Name}");
             switch (aa[0])
             {
-                case "both": // default value
+                case "both":
+                    PrintDirOpt = PrintDir.Both;
+                    parser.SetImplementation((path) =>
+                    {
+                        Helper.PrintDir(path);
+                        return Helper.GetFiles(path);
+                    });
                     break;
                 case "only":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
@@ -65,16 +65,18 @@ static public partial class MyOptions
                             Helper.WriteLine($"{cnt} dir are found.");
                         }
                     };
-                    IsPrintDirOnly = true;
+                    PrintDirOpt = PrintDir.Only;
                     parser.SetImplementation(Helper.PrintDir);
                     break;
                 case "off":
-                    parser.SetImplementation(Helper.PrintFile);
+                    PrintDirOpt = PrintDir.Off;
+                    parser.SetImplementation(Helper.GetFiles);
                     break;
                 default:
                     throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
             }
         });
+
     static public string ToKiloUnit(long arg)
     {
         var units = new char[] { 'T', 'G', 'M', 'K', ' ' };
@@ -82,9 +84,9 @@ static public partial class MyOptions
         {
             if (arg2 < 10_000.0F) return $"{arg2,4:F0}{units[index - 1]}";
             if (index == 1) return $"{arg2,4:F0}{units[0]}";
-            return toKilo(arg2 / 1024.0F, index - 1);
+            return toKilo((arg2 + 512) / 1024.0F, index - 1);
         }
-        return toKilo((float)arg, units.Length);
+        return toKilo(arg, units.Length);
     }
 
     static public readonly IInovke<long, string> LengthFormat =
@@ -137,12 +139,12 @@ static public partial class MyOptions
             switch (aa[0])
             {
                 case "off":
-                    Helper.impPrintInfoTotal = (_) => { };
-                    Helper.impPrintDirCount = (_) => { };
+                    Helper.impPrintInfoTotal = Helper.DoNothing;
+                    Helper.impPrintDirCount = Helper.DoNothing;
                     break;
                 case "only":
-                    Helper.ItemWrite = (_) => { };
-                    Helper.ItemWriteLine = (_) => { };
+                    Helper.ItemWrite = Helper.DoNothing;
+                    Helper.ItemWriteLine = Helper.DoNothing;
 
                     Helper.impPrintDirCount = (cntDir) =>
                     {

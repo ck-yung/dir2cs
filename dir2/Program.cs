@@ -55,17 +55,17 @@ public class Program
                     throw new ArgumentException($"Dir '{args[0]}' is NOT found.");
                 }
 
-                PrintDirTurn(both: false);
+                PrintDirOptBothOff();
                 var path2 = Path.GetDirectoryName(args[0]);
                 pathThe = string.IsNullOrEmpty(path2) ? "." : path2;
                 Wild.InitMatchingNames(
                     new string[] { Path.GetFileName(args[0])},
-                    !IsPrintDirOnly);
+                    checkingFilename: PrintDirOpt != PrintDir.Only);
             }
         }
         else if (args.Length> 0)
 		{
-            PrintDirTurn(both: false);
+            PrintDirOptBothOff();
             if (args.Where((it) => it.Contains(Path.DirectorySeparatorChar)).Any())
             {
                 var bb = args
@@ -90,12 +90,14 @@ public class Program
             if (Directory.Exists(args[0]))
             {
                 pathThe = args[0];
-                Wild.InitMatchingNames(args.Skip(1), !IsPrintDirOnly);
+                Wild.InitMatchingNames(args.Skip(1),
+                    checkingFilename: PrintDirOpt != PrintDir.Only);
             }
             else
             {
-                PrintDirTurn(both: false);
-                Wild.InitMatchingNames(args, !IsPrintDirOnly);
+                PrintDirOptBothOff();
+                Wild.InitMatchingNames(args,
+                    checkingFilename: PrintDirOpt != PrintDir.Only);
             }
         }
 
@@ -110,20 +112,20 @@ public class Program
 			return false;
 		}
 
-        pathThe = Helper.Sys.GetFullPath(pathThe);
+        pathThe = Helper.io.GetFullPath(pathThe);
         InfoSum sumThe = InfoSum.Fake;
         if (ScanSubDir)
         {
-            if (IsPrintDirOnly)
+            if (PrintDirOpt == PrintDir.Only)
             {
                 var cntDir = Helper.GetAllDirs(pathThe)
-                    .Select((it) => Helper.Sys.ToInfoDir(it))
+                    .Select((it) => Helper.io.ToInfoDir(it))
                     .Where((it) => it.IsNotFake())
                     .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
                     .Invoke(Sort.Dirs)
                     .Select((it) =>
                     {
-                        Helper.ItemWriteLine(Helper.Sys.GetRelativeName(it.FullName));
+                        Helper.ItemWriteLine(Helper.io.GetRelativeName(it.FullName));
                         return it;
                     })
                     .Count();
@@ -132,7 +134,7 @@ public class Program
             else
             {
                 sumThe = Helper.GetAllFiles(pathThe)
-                    .Select((it) => Helper.Sys.ToInfoFile(it))
+                    .Select((it) => Helper.io.ToInfoFile(it))
                     .Where((it) => it.IsNotFake())
                     .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
                     .Invoke(Sort.Files)

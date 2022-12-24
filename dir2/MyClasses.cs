@@ -129,18 +129,4 @@ static public partial class MyOptions
             return false;
         }
     }
-
-    internal class ParseInvokerWithGet<T, R> : ParseInvoker<T, R>
-    {
-        public ParseInvokerWithGet(string name, Func<T, R> init,
-            Action<ParseInvoker<T, R>, IEnumerable<string>> resolve,
-            string help = "") : base(name, init, resolve, help)
-        {
-        }
-
-        public Func<T, R> GetInvoke()
-        {
-            return imp;
-        }
-    }
 }

@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using static dir2.MyOptions;
 
 namespace dir2;
@@ -22,12 +21,16 @@ static public class Sort
         throw new ArgumentException($"Bad values ('{badValue}', ..) to {name}");
     }
 
-    static public readonly IParse Options = new MyOptions.SimpleParser(name: "--sort",
+    static public readonly IParse Options = new SimpleParser(name: "--sort",
         help: "name | size | date | ext | count | last",
         resolve: (parser, args) =>
         {
-            var aa = args.Where((it) => it.Length > 0).ToHashSet().ToArray();
-
+            var aa = args
+            .Select((it) => it.Split(':', ',', ';'))
+            .SelectMany((it) => it)
+            .Where((it) => it.Length > 0)
+            .Distinct()
+            .ToArray();
 
             if ((aa.Length > 0) && aa[0] == "name")
             {
@@ -123,6 +126,11 @@ static public class Sort
                     (seq) => seq.OrderBy((it) => it.Extension).ThenBy((it) => it.FullName),
                     (seq2) => seq2.OrderBy((it) => it.Extension).ThenBy((it) => it.FullName),
                     (seq3) => seq3.OrderBy((it) => Path.GetExtension(it.Name)).ThenBy((it) => it.Name)),
+
+                    ("ext", "size") => (
+                    (seq) => seq.OrderBy((it) => it.Extension),
+                    (seq2) => seq2.OrderBy((it) => it.Extension).ThenBy((it) => it.Length),
+                    (seq3) => seq3.OrderBy((it) => Path.GetExtension(it.Name)).ThenBy((it) => it.Length)),
 
                     ("ext", "date") => (
                     (seq) => seq.OrderBy((it) => it.Extension).ThenBy((it) => it.LastWriteTime),

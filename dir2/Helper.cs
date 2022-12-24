@@ -3,6 +3,11 @@ using System.Text;
 
 namespace dir2;
 
+public class Always<T>
+{
+    static public readonly Func<T, bool> True = (_) => true;
+}
+
 static public partial class Helper
 {
     static public IEnumerable<T> Invoke<T>(this IEnumerable<T> seq,
@@ -16,6 +21,9 @@ static public partial class Helper
     {
         return func(seq);
     }
+
+    static public void DoNothing<T>(T _) { }
+    static public bool Never<T>(T _) { return false; }
 
     static internal readonly string ExeName;
     static internal readonly string ExeVersion;
@@ -77,8 +85,8 @@ static public partial class Helper
 
     static internal Func<string, InfoSum> PrintDir { get; set; } = (path) =>
     {
-        var cntDir = GetDirs(path)
-            .Select((it) => Sys.ToInfoDir(it))
+        var cntDir = ImpGetDirs(path)
+            .Select((it) => io.ToInfoDir(it))
             .Where((it) => it.IsNotFake())
             .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
             .Invoke(Sort.Dirs)
@@ -94,10 +102,10 @@ static public partial class Helper
         return InfoSum.Fake;
     };
 
-    static internal InfoSum PrintFile(string path)
+    static internal InfoSum GetFiles(string path)
     {
-        return GetFiles(path)
-            .Select((it) => Sys.ToInfoFile(it))
+        return ImpGetFiles(path)
+            .Select((it) => io.ToInfoFile(it))
             .Where((it) => it.IsNotFake())
             .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
             .Invoke(Sort.Files)

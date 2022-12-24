@@ -11,7 +11,7 @@ static public class Sum
     {
         Helper.ItemWrite(Show.Size($"{MyOptions.LengthFormat.Invoke(it.Length)} "));
         Helper.ItemWrite(Show.Date($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} "));
-        Helper.ItemWriteLine(Helper.Sys.GetRelativeName(it.FullName));
+        Helper.ItemWriteLine(Helper.io.GetRelativeName(it.FullName));
         return it;
     })
     .Aggregate(
@@ -37,7 +37,7 @@ static public class Sum
                     Helper.PrintDir = (_) => InfoSum.Fake;
                     Func = (seq, path) => seq
                         .GroupBy((it) => Helper.GetFirstDir(Path.GetDirectoryName(
-                            Helper.Sys.GetRelativeName(it.FullName))))
+                            Helper.io.GetRelativeName(it.FullName))))
                         .Select((grp) => grp.Aggregate(
                             seed: new InfoSum(Name:
                             string.IsNullOrEmpty(grp.Key) ? "." : grp.Key),

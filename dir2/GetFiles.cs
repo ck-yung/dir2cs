@@ -15,7 +15,7 @@ static public partial class Helper
         Helper.WriteLine = WriteLine;
     }
 
-    static public partial class Sys
+    static public partial class io
     {
         static public Func<string, IEnumerable<string>> EnumerateDirectories
         { get; private set; } = Directory.EnumerateDirectories;
@@ -52,7 +52,7 @@ static public partial class Helper
             Func<string,string> GetFileName)
         {
             _GetFullPath= GetFullPath;
-            Sys.GetFileName= GetFileName;
+            io.GetFileName= GetFileName;
         }
     }
 
@@ -61,13 +61,13 @@ static public partial class Helper
         = Enumerable.Empty<string>().GetEnumerator();
     static IEnumerator<string> SafeGetFileEnumerator(string dirname)
     {
-        try { return Helper.Sys.EnumerateFiles(dirname).GetEnumerator(); }
+        try { return Helper.io.EnumerateFiles(dirname).GetEnumerator(); }
         catch { return EmptyEnumStrings; }
     }
 
     static IEnumerator<string> SafeGetDirectoryEnumerator(string dirname)
     {
-        try { return Helper.Sys.EnumerateDirectories(dirname).GetEnumerator(); }
+        try { return Helper.io.EnumerateDirectories(dirname).GetEnumerator(); }
         catch { return EmptyEnumStrings; }
     }
 
@@ -84,7 +84,7 @@ static public partial class Helper
     }
     #endregion
 
-    static public IEnumerable<string> GetDirs(string path)
+    static public IEnumerable<string> ImpGetDirs(string path)
     {
         var enumFile = SafeGetDirectoryEnumerator(path);
         while (SafeMoveNext(enumFile))
@@ -95,7 +95,7 @@ static public partial class Helper
         }
     }
 
-    static public IEnumerable<string> GetFiles(string path)
+    static public IEnumerable<string> ImpGetFiles(string path)
     {
         var enumFile = SafeGetFileEnumerator(path);
         while (SafeMoveNext(enumFile))
@@ -124,7 +124,7 @@ static public partial class Helper
             // TODO >>>
             //if (Opts.ExclDirnameFilter.Func(
             //    Path.GetFileName(currentDirname))) continue;
-            var dirnameThe = Helper.Sys.GetFileName(currentDirname);
+            var dirnameThe = Helper.io.GetFileName(currentDirname);
             if (string.IsNullOrEmpty(dirnameThe)) continue;
             if (dirnameThe[0] == '.') continue;
             // TODO <<<
@@ -150,7 +150,7 @@ static public partial class Helper
             // TODO >>>
             //if (Opts.ExclDirnameFilter.Func(
             //    Path.GetFileName(currentDirname))) continue;
-            var dirnameThe = Helper.Sys.GetFileName(currentDirname);
+            var dirnameThe = Helper.io.GetFileName(currentDirname);
             if (string.IsNullOrEmpty(dirnameThe)) continue;
             if (dirnameThe[0] == '.') continue;
             // TODO <<<

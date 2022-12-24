@@ -34,9 +34,9 @@ static public class Wild
     }
 
     static public Func<string, bool> CheckIfFileNameMatched
-    { get; private set; } = (_) => true;
+    { get; private set; } = Always<string>.True;
     static public Func<string, bool> CheckIfDirNameMatched
-    { get; private set; } = (_) => true;
+    { get; private set; } = Always<string>.True;
 
     static public void InitMatchingNames(IEnumerable<string> names,
         bool checkingFilename = true)
