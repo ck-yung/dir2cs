@@ -182,13 +182,4 @@ static public partial class Helper
             .Take(2).FirstOrDefault();
         return string.IsNullOrEmpty(rtn) ? "." : rtn;
     }
-
-    static internal string GetLastDir(string path)
-    {
-        return path
-            .TrimEnd(Path.DirectorySeparatorChar)
-            .Split(Path.DirectorySeparatorChar)
-            .AsEnumerable()
-            .Last();
-    }
 }

@@ -13,7 +13,7 @@ static public class Sum
         return it;
     })
     .Aggregate(
-        seed: new InfoSum(Helper.GetLastDir(path)),
+        seed: new InfoSum(Helper.io.RealInitPath),
         func: (acc, it) => acc.AddWith(it));
 
     static public readonly IParse Options = new MyOptions.SimpleParser(name: "--sum",
@@ -47,7 +47,7 @@ static public class Sum
                             return it;
                         })
                         .Aggregate(
-                            seed: new InfoSum(Helper.GetLastDir(path)),
+                            seed: new InfoSum(Helper.io.RealInitPath),
                             func: (acc, it) => acc.AddWith(it))
                         ;
                     break;
@@ -66,7 +66,7 @@ static public class Sum
                             return it;
                         })
                         .Aggregate(
-                            seed: new InfoSum(Helper.GetLastDir(path)),
+                            seed: new InfoSum(Helper.io.RealInitPath),
                             func: (acc, it) => acc.AddWith(it))
                         ;
                     break;

@@ -238,6 +238,7 @@ static public partial class MyOptions
             ["-s"] = ("Scan sub dir", new[] { "--sub" }),
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
+            ["-k"] = ("", new[] { "--keep-dir" }),
             ["-t"] = ("", new[] { "--total", "only" }),
             ["-b"] = ("Brief path name", new[] { "--total", "off", "--hide", "date,size,count" }),
             ["-x"] = ("Excluding file name", new[] { "--excl" }),

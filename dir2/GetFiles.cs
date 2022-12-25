@@ -33,14 +33,18 @@ static public partial class Helper
         }
 
         static public string InitPath { get; private set; } = "?";
+        static public string RealInitPath { get; private set; } = string.Empty;
         static public Func<string, string> GetRelativeName
         { get; private set; } = (arg) => arg;
 
         static public string GetFullPath(string path)
         {
             InitPath = _GetFullPath(path);
+            RealInitPath = path;
             var lenThe = InitPath.Length;
-            if (KeepDirOpt && (lenThe > path.Length))
+            if (KeepDirOpt && (lenThe > path.Length) &&
+                (path != ("." + Path.DirectorySeparatorChar)) &&
+                (false == path.Contains("..")))
             {
                 lenThe -= path.Length;
             }
@@ -50,7 +54,8 @@ static public partial class Helper
         }
 
         static public readonly ImplicitBool KeepDirOpt =
-            new SwitchParser(name: "--keep-dir");
+            new SwitchParser(name: "--keep-dir",
+                help: "Show first DIRNAME arg (if no ..)");
 
         static public Func<string, string> _GetFullPath
         { get; private set; } = Path.GetFullPath;
