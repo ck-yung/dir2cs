@@ -173,7 +173,7 @@ static public partial class Helper
                 if (printEvenCountOne)
                 {
                     Write("One file is found: ");
-                    Write(Show.Size($"{MyOptions.LengthFormat.Invoke(sum.Length)} "));
+                    Write(Show.Size(MyOptions.LengthFormat.Invoke(sum.Length)));
                     WriteLine(Show.Date($"{MyOptions.DateFormat.Invoke(sum.StartTime)}"));
                 }
                 break;

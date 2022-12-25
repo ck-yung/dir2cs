@@ -84,8 +84,8 @@ static public partial class MyOptions
         var units = new char[] { 'T', 'G', 'M', 'K', ' ' };
         string toKilo(float arg2, int index)
         {
-            if (arg2 < 10_000.0F) return $"{arg2,4:F0}{units[index - 1]}";
-            if (index == 1) return $"{arg2,4:F0}{units[0]}";
+            if (arg2 < 10_000.0F) return $"{arg2,4:F0}{units[index - 1]} ";
+            if (index == 1) return $"{arg2,4:F0}{units[0]} ";
             return toKilo((arg2 + 512) / 1024.0F, index - 1);
         }
         return toKilo(arg, units.Length);
@@ -105,13 +105,13 @@ static public partial class MyOptions
                         parser.SetImplementation((value) => ToKiloUnit(value));
                         break;
                     case "long":
-                        parser.SetImplementation((value) => $"{value,12}");
+                        parser.SetImplementation((value) => $"{value,12} ");
                         break;
                     case "comma":
-                        parser.SetImplementation((value) => $"{value,19:N0}");
+                        parser.SetImplementation((value) => $"{value,19:N0} ");
                         break;
                     case "eight":
-                        parser.SetImplementation((value) => $"{value,8}");
+                        parser.SetImplementation((value) => $"{value,8} ");
                         break;
                     default:
                         throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
@@ -230,6 +230,7 @@ static public partial class MyOptions
         Wild.RegexOpt,
         (IParse) LengthFormat,
         (IParse) DateFormat,
+        (IParse) Show.CountFormat,
         (IParse) Wild.ExcludeFileName,
         (IParse) Wild.ExcludeDirName,
         (IParse) Wild.ExtInfoOpt,

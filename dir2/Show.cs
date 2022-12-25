@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+using System.Text.RegularExpressions;
 using static dir2.MyOptions;
 
 namespace dir2;
@@ -123,4 +125,59 @@ static internal class Show
         {
             GetDate = (it) => it.CreationTime;
         });
+
+    static internal readonly IInovke<int, string> CountFormat =
+        new ParseInvoker<int, string>("--count-format", help: "short | comma;WIDTH",
+            init: (it) => $"{it,5} ", resolve: (parser, args) =>
+            {
+                var pattern = @"\d+|comma|short";
+                var aa = Helper.CommonSplit(args).OrderBy((it) => it).Take(4).ToArray();
+                foreach (var a2 in aa)
+                {
+                    if (false == Regex.Match(a2, pattern, RegexOptions.None).Success)
+                    {
+                        throw new ArgumentException($"'{a2}' is bad to {parser.Name}");
+                    }
+                }
+
+                if (aa.Contains("short"))
+                {
+                    if (aa.Length > 1) throw new ArgumentException($"Too many values to {parser.Name}");
+                    parser.SetImplementation((val) => ToKiloUnit(val));
+                    return;
+                }
+
+                if (aa.Length == 1)
+                {
+                    if (aa[0] == "comma")
+                    {
+                        parser.SetImplementation((it) => $"{it,5:N0} ");
+                        return;
+                    }
+                    else
+                    {
+                        if (int.TryParse(aa[0], out int width))
+                        {
+                            var fmtThe = $"{{0,{width}}} ";
+                            parser.SetImplementation((it) => string.Format(fmtThe, it));
+                            return;
+                        }
+                        throw new ArgumentException($"'{aa[0]}' is NOT width to {parser.Name}");
+                    }
+                }
+                else if (2 == aa.Length && aa[1] == "comma")
+                {
+                    if (int.TryParse(aa[0], out int width))
+                    {
+                        var fmtThe = $"{{0,{width}:N0}} ";
+                        parser.SetImplementation((it) => string.Format(fmtThe, it));
+                        return;
+                    }
+                    throw new ArgumentException($"'{aa[0]}' is NOT width to {parser.Name}");
+                }
+                else
+                {
+                    throw new ArgumentException($"Bad values is found to {parser.Name}");
+                }
+            });
 }

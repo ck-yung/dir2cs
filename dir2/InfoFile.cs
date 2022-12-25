@@ -101,11 +101,11 @@ public class InfoSum
 
     public void Print(Action<string> write, Action<string> writeLine)
     {
-        write(Show.Size($"{MyOptions.LengthFormat.Invoke(Length)} "));
-        write(Show.Date($"{MyOptions.DateFormat.Invoke(StartTime)} "));
+        write(Show.Size(LengthFormat.Invoke(Length)));
+        write(Show.Date($"{DateFormat.Invoke(StartTime)} "));
         write(Show.Date($"- "));
-        write(Show.Date($"{MyOptions.DateFormat.Invoke(EndTime)} "));
-        write(Show.Count($"{Count,4} "));
+        write(Show.Date($"{DateFormat.Invoke(EndTime)} "));
+        write(Show.Count(Show.CountFormat.Invoke(Count)));
         writeLine(Name);
     }
 }
