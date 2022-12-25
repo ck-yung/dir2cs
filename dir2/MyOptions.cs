@@ -175,27 +175,6 @@ static public partial class MyOptions
             }
         });
 
-    static public IParse[] Parsers = new IParse[]
-    {
-        (IParse) ScanSubDir,
-        (IParse) PrintDirOption,
-        Wild.CaseSensitiveOpt,
-        Wild.RegexOpt,
-        (IParse) LengthFormat,
-        (IParse) DateFormat,
-        (IParse) Wild.ExcludeFileName,
-        (IParse) Wild.ExcludeDirName,
-        Sort.Options,
-        Show.Options,
-        Sum.Options,
-        (IParse) Helper.io.KeepDirOpt,
-        Wild.Within,
-        Wild.NotWithin,
-        Show.ReverseOpt,
-        Show.TakeOpt,
-        TotalOption,
-    };
-
     static public IEnumerable<string> ExpandFromShortCut(IEnumerable<string> args)
     {
         IEnumerable<string> ExpandCombiningShortCut()
@@ -242,6 +221,28 @@ static public partial class MyOptions
             }
         }
     }
+
+    static public IParse[] Parsers = new IParse[]
+    {
+        (IParse) ScanSubDir,
+        (IParse) PrintDirOption,
+        Wild.CaseSensitiveOpt,
+        Wild.RegexOpt,
+        (IParse) LengthFormat,
+        (IParse) DateFormat,
+        (IParse) Wild.ExcludeFileName,
+        (IParse) Wild.ExcludeDirName,
+        Sort.Options,
+        Show.Options,
+        Sum.Options,
+        (IParse) Helper.io.KeepDirOpt,
+        Wild.Within,
+        Wild.NotWithin,
+        Show.CreationDateOpt,
+        Show.ReverseOpt,
+        Show.TakeOpt,
+        TotalOption,
+    };
 
     static internal ImmutableDictionary<string, string> ShortcutOptions
         = new Dictionary<string, string>()

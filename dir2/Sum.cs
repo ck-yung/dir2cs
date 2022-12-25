@@ -11,7 +11,7 @@ static public class Sum
         .Select((it) =>
         {
             Helper.ItemWrite(Show.Size($"{MyOptions.LengthFormat.Invoke(it.Length)} "));
-            Helper.ItemWrite(Show.Date($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} "));
+            Helper.ItemWrite(Show.Date($"{MyOptions.DateFormat.Invoke(Show.GetDate(it))} "));
             Helper.ItemWriteLine(Helper.io.GetRelativeName(it.FullName));
             return it;
         })

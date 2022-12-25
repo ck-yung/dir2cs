@@ -44,8 +44,8 @@ static public class Sort
                         Sums = (seq) => seq.OrderBy(it => it.Length);
                         break;
                     case "date":
-                        Dirs = (seq) => seq.OrderBy((it) => it.LastWriteTime);
-                        Files = (seq) => seq.OrderBy((it) => it.LastWriteTime);
+                        Dirs = (seq) => seq.OrderBy((it) => Show.GetDate(it));
+                        Files = (seq) => seq.OrderBy((it) => Show.GetDate(it));
                         Sums = (seq) => seq.OrderBy(it => it.StartTime);
                         break;
                     case "ext":
@@ -73,8 +73,8 @@ static public class Sort
                     (seq3) => seq3.OrderBy((it) => it.Length).ThenBy((it) => it.Name)),
 
                     ("size", "date") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime),
-                    (seq2) => seq2.OrderBy((it) => it.Length).ThenBy((it) => it.LastWriteTime),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)),
+                    (seq2) => seq2.OrderBy((it) => it.Length).ThenBy((it) => Show.GetDate(it)),
                     (seq3) => seq3.OrderBy((it) => it.Length).ThenBy((it) => it.StartTime)),
 
                     ("size", "ext") => (
@@ -93,28 +93,28 @@ static public class Sort
                     (seq3) => seq3.OrderBy((it) => it.Length).ThenBy((it) => it.EndTime)),
 
                     ("date", "name") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime).ThenBy((it) => it.FullName),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime).ThenBy((it) => it.FullName),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)).ThenBy((it) => it.FullName),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)).ThenBy((it) => it.FullName),
                     (seq3) => seq3.OrderBy((it) => it.StartTime).ThenBy((it) => it.Name)),
 
                     ("date", "size") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime).ThenBy((it) => it.Length),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)).ThenBy((it) => it.Length),
                     (seq3) => seq3.OrderBy((it) => it.StartTime).ThenBy((it) => it.Length)),
 
                     ("date", "ext") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime).ThenBy((it) => it.Extension),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime).ThenBy((it) => it.Extension),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)).ThenBy((it) => it.Extension),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)).ThenBy((it) => it.Extension),
                     (seq3) => seq3.OrderBy((it) => it.StartTime).ThenBy((it) => Path.GetExtension(it.Name))),
 
                     ("date", "count") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)),
                     (seq3) => seq3.OrderBy((it) => it.StartTime).ThenBy((it) => it.Count)),
 
                     ("date", "last") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)),
                     (seq3) => seq3.OrderBy((it) => it.StartTime).ThenBy((it) => it.EndTime)),
 
                     ("ext", "name") => (
@@ -128,8 +128,8 @@ static public class Sort
                     (seq3) => seq3.OrderBy((it) => Path.GetExtension(it.Name)).ThenBy((it) => it.Length)),
 
                     ("ext", "date") => (
-                    (seq) => seq.OrderBy((it) => it.Extension).ThenBy((it) => it.LastWriteTime),
-                    (seq2) => seq2.OrderBy((it) => it.Extension).ThenBy((it) => it.LastWriteTime),
+                    (seq) => seq.OrderBy((it) => it.Extension).ThenBy((it) => Show.GetDate(it)),
+                    (seq2) => seq2.OrderBy((it) => it.Extension).ThenBy((it) => Show.GetDate(it)),
                     (seq3) => seq3.OrderBy((it) => Path.GetExtension(it.Name)).ThenBy((it) => it.StartTime)),
 
                     ("ext", "count") => (
@@ -153,8 +153,8 @@ static public class Sort
                     (seq3) => seq3.OrderBy((it) => it.Count).ThenBy((it) => it.Length)),
 
                     ("count", "date") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)),
                     (seq3) => seq3.OrderBy((it) => it.Count).ThenBy((it) => it.StartTime)),
 
                     ("count", "ext") => (
@@ -163,33 +163,33 @@ static public class Sort
                     (seq3) => seq3.OrderBy((it) => it.Count).ThenBy((it) => Path.GetExtension(it.Name))),
 
                     ("count", "last") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)),
                     (seq3) => seq3.OrderBy((it) => it.Count).ThenBy((it) => it.EndTime)),
 
                     ("last", "name") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime).ThenBy((it) => it.FullName),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime).ThenBy((it) => it.FullName),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)).ThenBy((it) => it.FullName),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)).ThenBy((it) => it.FullName),
                     (seq3) => seq3.OrderBy((it) => it.EndTime).ThenBy((it) => it.Name)),
 
                     ("last", "size") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime).ThenBy((it) => it.Length),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)).ThenBy((it) => it.Length),
                     (seq3) => seq3.OrderBy((it) => it.EndTime).ThenBy((it) => it.Length)),
 
                     ("last", "ext") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime).ThenBy((it) => it.Extension),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime).ThenBy((it) => it.Extension),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)).ThenBy((it) => it.Extension),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)).ThenBy((it) => it.Extension),
                     (seq3) => seq3.OrderBy((it) => it.EndTime).ThenBy((it) => Path.GetExtension(it.Name))),
 
                     ("last", "count") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)),
                     (seq3) => seq3.OrderBy((it) => it.EndTime).ThenBy((it) => it.Count)),
 
                     ("last", "date") => (
-                    (seq) => seq.OrderBy((it) => it.LastWriteTime),
-                    (seq2) => seq2.OrderBy((it) => it.LastWriteTime),
+                    (seq) => seq.OrderBy((it) => Show.GetDate(it)),
+                    (seq2) => seq2.OrderBy((it) => Show.GetDate(it)),
                     (seq3) => seq3.OrderBy((it) => it.EndTime).ThenBy((it) => it.StartTime)),
 
                     _ => unknownValues(name: parser.Name, aa[0], aa[1])

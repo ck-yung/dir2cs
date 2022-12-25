@@ -1,11 +1,16 @@
 namespace dir2;
 
+public record InfoBase(string Name,
+    DateTime CreationTime,
+    DateTime LastWriteTime);
+
 public record InfoDir(string Name,
     string Extension,
     string FullName,
     DateTime CreationTime,
     DateTime LastWriteTime,
     string LinkTarget)
+    : InfoBase(Name, CreationTime, LastWriteTime)
 {
     static internal readonly InfoDir Fake = new (string.Empty
         , string.Empty, string.Empty
@@ -25,6 +30,7 @@ public record InfoFile(string Name,
     DateTime CreationTime,
     DateTime LastWriteTime,
     string LinkTarget)
+    : InfoBase(Name, CreationTime, LastWriteTime)
 {
     static internal readonly InfoFile Fake = new(string.Empty
         , string.Empty, string.Empty, string.Empty, 0
@@ -73,8 +79,9 @@ public class InfoSum
     {
         Count += 1;
         Length += other.Length;
-        if (StartTime > other.LastWriteTime) StartTime = other.LastWriteTime;
-        if (EndTime < other.LastWriteTime) EndTime = other.LastWriteTime;
+        var dateOther = Show.GetDate(other);
+        if (StartTime > dateOther) StartTime = dateOther;
+        if (EndTime < dateOther) EndTime = dateOther;
         return this;
     }
 

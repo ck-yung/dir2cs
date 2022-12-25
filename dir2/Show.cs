@@ -1,4 +1,3 @@
-using System;
 using static dir2.MyOptions;
 
 namespace dir2;
@@ -114,5 +113,14 @@ static internal class Show
             {
                 throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
             }
+        });
+
+    static public Func<InfoBase, DateTime> GetDate { get; private set; }
+    = (it) => it.LastWriteTime;
+
+    static public readonly IParse CreationDateOpt = new SwitchParser("--creation-date",
+        action: () =>
+        {
+            GetDate = (it) => it.CreationTime;
         });
 }

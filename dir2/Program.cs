@@ -122,14 +122,14 @@ public class Program
                     .Where((it) => (false ==
                     string.IsNullOrEmpty(io.GetRelativeName(it.FullName))))
                     .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
-                    .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
-                    .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
+                    .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
+                    .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
                     .Invoke(Sort.Dirs)
                     .Invoke(Show.ReverseDir)
                     .Invoke(Show.TakeDir)
                     .Select((it) =>
                     {
-                        ItemWrite(Show.Date($"{DateFormat.Invoke(it.LastWriteTime)} "));
+                        ItemWrite(Show.Date($"{DateFormat.Invoke(Show.GetDate(it))} "));
                         ItemWriteLine(io.GetRelativeName(it.FullName));
                         return it;
                     })
@@ -144,9 +144,9 @@ public class Program
                     .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
                     .Where((it) => (false == Wild.ExcludeFileName.Invoke(it.Name)))
                     .Where((it) => Wild.IsMatchWithinSize(it.Length))
-                    .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
+                    .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
                     .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
-                    .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
+                    .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
                     .Invoke((seq) => Sum.Func(seq));
             }
         }
