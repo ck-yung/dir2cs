@@ -122,9 +122,12 @@ public class Program
                     .Where((it) => (false ==
                     string.IsNullOrEmpty(io.GetRelativeName(it.FullName))))
                     .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
+                    .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
+                    .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
                     .Invoke(Sort.Dirs)
                     .Select((it) =>
                     {
+                        ItemWrite(Show.Date($"{DateFormat.Invoke(it.LastWriteTime)} "));
                         ItemWriteLine(io.GetRelativeName(it.FullName));
                         return it;
                     })

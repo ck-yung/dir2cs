@@ -1,7 +1,5 @@
 using System.Collections.Immutable;
-using System.Drawing;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using static dir2.MyOptions;
 
 namespace dir2;
@@ -93,11 +91,34 @@ static public class Wild
             : this(IsSize: false, Size: 0, Date: date)
         { }
 
+        static long unitValue(char unitThe)
+        {
+            return unitThe switch
+            {
+                'k' => 1024,
+                'm' => 1024 * 1024,
+                _ => 1024 * 1024 * 1024,// g
+            };
+        }
+
         static public WithData Parse(string name, string arg)
         {
             if (long.TryParse(arg, out long valueLong))
             {
                 return new WithData(valueLong);
+            }
+
+            if (Regex.Match(arg, @"^\d+[kmg]$").Success)
+            {
+                if (long.TryParse(arg.AsSpan(0, arg.Length - 1),
+                    out long valThe))
+                {
+                    if (valThe > 0)
+                    {
+                        valThe *= unitValue(arg[^1]);
+                        return new WithData(valThe);
+                    }
+                }
             }
 
             if (DateTime.TryParse(arg, out DateTime valueDate))
@@ -147,6 +168,47 @@ static public class Wild
                     }
                     var dateMax = dateWithin[0].Item1.Date;
                     IsMatchWithinDate = (date) => (date <= dateMax);
+                }
+            });
+
+    static internal Func<long, bool> IsMatchNotWithinSize
+    { get; private set; } = Always<long>.True;
+
+    static internal Func<DateTime, bool> IsMatchNotWithinDate
+    { get; private set; } = Always<DateTime>.True;
+
+    static internal readonly IParse NotWithin = new SimpleParser(name: "--not-within",
+            help: "SIZE | DATE",
+            resolve: (parser, args) =>
+            {
+                var aa = args.Where((it) => it.Length > 0).Distinct()
+                .Select((it) => (WithData.Parse(parser.Name, it), it))
+                .GroupBy((it) => it.Item1.IsSize)
+                .ToImmutableDictionary(
+                    (grp) => grp.Key, (grp) => grp.AsEnumerable());
+
+                if (aa.ContainsKey(true))
+                {
+                    var sizeNotWith = aa[true].Take(2).ToArray();
+                    if (sizeNotWith.Length > 1)
+                    {
+                        throw new ArgumentException(
+                            $"Too many Size '{sizeNotWith[0].Item2}', '{sizeNotWith[1].Item2}' to {parser.Name}");
+                    }
+                    var sizeMin = sizeNotWith[0].Item1.Size;
+                    IsMatchNotWithinSize = (size) => (size > sizeMin);
+                }
+
+                if (aa.ContainsKey(false))
+                {
+                    var dateNotWithin = aa[false].Take(2).ToArray();
+                    if (dateNotWithin.Length > 1)
+                    {
+                        throw new ArgumentException(
+                            $"Too many DateTime '{dateNotWithin[0].Item2}', '{dateNotWithin[1].Item2}' to {parser.Name}");
+                    }
+                    var dateMin = dateNotWithin[0].Item1.Date;
+                    IsMatchNotWithinDate = (date) => (date > dateMin);
                 }
             });
 }

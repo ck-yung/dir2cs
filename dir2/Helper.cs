@@ -109,6 +109,8 @@ static public partial class Helper
             .Where((it) => it.IsNotFake())
             .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
             .Where((it) => (false == Wild.ExcludeDirName.Invoke(it.Name)))
+            .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
+            .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
             .Invoke(Sort.Dirs)
             .Select((it) =>
             {

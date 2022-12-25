@@ -7,6 +7,8 @@ static public class Sum
         => seq
     .Where((it) => Wild.IsMatchWithinSize(it.Length))
     .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
+    .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
+    .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
     .Select((it) =>
     {
         Helper.ItemWrite(Show.Size($"{MyOptions.LengthFormat.Invoke(it.Length)} "));
@@ -38,6 +40,8 @@ static public class Sum
                     Func = (seq, path) => seq
                         .Where((it) => Wild.IsMatchWithinSize(it.Length))
                         .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
+                        .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
+                        .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
                         .GroupBy((it) => Helper.GetFirstDir(Path.GetDirectoryName(
                             Helper.io.GetRelativeName(it.FullName))))
                         .Select((grp) => grp.Aggregate(
@@ -60,6 +64,8 @@ static public class Sum
                     Func = (seq, path) => seq
                         .Where((it) => Wild.IsMatchWithinSize(it.Length))
                         .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
+                        .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
+                        .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
                         .GroupBy((it) => it.Extension.ToLower())
                         .Select((grp) => grp.Aggregate(
                             seed: new InfoSum(Name:

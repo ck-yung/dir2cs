@@ -188,6 +188,7 @@ static public partial class MyOptions
         Sum.Options,
         (IParse) Helper.io.KeepDirOpt,
         Wild.Within,
+        Wild.NotWithin,
         TotalOption,
     };
 
@@ -236,12 +237,15 @@ static public partial class MyOptions
     static internal ImmutableDictionary<string, (string, string[])> ShortcutOptions
         = new Dictionary<string, (string, string[])>
         {
+            ["-o"] = ("", new[] { "--sort" }),
             ["-s"] = ("Scan sub dir", new[] { "--sub" }),
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
             ["-k"] = ("", new[] { "--keep-dir" }),
             ["-t"] = ("", new[] { "--total", "only" }),
             ["-b"] = ("Brief path name", new[] { "--total", "off", "--hide", "date,size,count" }),
+            ["-w"] = ("Select size, date-time", new[] { "--within" }),
+            ["-W"] = ("Select size, date-time", new[] { "--not-within" }),
             ["-x"] = ("Excluding file name", new[] { "--excl" }),
             ["-X"] = ("Excluding dir name", new[] { "--excl-dir" }),
         }.ToImmutableDictionary();
