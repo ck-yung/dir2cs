@@ -140,9 +140,6 @@ static public partial class Helper
             .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
             .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
             .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
-            .Invoke(Sort.Files)
-            .Invoke(Show.ReverseInfo)
-            .Invoke(Show.TakeInfo)
             .Invoke((seq) => Sum.Func(seq, path));
     }
 
