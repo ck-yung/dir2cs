@@ -5,6 +5,8 @@ static public class Sum
     static public Func<IEnumerable<InfoFile>, string, InfoSum> Func
     { get; private set; } = (seq, path)
         => seq
+    .Where((it) => Wild.IsMatchWithinSize(it.Length))
+    .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
     .Select((it) =>
     {
         Helper.ItemWrite(Show.Size($"{MyOptions.LengthFormat.Invoke(it.Length)} "));
@@ -34,6 +36,8 @@ static public class Sum
                 case "dir":
                     Helper.PrintDir = (_) => InfoSum.Fake;
                     Func = (seq, path) => seq
+                        .Where((it) => Wild.IsMatchWithinSize(it.Length))
+                        .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
                         .GroupBy((it) => Helper.GetFirstDir(Path.GetDirectoryName(
                             Helper.io.GetRelativeName(it.FullName))))
                         .Select((grp) => grp.Aggregate(
@@ -54,6 +58,8 @@ static public class Sum
                 case "ext":
                     Helper.PrintDir = (_) => InfoSum.Fake;
                     Func = (seq, path) => seq
+                        .Where((it) => Wild.IsMatchWithinSize(it.Length))
+                        .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
                         .GroupBy((it) => it.Extension.ToLower())
                         .Select((grp) => grp.Aggregate(
                             seed: new InfoSum(Name:

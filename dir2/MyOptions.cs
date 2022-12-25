@@ -187,6 +187,7 @@ static public partial class MyOptions
         Show.Options,
         Sum.Options,
         (IParse) Helper.io.KeepDirOpt,
+        Wild.Within,
         TotalOption,
     };
 

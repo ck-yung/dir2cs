@@ -1,14 +1,17 @@
+using System.Collections.Immutable;
+using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using static dir2.MyOptions;
 
 namespace dir2;
 
 static public class Wild
 {
-    static public Func<string, Regex> MakeRegex { get; private set; }
+    static internal Func<string, Regex> MakeRegex { get; private set; }
         = (it) => new Regex(it, RegexOptions.IgnoreCase);
 
-    static public Func<string, string> ToRegexText { get; private set; } = (it) =>
+    static internal Func<string, string> ToRegexText { get; private set; } = (it) =>
     {
         var regText = new System.Text.StringBuilder("^");
         regText.Append(it
@@ -28,22 +31,22 @@ static public class Wild
         return regText.ToString();
     };
 
-    static public Func<string, bool> ToWildMatch(string arg)
+    static internal Func<string, bool> ToWildMatch(string arg)
     {
         var regThe = MakeRegex(ToRegexText(arg));
         return (it) => regThe.Match(it).Success;
     }
 
-    static public Func<string, bool> CheckIfFileNameMatched
+    static internal Func<string, bool> CheckIfFileNameMatched
     { get; private set; } = Always<string>.True;
-    static public Func<string, bool> CheckIfDirNameMatched
+    static internal Func<string, bool> CheckIfDirNameMatched
     { get; private set; } = Always<string>.True;
 
-    static public void InitMatchingNames(IEnumerable<string> names)
+    static internal void InitMatchingNames(IEnumerable<string> names)
     {
         var a2 = PrintDirOpt != PrintDir.Only;
         var matchFuncs = names
-            .Where((it) => it.Length>0)
+            .Where((it) => it.Length > 0)
             .Distinct()
             .Select((it) => ToWildMatch(it))
             .ToArray();
@@ -58,7 +61,7 @@ static public class Wild
         }
     }
 
-    static public readonly IInovke<string, bool> ExcludeFileName =
+    static internal readonly IInovke<string, bool> ExcludeFileName =
         new ParseInvoker<string, bool>("--excl", help: "FILE[;FILE ..]",
             init: Helper.Never,
             resolve: (parser, args) =>
@@ -69,7 +72,7 @@ static public class Wild
                 parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
             });
 
-    static public readonly IInovke<string, bool> ExcludeDirName =
+    static internal readonly IInovke<string, bool> ExcludeDirName =
         new ParseInvoker<string, bool>("--excl-dir", help: "DIR[;DIR ..]",
             init: Helper.Never,
             resolve: (parser, args) =>
@@ -78,5 +81,72 @@ static public class Wild
                 .Select((it) => ToWildMatch(it))
                 .ToArray();
                 parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
+            });
+
+    record WithData(bool IsSize, long Size, DateTime Date)
+    {
+        public WithData(long size)
+            : this(IsSize: true, Size: size, Date: DateTime.MinValue)
+        { }
+
+        public WithData(DateTime date)
+            : this(IsSize: false, Size: 0, Date: date)
+        { }
+
+        static public WithData Parse(string name, string arg)
+        {
+            if (long.TryParse(arg, out long valueLong))
+            {
+                return new WithData(valueLong);
+            }
+
+            if (DateTime.TryParse(arg, out DateTime valueDate))
+            {
+                return new WithData(valueDate);
+            }
+
+            throw new ArgumentException($"'{arg}' is bad to {name}");
+        }
+    }
+
+    static internal Func<long, bool> IsMatchWithinSize
+    { get; private set; } = Always<long>.True;
+
+    static internal Func<DateTime, bool> IsMatchWithinDate
+    { get; private set; } = Always<DateTime>.True;
+
+    static internal readonly IParse Within = new SimpleParser(name: "--within",
+            help: "SIZE | DATE",
+            resolve: (parser, args) =>
+            {
+                var aa = args.Where((it) => it.Length > 0).Distinct()
+                .Select((it) => (WithData.Parse(parser.Name, it),it))
+                .GroupBy((it) => it.Item1.IsSize)
+                .ToImmutableDictionary(
+                    (grp) => grp.Key, (grp) => grp.AsEnumerable());
+
+                if (aa.ContainsKey(true))
+                {
+                    var sizeWith = aa[true].Take(2).ToArray();
+                    if (sizeWith.Length > 1)
+                    {
+                        throw new ArgumentException(
+                            $"Too many Size '{sizeWith[0].Item2}', '{sizeWith[1].Item2}' to {parser.Name}");
+                    }
+                    var sizeMax = sizeWith[0].Item1.Size;
+                    IsMatchWithinSize = (size) => (size <= sizeMax);
+                }
+
+                if (aa.ContainsKey(false))
+                {
+                    var dateWithin = aa[false].Take(2).ToArray();
+                    if (dateWithin.Length > 1)
+                    {
+                        throw new ArgumentException(
+                            $"Too many DateTime '{dateWithin[0].Item2}', '{dateWithin[1].Item2}' to {parser.Name}");
+                    }
+                    var dateMax = dateWithin[0].Item1.Date;
+                    IsMatchWithinDate = (date) => (date <= dateMax);
+                }
             });
 }
