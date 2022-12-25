@@ -83,6 +83,8 @@ static public partial class Helper
         """);
         rtn.AppendLine();
 
+        rtn.AppendLine($" {Program.CfgOffOpt,16}");
+
         foreach (var optThe in
         from parser in MyOptions.Parsers
         join shortcut in MyOptions.ShortcutOptions

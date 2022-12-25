@@ -24,6 +24,8 @@ public class Program
         }
     }
 
+    internal const string CfgOffOpt = "--cfg-off";
+
 	static bool RunMain(string[] mainArgs)
 	{
 		if (mainArgs.Contains("--version"))
@@ -39,7 +41,15 @@ public class Program
             return false;
         }
 
-        var args = Parse(ExpandFromShortCut(mainArgs));
+        var cfgRest = Enumerable.Empty<string>();
+        if (false == mainArgs.Contains(CfgOffOpt))
+        {
+            cfgRest = Config.ParseFile()
+                .SelectMany((it) => it);
+        }
+
+        var args = Parse(cfgRest.Concat(ExpandFromShortCut(
+            mainArgs.Where((it) => false == it.Equals(CfgOffOpt)))));
 
         var pathThe = "." + Path.DirectorySeparatorChar;
 

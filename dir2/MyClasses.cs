@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace dir2;
 
 static public partial class MyOptions
@@ -29,7 +31,7 @@ static public partial class MyOptions
 
         public IEnumerable<(bool, string)> Parse(IEnumerable<(bool, string)> args)
         {
-            bool isActed = false;
+            bool notYetActed = true;
             var it = args.GetEnumerator();
             while (it.MoveNext())
             {
@@ -37,9 +39,32 @@ static public partial class MyOptions
                 if (current.Item2 == Name)
                 {
                     Flag = true;
-                    if (false == isActed)
+                    if (notYetActed)
                     {
-                        isActed = true;
+                        notYetActed = false;
+                        Action();
+                    }
+                }
+                else
+                {
+                    yield return current;
+                }
+            }
+        }
+
+        public IEnumerable<string[]> Parse2(IEnumerable<string[]> args)
+        {
+            bool notYetActed = true;
+            var it = args.GetEnumerator();
+            while (it.MoveNext())
+            {
+                var current = it.Current;
+                if ((current.Length == 1) && (current[0] == Name))
+                {
+                    Flag = true;
+                    if (notYetActed)
+                    {
+                        notYetActed = false;
                         Action();
                     }
                 }
@@ -95,16 +120,30 @@ static public partial class MyOptions
 
             var groupThe = ToFlagEnum()
                 .GroupBy((it) => it.Item1)
-                .ToDictionary((it) => it.Key, (it) => it.AsEnumerable());
+                .ToImmutableDictionary((it) => it.Key, (it) => it.AsEnumerable());
 
             if (groupThe.ContainsKey(true))
             {
-                var argsFound = groupThe[true].Select((it) => it.Item2);
-                Resolve(this, argsFound);
+                Resolve(this, groupThe[true].Select((it) => it.Item2));
             }
 
             if (groupThe.ContainsKey(false)) return groupThe[false];
             return Enumerable.Empty<(bool, string)>();
+        }
+
+        public IEnumerable<string[]> Parse2(IEnumerable<string[]> args)
+        {
+            var groupThe = args
+                .GroupBy((it) => (it.Length == 2) ? (it[0] == Name) : false)
+                .ToImmutableDictionary((grp) => grp.Key, (grp) => grp.AsEnumerable());
+
+            if (groupThe.ContainsKey(true))
+            {
+                Resolve(this, groupThe[true].Select((it) => it[1]));
+            }
+
+            if (groupThe.ContainsKey(false)) return groupThe[false];
+            return Enumerable.Empty<string[]>();
         }
     }
 

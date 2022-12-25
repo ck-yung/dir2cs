@@ -255,15 +255,15 @@ static public partial class MyOptions
         }
     }
 
-    static public IParse[] Parsers = new IParse[]
+    static public readonly IParse[] Parsers = new IParse[]
     {
         (IParse) ScanSubDir,
         (IParse) PrintDirOption,
         Wild.CaseSensitiveOpt,
         Wild.RegexOpt,
         (IParse) LengthFormat,
-        (IParse) DateFormat,
         (IParse) Show.CountFormat,
+        (IParse) DateFormat,
         (IParse) Wild.ExcludeFileName,
         (IParse) Wild.ExcludeDirName,
         (IParse) Wild.ExtInfoOpt,
@@ -278,6 +278,25 @@ static public partial class MyOptions
         Show.ReverseOpt,
         Show.TakeOpt,
         TotalOption,
+    };
+
+    static public readonly IParse[] ConfigParsers = new IParse[]
+    {
+            //(IParser) EncodeConsoleOuput, // TODO
+            (IParse) Wild.RegexOpt,
+            Wild.CaseSensitiveOpt,
+            Sort.Options,
+            (IParse) LengthFormat,
+            (IParse) Show.CountFormat,
+            (IParse) DateFormat,
+            (IParse) Helper.IsHiddenOpt,
+            Sort.Options,
+    };
+
+    static public readonly IParse[] ExclFileDirParsers = new IParse[]
+    {
+        (IParse) Wild.ExcludeFileName,
+        (IParse) Wild.ExcludeDirName,
     };
 
     static internal ImmutableDictionary<string, string> ShortcutOptions
