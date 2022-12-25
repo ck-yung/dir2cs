@@ -1,3 +1,5 @@
+using static dir2.MyOptions;
+
 namespace dir2;
 
 public record InfoBase(string Name,
@@ -14,7 +16,7 @@ public record InfoDir(string Name,
 {
     static internal readonly InfoDir Fake = new (string.Empty
         , string.Empty, string.Empty
-        , DateTime.MinValue, DateTime.MinValue, null);
+        , DateTime.MinValue, DateTime.MinValue, string.Empty);
 
     public bool IsNotFake()
     {
@@ -29,12 +31,14 @@ public record InfoFile(string Name,
     long Length,
     DateTime CreationTime,
     DateTime LastWriteTime,
+    FileAttributes Attributes,
     string LinkTarget)
     : InfoBase(Name, CreationTime, LastWriteTime)
 {
     static internal readonly InfoFile Fake = new(string.Empty
         , string.Empty, string.Empty, string.Empty, 0
-        , DateTime.MinValue, DateTime.MinValue, null);
+        , DateTime.MinValue, DateTime.MinValue
+        , FileAttributes.Normal, string.Empty);
 
     public bool IsNotFake()
     {
@@ -155,6 +159,7 @@ static public partial class Helper
                 Length: rtn.Length,
                 CreationTime: rtn.CreationTime,
                 LastWriteTime: rtn.LastWriteTime,
+                Attributes: rtn.Attributes,
                 LinkTarget: rtn.LinkTarget ?? string.Empty);
         }
         catch
@@ -162,4 +167,35 @@ static public partial class Helper
             return InfoFile.Fake;
         }
     }
+
+    static private bool IsHidden(this InfoFile arg)
+    {
+        if (arg.Attributes.HasFlag(FileAttributes.Hidden)) return true;
+        if (string.IsNullOrEmpty(arg.Name)) return true;
+        if (arg.Name[0] == '.') return true;
+        return false;
+    }
+
+    static internal readonly IInovke<InfoFile, bool> IsHiddenOpt =
+        new ParseInvoker<InfoFile, bool>("--hidden", help: "excl | incl | only",
+            init: (it) => false == it.IsHidden(), resolve: (parser, args) =>
+            {
+                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
+                if (aa.Length > 1)
+                    throw new ArgumentException($"Too many values to {parser.Name}");
+                switch (aa[0])
+                {
+                    case "excl":
+                        parser.SetImplementation((it) => false == it.IsHidden());
+                        break;
+                    case "incl":
+                        parser.SetImplementation(Always<InfoFile>.True);
+                        break;
+                    case "only":
+                        parser.SetImplementation((it) => it.IsHidden());
+                        break;
+                    default:
+                        throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
+                }
+            });
 }

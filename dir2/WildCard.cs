@@ -70,7 +70,7 @@ static public class Wild
     }
 
     static internal readonly IInovke<string, bool> ExcludeFileName =
-        new ParseInvoker<string, bool>("--excl", help: "FILE[;FILE ..]",
+        new ParseInvoker<string, bool>("--excl", help: "WILD[;WILD ..]",
             init: Helper.Never,
             resolve: (parser, args) =>
             {
@@ -81,7 +81,7 @@ static public class Wild
             });
 
     static internal readonly IInovke<string, bool> ExcludeDirName =
-        new ParseInvoker<string, bool>("--excl-dir", help: "DIR[;DIR ..]",
+        new ParseInvoker<string, bool>("--excl-dir", help: "WILD[;WILD ..]",
             init: Helper.Never,
             resolve: (parser, args) =>
             {
@@ -207,7 +207,7 @@ static public class Wild
             });
 
     static internal readonly IInovke<InfoFile, bool> ExtInfoOpt =
-        new ParseInvoker<InfoFile, bool>("--no-ext", help: "excl | only",
+        new ParseInvoker<InfoFile, bool>("--no-ext", help: "incl | excl | only",
             init: Always<InfoFile>.True, resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length>0).Distinct().Take(2).ToArray();
@@ -215,6 +215,9 @@ static public class Wild
                     throw new ArgumentException($"Too many values to {parser.Name}");
                 switch (aa[0])
                 {
+                    case "incl":
+                        parser.SetImplementation(Always<InfoFile>.True);
+                        break;
                     case "excl":
                         parser.SetImplementation((it) => false == string.IsNullOrEmpty(it.Extension));
                         break;

@@ -148,6 +148,7 @@ public class Program
                     .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
                     .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
                     .Where((it) => Wild.ExtInfoOpt.Invoke(it))
+                    .Where((it) => IsHiddenOpt.Invoke(it))
                     .Invoke((seq) => Sum.Func(seq));
             }
         }

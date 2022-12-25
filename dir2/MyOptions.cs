@@ -233,6 +233,7 @@ static public partial class MyOptions
         (IParse) Wild.ExcludeFileName,
         (IParse) Wild.ExcludeDirName,
         (IParse) Wild.ExtInfoOpt,
+        (IParse) Helper.IsHiddenOpt,
         Sort.Options,
         Show.Options,
         Sum.Options,
