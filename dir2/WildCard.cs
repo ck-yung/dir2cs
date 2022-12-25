@@ -161,7 +161,7 @@ static public class Wild
                             $"Too many DateTime '{dateWithin[0].Item2}', '{dateWithin[1].Item2}' to {parser.Name}");
                     }
                     var dateMax = dateWithin[0].Item1.Date;
-                    IsMatchWithinDate = (date) => (date <= dateMax);
+                    IsMatchWithinDate = (date) => (date >= dateMax);
                 }
             });
 
@@ -202,7 +202,7 @@ static public class Wild
                             $"Too many DateTime '{dateNotWithin[0].Item2}', '{dateNotWithin[1].Item2}' to {parser.Name}");
                     }
                     var dateMin = dateNotWithin[0].Item1.Date;
-                    IsMatchNotWithinDate = (date) => (date > dateMin);
+                    IsMatchNotWithinDate = (date) => (date < dateMin);
                 }
             });
 
