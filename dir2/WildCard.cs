@@ -91,36 +91,20 @@ static public class Wild
             : this(IsSize: false, Size: 0, Date: date)
         { }
 
-        static long unitValue(char unitThe)
-        {
-            return unitThe switch
-            {
-                'k' => 1024,
-                'm' => 1024 * 1024,
-                _ => 1024 * 1024 * 1024,// g
-            };
-        }
-
         static public WithData Parse(string name, string arg)
         {
-            if (long.TryParse(arg, out long valueLong))
+            long valueThe;
+            if (long.TryParse(arg, out valueThe))
             {
-                return new WithData(valueLong);
+                return new WithData(valueThe);
             }
 
-            if (Regex.Match(arg, @"^\d+[kmg]$").Success)
+            if (Helper.TryParseKiloNumber( arg, out valueThe))
             {
-                if (long.TryParse(arg.AsSpan(0, arg.Length - 1),
-                    out long valThe))
-                {
-                    if (valThe > 0)
-                    {
-                        valThe *= unitValue(arg[^1]);
-                        return new WithData(valThe);
-                    }
-                }
+                return new WithData(valueThe);
             }
 
+            // TODO: Various date-formats should be supported.
             if (DateTime.TryParse(arg, out DateTime valueDate))
             {
                 return new WithData(valueDate);

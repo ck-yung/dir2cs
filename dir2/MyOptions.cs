@@ -189,6 +189,8 @@ static public partial class MyOptions
         (IParse) Helper.io.KeepDirOpt,
         Wild.Within,
         Wild.NotWithin,
+        Show.ReverseOpt,
+        Show.TakeOpt,
         TotalOption,
     };
 
@@ -242,6 +244,7 @@ static public partial class MyOptions
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
             ["-k"] = ("", new[] { "--keep-dir" }),
+            ["-r"] = ("", new[] { "--reverse" }),
             ["-t"] = ("", new[] { "--total", "only" }),
             ["-b"] = ("Brief path name", new[] { "--total", "off", "--hide", "date,size,count" }),
             ["-w"] = ("Select size, date-time", new[] { "--within" }),

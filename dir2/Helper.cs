@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace dir2;
 
@@ -23,6 +24,8 @@ static public partial class Helper
     }
 
     static public void DoNothing<T>(T _) { }
+
+    static public T itself<T>(T arg) => arg;
 
     /// <summary>
     /// Always return false
@@ -112,6 +115,8 @@ static public partial class Helper
             .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
             .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
             .Invoke(Sort.Dirs)
+            .Invoke(Show.ReverseDir)
+            .Invoke(Show.TakeDir)
             .Select((it) =>
             {
                 ItemWrite(Show.Size("DIR "));
@@ -131,7 +136,13 @@ static public partial class Helper
             .Where((it) => it.IsNotFake())
             .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
             .Where((it) => (false == Wild.ExcludeFileName.Invoke(it.Name)))
+            .Where((it) => Wild.IsMatchWithinSize(it.Length))
+            .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
+            .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
+            .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
             .Invoke(Sort.Files)
+            .Invoke(Show.ReverseInfo)
+            .Invoke(Show.TakeInfo)
             .Invoke((seq) => Sum.Func(seq, path));
     }
 
@@ -183,5 +194,36 @@ static public partial class Helper
         var rtn = path.Split(Path.DirectorySeparatorChar)
             .Take(2).FirstOrDefault();
         return string.IsNullOrEmpty(rtn) ? "." : rtn;
+    }
+    static public bool TryParseKiloNumber(string arg, out long result)
+    {
+        long unitValue(char unitThe)
+        {
+            return unitThe switch
+            {
+                'k' => 1024,
+                'm' => 1024 * 1024,
+                _ => 1024 * 1024 * 1024,// g
+            };
+        }
+
+        if (long.TryParse(arg, out result))
+        {
+            return true;
+        }
+
+        if (Regex.Match(arg, @"^\d+[kmg]$").Success)
+        {
+            if (long.TryParse(arg.AsSpan(0, arg.Length - 1),
+                out result))
+            {
+                if (result > 0)
+                {
+                    result *= unitValue(arg[^1]);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

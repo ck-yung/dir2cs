@@ -11,15 +11,25 @@ static public partial class MyOptions
         public string Name { get; init; }
 
         public string Help { get; init; }
+        public readonly Action Action;
 
         public SwitchParser(string name, string help = "")
         {
             Name = name;
             Help = help;
+            Action = () => { };
+        }
+
+        public SwitchParser(string name, Action action, string help = "")
+        {
+            Name = name;
+            Help = help;
+            Action = action;
         }
 
         public IEnumerable<(bool, string)> Parse(IEnumerable<(bool, string)> args)
         {
+            bool isActed = false;
             var it = args.GetEnumerator();
             while (it.MoveNext())
             {
@@ -27,6 +37,11 @@ static public partial class MyOptions
                 if (current.Item2 == Name)
                 {
                     Flag = true;
+                    if (false == isActed)
+                    {
+                        isActed = true;
+                        Action();
+                    }
                 }
                 else
                 {

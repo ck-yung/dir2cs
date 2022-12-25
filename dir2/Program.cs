@@ -125,6 +125,8 @@ public class Program
                     .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
                     .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
                     .Invoke(Sort.Dirs)
+                    .Invoke(Show.ReverseDir)
+                    .Invoke(Show.TakeDir)
                     .Select((it) =>
                     {
                         ItemWrite(Show.Date($"{DateFormat.Invoke(it.LastWriteTime)} "));
@@ -141,7 +143,10 @@ public class Program
                     .Where((it) => it.IsNotFake())
                     .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
                     .Where((it) => (false == Wild.ExcludeFileName.Invoke(it.Name)))
-                    .Invoke(Sort.Files)
+                    .Where((it) => Wild.IsMatchWithinSize(it.Length))
+                    .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
+                    .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
+                    .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
                     .Invoke((seq) => Sum.Func(seq, pathThe));
             }
         }

@@ -5,10 +5,9 @@ static public class Sum
     static public Func<IEnumerable<InfoFile>, string, InfoSum> Func
     { get; private set; } = (seq, path)
         => seq
-    .Where((it) => Wild.IsMatchWithinSize(it.Length))
-    .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
-    .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
-    .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
+    .Invoke(Sort.Files)
+    .Invoke(Show.ReverseInfo)
+    .Invoke(Show.TakeInfo)
     .Select((it) =>
     {
         Helper.ItemWrite(Show.Size($"{MyOptions.LengthFormat.Invoke(it.Length)} "));
@@ -38,10 +37,6 @@ static public class Sum
                 case "dir":
                     Helper.PrintDir = (_) => InfoSum.Fake;
                     Func = (seq, path) => seq
-                        .Where((it) => Wild.IsMatchWithinSize(it.Length))
-                        .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
-                        .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
-                        .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
                         .GroupBy((it) => Helper.GetFirstDir(Path.GetDirectoryName(
                             Helper.io.GetRelativeName(it.FullName))))
                         .Select((grp) => grp.Aggregate(
@@ -49,6 +44,8 @@ static public class Sum
                             string.IsNullOrEmpty(grp.Key) ? "." : grp.Key),
                             func: (acc, it) => acc.AddWith(it)))
                         .Invoke((seq) => Sort.Sums(seq))
+                        .Invoke(Show.ReverseSum)
+                        .Invoke(Show.TakeSum)
                         .Select((it) =>
                         {
                             it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
@@ -62,16 +59,14 @@ static public class Sum
                 case "ext":
                     Helper.PrintDir = (_) => InfoSum.Fake;
                     Func = (seq, path) => seq
-                        .Where((it) => Wild.IsMatchWithinSize(it.Length))
-                        .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
-                        .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
-                        .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
                         .GroupBy((it) => it.Extension.ToLower())
                         .Select((grp) => grp.Aggregate(
                             seed: new InfoSum(Name:
                             string.IsNullOrEmpty(grp.Key) ? "*NO-EXT*" : grp.Key),
                             func: (acc, it) => acc.AddWith(it)))
                         .Invoke((seq) => Sort.Sums(seq))
+                        .Invoke(Show.ReverseSum)
+                        .Invoke(Show.TakeSum)
                         .Select((it) =>
                         {
                             it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
