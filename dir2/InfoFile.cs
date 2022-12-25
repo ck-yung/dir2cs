@@ -1,7 +1,6 @@
 namespace dir2;
 
 public record InfoBase(string Name,
-    string Extension,
     DateTime CreationTime,
     DateTime LastWriteTime);
 
@@ -11,7 +10,7 @@ public record InfoDir(string Name,
     DateTime CreationTime,
     DateTime LastWriteTime,
     string LinkTarget)
-    : InfoBase(Name, Extension, CreationTime, LastWriteTime)
+    : InfoBase(Name, CreationTime, LastWriteTime)
 {
     static internal readonly InfoDir Fake = new (string.Empty
         , string.Empty, string.Empty
@@ -31,7 +30,7 @@ public record InfoFile(string Name,
     DateTime CreationTime,
     DateTime LastWriteTime,
     string LinkTarget)
-    : InfoBase(Name, Extension, CreationTime, LastWriteTime)
+    : InfoBase(Name, CreationTime, LastWriteTime)
 {
     static internal readonly InfoFile Fake = new(string.Empty
         , string.Empty, string.Empty, string.Empty, 0

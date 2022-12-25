@@ -13,7 +13,7 @@ public class Program
 		}
 		catch (Exception ee)
 		{
-            if (Helper.GetExeEnvr().Contains(":exception.stack:"))
+            if (GetExeEnvr().Contains(":exception.stack:"))
             {
                 Console.WriteLine(ee);
             }
@@ -124,7 +124,6 @@ public class Program
                     .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
                     .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
                     .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
-                    .Where((it) => Wild.ExtInfoOpt.Invoke(it))
                     .Invoke(Sort.Dirs)
                     .Invoke(Show.ReverseDir)
                     .Invoke(Show.TakeDir)

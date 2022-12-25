@@ -206,9 +206,9 @@ static public class Wild
                 }
             });
 
-    static internal readonly IInovke<InfoBase, bool> ExtInfoOpt =
-        new ParseInvoker<InfoBase, bool>("--no-ext", help: "excl | only",
-            init: Always<InfoBase>.True, resolve: (parser, args) =>
+    static internal readonly IInovke<InfoFile, bool> ExtInfoOpt =
+        new ParseInvoker<InfoFile, bool>("--no-ext", help: "excl | only",
+            init: Always<InfoFile>.True, resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length>0).Distinct().Take(2).ToArray();
                 if (aa.Length > 1)
