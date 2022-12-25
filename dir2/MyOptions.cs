@@ -224,9 +224,14 @@ static public partial class MyOptions
         while (it2.MoveNext())
         {
             var current = it2.Current;
-            if (ShortcutOptions.TryGetValue(current, out (string, string[]) found))
+            if (ShortcutOptions.TryGetValue(current, out string found))
             {
-                foreach (var opt in found.Item2)
+                yield return found;
+            }
+            else if (ShortcutComplexOptions.TryGetValue(current,
+                out (string, string[]) founds))
+            {
+                foreach (var opt in founds.Item2)
                     yield return opt;
             }
             else
@@ -236,20 +241,27 @@ static public partial class MyOptions
         }
     }
 
-    static internal ImmutableDictionary<string, (string, string[])> ShortcutOptions
+    static internal ImmutableDictionary<string, string> ShortcutOptions
+        = new Dictionary<string, string>()
+        {
+            ["-o"] = "--sort",
+            ["-s"] = "--sub",
+            ["-k"] = "--keep-dir",
+            ["-r"] = "--reverse",
+            ["-w"] = "--within",
+            ["-W"] = "--not-within",
+            ["-x"] = "--excl",
+            ["-X"] = "--excl-dir",
+        }.ToImmutableDictionary();
+
+    static internal ImmutableDictionary<string, (string, string[])>
+        ShortcutComplexOptions
         = new Dictionary<string, (string, string[])>
         {
-            ["-o"] = ("", new[] { "--sort" }),
-            ["-s"] = ("Scan sub dir", new[] { "--sub" }),
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
-            ["-k"] = ("", new[] { "--keep-dir" }),
-            ["-r"] = ("", new[] { "--reverse" }),
             ["-t"] = ("", new[] { "--total", "only" }),
-            ["-b"] = ("Brief path name", new[] { "--total", "off", "--hide", "date,size,count" }),
-            ["-w"] = ("Select size, date-time", new[] { "--within" }),
-            ["-W"] = ("Select size, date-time", new[] { "--not-within" }),
-            ["-x"] = ("Excluding file name", new[] { "--excl" }),
-            ["-X"] = ("Excluding dir name", new[] { "--excl-dir" }),
+            ["-b"] = ("Brief path name", new[] {
+                "--total", "off", "--hide", "date,size,count" }),
         }.ToImmutableDictionary();
 }

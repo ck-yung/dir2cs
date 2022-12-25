@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace dir2;
 
@@ -81,25 +82,27 @@ static public partial class Helper
         OPTION:
         """);
         rtn.AppendLine();
-        foreach (var parser in MyOptions.Parsers)
+
+        foreach (var optThe in
+        from parser in MyOptions.Parsers
+        join shortcut in MyOptions.ShortcutOptions
+        on parser.Name equals shortcut.Value into gj
+        from found in gj.DefaultIfEmpty()
+        select new
         {
-            if (string.IsNullOrEmpty(parser.Help))
-            {
-                rtn.Append($"  {parser.Name,16}");
-            }
-            else
-            {
-                rtn.Append($"  {parser.Name,16}   {parser.Help}");
-            }
-            rtn.AppendLine();
+            parser.Name, parser.Help,
+            Shortcut = string.IsNullOrEmpty(found.Key) ? "  " : found.Key
+        })
+        {
+            rtn.AppendLine($" {optThe.Name,16} {optThe.Shortcut}  {optThe.Help}");
         }
-        rtn.AppendLine("SHORTCUT:");
-        foreach (var kvThe in MyOptions.ShortcutOptions
+        rtn.AppendLine();
+        foreach (var kvThe in MyOptions.ShortcutComplexOptions
             .OrderBy((it) => it.Key))
         {
-            var textThe = new StringBuilder($"  {kvThe.Key}  ");
+            var textThe = new StringBuilder($" {kvThe.Value.Item1,-16} {kvThe.Key}");
             var text2The = string.Join(" ", kvThe.Value.Item2);
-            textThe.Append($"{text2The,-12}  {kvThe.Value.Item1}");
+            textThe.Append($"  => {text2The,-12}");
             rtn.AppendLine(textThe.ToString());
         }
         return rtn.ToString();

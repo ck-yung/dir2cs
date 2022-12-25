@@ -66,33 +66,49 @@ static internal class Show
                 throw new ArgumentException($"Too many values to {parser.Name}");
             if (int.TryParse(aa[0], out int takeCount))
             {
-                if (PrintDirOpt == PrintDir.Only)
+                if (Sum.IsFuncChanged)
                 {
-                    TakeDir = (seq) => seq.Take(takeCount);
+                    int sumCount = 0;
+                    TakeSum = (seq) => seq
+                    .TakeWhile((it) =>
+                    {
+                        sumCount += it.Count;
+                        return sumCount < takeCount;
+                    });
                 }
                 else
                 {
-                    TakeInfo = (seq) => seq.Take(takeCount);
+                    if (PrintDirOpt == PrintDir.Only)
+                    {
+                        TakeDir = (seq) => seq.Take(takeCount);
+                    }
+                    else
+                    {
+                        TakeInfo = (seq) => seq.Take(takeCount);
+                    }
                 }
-                TakeSum = (seq) => seq.Take(takeCount);
             }
             else if (Helper.TryParseKiloNumber(aa[0], out long maxSize))
             {
                 long sumSize = 0L;
-
-                TakeInfo = (seq) => seq
-                .TakeWhile((it) =>
+                if (Sum.IsFuncChanged)
                 {
-                    sumSize += it.Length;
-                    return sumSize < maxSize;
-                });
-
-                TakeSum = (seq) => seq
-                .TakeWhile((it) =>
+                    TakeSum = (seq) => seq
+                    .TakeWhile((it) =>
+                    {
+                        sumSize += it.Length;
+                        return sumSize < maxSize;
+                    });
+                }
+                else
                 {
-                    sumSize += it.Length;
-                    return sumSize < maxSize;
-                });
+                    TakeInfo = (seq) => seq
+                    .TakeWhile((it) =>
+                    {
+                        sumSize += it.Length;
+                        return sumSize < maxSize;
+                    });
+                }
             }
             else
             {

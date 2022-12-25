@@ -55,7 +55,7 @@ static public partial class Helper
 
         static public readonly ImplicitBool KeepDirOpt =
             new SwitchParser(name: "--keep-dir",
-                help: "Show first DIRNAME arg (if no ..)");
+                help: "\"Show first DIRNAME\"");
 
         static public Func<string, string> _GetFullPath
         { get; private set; } = Path.GetFullPath;

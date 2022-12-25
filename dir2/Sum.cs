@@ -2,22 +2,32 @@ namespace dir2;
 
 static public class Sum
 {
+    static public bool IsFuncChanged { get; private set; } = false;
+    static private Func<IEnumerable<InfoFile>, string, InfoSum>
+        _func = (seq, path) => seq
+        .Invoke(Sort.Files)
+        .Invoke(Show.ReverseInfo)
+        .Invoke(Show.TakeInfo)
+        .Select((it) =>
+        {
+            Helper.ItemWrite(Show.Size($"{MyOptions.LengthFormat.Invoke(it.Length)} "));
+            Helper.ItemWrite(Show.Date($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} "));
+            Helper.ItemWriteLine(Helper.io.GetRelativeName(it.FullName));
+            return it;
+        })
+        .Aggregate(
+            seed: new InfoSum(Helper.io.RealInitPath),
+            func: (acc, it) => acc.AddWith(it));
+
     static public Func<IEnumerable<InfoFile>, string, InfoSum> Func
-    { get; private set; } = (seq, path)
-        => seq
-    .Invoke(Sort.Files)
-    .Invoke(Show.ReverseInfo)
-    .Invoke(Show.TakeInfo)
-    .Select((it) =>
     {
-        Helper.ItemWrite(Show.Size($"{MyOptions.LengthFormat.Invoke(it.Length)} "));
-        Helper.ItemWrite(Show.Date($"{MyOptions.DateFormat.Invoke(it.LastWriteTime)} "));
-        Helper.ItemWriteLine(Helper.io.GetRelativeName(it.FullName));
-        return it;
-    })
-    .Aggregate(
-        seed: new InfoSum(Helper.io.RealInitPath),
-        func: (acc, it) => acc.AddWith(it));
+        get => _func;
+        private set
+        {
+            _func = value;
+            IsFuncChanged = true;
+        }
+    }
 
     static public readonly IParse Options = new MyOptions.SimpleParser(name: "--sum",
         help: "dir | ext",
