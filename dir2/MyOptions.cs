@@ -180,6 +180,7 @@ static public partial class MyOptions
         (IParse) ScanSubDir,
         (IParse) PrintDirOption,
         Wild.CaseSensitiveOpt,
+        Wild.RegexOpt,
         (IParse) LengthFormat,
         (IParse) DateFormat,
         (IParse) Wild.ExcludeFileName,

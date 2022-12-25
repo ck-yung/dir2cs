@@ -33,6 +33,11 @@ static public class Wild
             ).Append('$');
         return regText.ToString();
     };
+    static internal readonly IParse RegexOpt = new SwitchParser(
+        name: "--regex", action: () =>
+        {
+            ToRegexText = Helper.itself;
+        });
 
     static internal Func<string, bool> ToWildMatch(string arg)
     {
