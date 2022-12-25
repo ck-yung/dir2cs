@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Text.RegularExpressions;
 
 namespace dir2;
 
@@ -92,29 +93,61 @@ static public partial class MyOptions
     }
 
     static public readonly IInovke<long, string> LengthFormat =
-        new ParseInvoker<long, string>(name: "--size-format",
-            help: "short | long | comma | eight",
-            init: (value) => $"{value,8}", resolve: (parser, args) =>
+        new ParseInvoker<long, string>(name: "--size-format", help: "short | comma;WIDTH",
+            init: (it) => $"{it,8} ", resolve: (parser, args) =>
             {
-                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-                if (aa.Length > 1)
-                    throw new ArgumentException($"Too many values to {parser.Name}");
-                switch (aa[0])
+                var pattern = @"\d+|comma|short";
+                var aa = Helper.CommonSplit(args).OrderBy((it) => it).Take(4).ToArray();
+                foreach (var a2 in aa)
                 {
-                    case "short":
-                        parser.SetImplementation((value) => ToKiloUnit(value));
-                        break;
-                    case "long":
-                        parser.SetImplementation((value) => $"{value,12} ");
-                        break;
-                    case "comma":
-                        parser.SetImplementation((value) => $"{value,19:N0} ");
-                        break;
-                    case "eight":
-                        parser.SetImplementation((value) => $"{value,8} ");
-                        break;
-                    default:
-                        throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
+                    if (false == Regex.Match(a2, pattern, RegexOptions.None).Success)
+                    {
+                        throw new ArgumentException($"'{a2}' is bad to {parser.Name}");
+                    }
+                }
+
+                if (aa.Contains("short"))
+                {
+                    if (aa.Length > 1) throw new ArgumentException($"Too many values to {parser.Name}");
+                    parser.SetImplementation((val) => ToKiloUnit(val));
+                    return;
+                }
+
+                if (aa.Length == 1)
+                {
+                    if (aa[0] == "comma")
+                    {
+                        parser.SetImplementation((it) => $"{it,8:N0} ");
+                        return;
+                    }
+                    else
+                    {
+                        if (int.TryParse(aa[0], out int width))
+                        {
+                            if (width > 30)
+                                throw new ArgumentException($"'{aa[0]}' is too largth width to {parser.Name}");
+                            var fmtThe = $"{{0,{width}}} ";
+                            parser.SetImplementation((it) => string.Format(fmtThe, it));
+                            return;
+                        }
+                        throw new ArgumentException($"'{aa[0]}' is NOT width to {parser.Name}");
+                    }
+                }
+                else if (2 == aa.Length && aa[1] == "comma")
+                {
+                    if (int.TryParse(aa[0], out int width))
+                    {
+                        if (width > 30)
+                            throw new ArgumentException($"'{aa[0]}' is too largth width to {parser.Name}");
+                        var fmtThe = $"{{0,{width}:N0}} ";
+                        parser.SetImplementation((it) => string.Format(fmtThe, it));
+                        return;
+                    }
+                    throw new ArgumentException($"'{aa[0]}' is NOT width to {parser.Name}");
+                }
+                else
+                {
+                    throw new ArgumentException($"Bad values is found to {parser.Name}");
                 }
             });
 

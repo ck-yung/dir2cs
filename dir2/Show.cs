@@ -158,6 +158,8 @@ static internal class Show
                     {
                         if (int.TryParse(aa[0], out int width))
                         {
+                            if (width > 30)
+                                throw new ArgumentException($"'{aa[0]}' is too largth width to {parser.Name}");
                             var fmtThe = $"{{0,{width}}} ";
                             parser.SetImplementation((it) => string.Format(fmtThe, it));
                             return;
@@ -169,6 +171,8 @@ static internal class Show
                 {
                     if (int.TryParse(aa[0], out int width))
                     {
+                        if (width > 30)
+                            throw new ArgumentException($"'{aa[0]}' is too largth width to {parser.Name}");
                         var fmtThe = $"{{0,{width}:N0}} ";
                         parser.SetImplementation((it) => string.Format(fmtThe, it));
                         return;
