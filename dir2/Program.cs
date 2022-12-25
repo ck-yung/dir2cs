@@ -147,7 +147,7 @@ public class Program
                     .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
                     .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
                     .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
-                    .Invoke((seq) => Sum.Func(seq, pathThe));
+                    .Invoke((seq) => Sum.Func(seq));
             }
         }
         else

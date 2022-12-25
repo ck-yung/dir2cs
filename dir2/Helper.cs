@@ -143,7 +143,7 @@ static public partial class Helper
             .Where((it) => Wild.IsMatchWithinDate(it.LastWriteTime))
             .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
             .Where((it) => Wild.IsMatchNotWithinDate(it.LastWriteTime))
-            .Invoke((seq) => Sum.Func(seq, path));
+            .Invoke((seq) => Sum.Func(seq));
     }
 
     static internal Action<string> ItemWrite { get; set; } = Write;
@@ -225,5 +225,13 @@ static public partial class Helper
             }
         }
         return false;
+    }
+    static internal string GetLastDir(string path)
+    {
+        return path
+            .TrimEnd(Path.DirectorySeparatorChar)
+            .Split(Path.DirectorySeparatorChar)
+            .AsEnumerable()
+            .Last();
     }
 }

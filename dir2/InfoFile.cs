@@ -43,9 +43,17 @@ public class InfoSum
     public long Length { get; private set; } = 0L;
     public DateTime StartTime { get; private set; } = DateTime.MaxValue;
     public DateTime EndTime { get; private set; } = DateTime.MinValue;
+
     public InfoSum(string Name)
     {
         this.Name = Name;
+    }
+
+    public InfoSum(string Name, bool extra)
+    {
+        this.Name = Name;
+        StartTime = new DateTime(year: 1, month: 1, day: 1);
+        EndTime= StartTime;
     }
 
     static internal readonly InfoSum Fake = new(string.Empty);
@@ -74,8 +82,9 @@ public class InfoSum
     {
         Count += other.Count;
         Length += other.Length;
-        if (StartTime > other.StartTime) StartTime = other.StartTime;
         if (EndTime < other.EndTime) EndTime= other.EndTime;
+        if (StartTime > other.StartTime && other.StartTime.Year > 1)
+            StartTime = other.StartTime;
         return this;
     }
 
