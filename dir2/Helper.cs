@@ -117,6 +117,7 @@ static public partial class Helper
             .Where((it) => (false == Wild.ExcludeDirName.Invoke(it.Name)))
             .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
             .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
+            .Where((it) => Wild.ExtInfoOpt.Invoke(it))
             .Invoke(Sort.Dirs)
             .Invoke(Show.ReverseDir)
             .Invoke(Show.TakeDir)
@@ -143,6 +144,7 @@ static public partial class Helper
             .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
             .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
             .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
+            .Where((it) => Wild.ExtInfoOpt.Invoke(it))
             .Invoke((seq) => Sum.Func(seq));
     }
 

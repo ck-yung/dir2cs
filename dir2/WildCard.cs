@@ -130,7 +130,7 @@ static public class Wild
     static internal Func<DateTime, bool> IsMatchWithinDate
     { get; private set; } = Always<DateTime>.True;
 
-    static internal readonly IParse Within = new SimpleParser(name: "--within",
+    static internal readonly IParse WithinOpt = new SimpleParser(name: "--within",
             help: "SIZE | DATE",
             resolve: (parser, args) =>
             {
@@ -171,7 +171,7 @@ static public class Wild
     static internal Func<DateTime, bool> IsMatchNotWithinDate
     { get; private set; } = Always<DateTime>.True;
 
-    static internal readonly IParse NotWithin = new SimpleParser(name: "--not-within",
+    static internal readonly IParse NotWithinOpt = new SimpleParser(name: "--not-within",
             help: "SIZE | DATE",
             resolve: (parser, args) =>
             {
@@ -203,6 +203,26 @@ static public class Wild
                     }
                     var dateMin = dateNotWithin[0].Item1.Date;
                     IsMatchNotWithinDate = (date) => (date > dateMin);
+                }
+            });
+
+    static internal readonly IInovke<InfoBase, bool> ExtInfoOpt =
+        new ParseInvoker<InfoBase, bool>("--no-ext", help: "excl | only",
+            init: Always<InfoBase>.True, resolve: (parser, args) =>
+            {
+                var aa = args.Where((it) => it.Length>0).Distinct().Take(2).ToArray();
+                if (aa.Length > 1)
+                    throw new ArgumentException($"Too many values to {parser.Name}");
+                switch (aa[0])
+                {
+                    case "excl":
+                        parser.SetImplementation((it) => false == string.IsNullOrEmpty(it.Extension));
+                        break;
+                    case "only":
+                        parser.SetImplementation((it) => string.IsNullOrEmpty(it.Extension));
+                        break;
+                    default:
+                        throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
                 }
             });
 }
