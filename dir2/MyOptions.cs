@@ -179,6 +179,7 @@ static public partial class MyOptions
     {
         (IParse) ScanSubDir,
         (IParse) PrintDirOption,
+        Wild.CaseSensitiveOpt,
         (IParse) LengthFormat,
         (IParse) DateFormat,
         (IParse) Wild.ExcludeFileName,
@@ -244,6 +245,7 @@ static public partial class MyOptions
     static internal ImmutableDictionary<string, string> ShortcutOptions
         = new Dictionary<string, string>()
         {
+            ["-c"] = "--case-sensitive",
             ["-o"] = "--sort",
             ["-s"] = "--sub",
             ["-k"] = "--keep-dir",

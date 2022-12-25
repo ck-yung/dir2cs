@@ -8,6 +8,11 @@ static public class Wild
 {
     static internal Func<string, Regex> MakeRegex { get; private set; }
         = (it) => new Regex(it, RegexOptions.IgnoreCase);
+    static internal readonly IParse CaseSensitiveOpt = new SwitchParser(
+        name: "--case-sensitive", action: () =>
+        {
+            MakeRegex = (it) => new Regex(it, RegexOptions.None);
+        });
 
     static internal Func<string, string> ToRegexText { get; private set; } = (it) =>
     {

@@ -14,7 +14,7 @@ static internal class Show
     static public Func<string, string> Count { get; private set; } = Helper.itself;
 
     static public readonly IParse Options = new MyOptions.SimpleParser(name: "--hide",
-        help: "date  size  count",
+        help: "date,size,count",
         resolve: (parser, args) =>
         {
             foreach (var arg in Helper.CommonSplit(args))
