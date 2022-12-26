@@ -173,4 +173,48 @@ static public partial class Helper
             }
         }
     }
+
+    static public InfoSum PrintDirTree(string path)
+    {
+        void PrintSubTree(string prefix, string dirname)
+        {
+            var enumDir = SafeGetDirectoryEnumerator(dirname);
+
+            string GetNext()
+            {
+                while (SafeMoveNext(enumDir))
+                {
+                    var currDir = SafeGetCurrent(enumDir);
+                    var dirThe = Path.GetFileName(currDir);
+                    if (false == Wild.ExcludeDirName.Invoke(dirThe))
+                    {
+                        return currDir;
+                    }
+                }
+                return string.Empty;
+            }
+
+            var prevDir = GetNext();
+
+            while (true)
+            {
+                var currDir = GetNext();
+                if (string.IsNullOrEmpty(currDir)) break;
+                var dirThe = Path.GetFileName(prevDir);
+                Console.WriteLine($"{prefix}+- {dirThe}");
+                PrintSubTree($"{prefix}|  ", prevDir);
+                prevDir = currDir;
+            }
+
+            if (!string.IsNullOrEmpty(prevDir))
+            {
+                var dirThe = Path.GetFileName(prevDir);
+                Console.WriteLine($"{prefix}\\- {dirThe}");
+                PrintSubTree($"{prefix}   ", prevDir);
+            }
+        }
+        Console.WriteLine(path);
+        PrintSubTree("", path);
+        return InfoSum.Fake;
+    }
 }

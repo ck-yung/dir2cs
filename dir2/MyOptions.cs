@@ -35,7 +35,7 @@ static public partial class MyOptions
 
     static public readonly IInovke<string, InfoSum> PrintDirOption =
         new ParseInvoker<string, InfoSum>(
-        name: "--dir", help: "both | only | off",
+        name: "--dir", help: "both | only | off | tree",
         init: (path) =>
         {
             Helper.PrintDir(path);
@@ -74,6 +74,11 @@ static public partial class MyOptions
                 case "off":
                     PrintDirOpt = PrintDir.Off;
                     parser.SetImplementation(Helper.GetFiles);
+                    break;
+                case "tree":
+                    Helper.impPrintInfoTotal = InfoSum.DoNothing;
+                    PrintDirOpt = PrintDir.Only;
+                    parser.SetImplementation(Helper.PrintDirTree);
                     break;
                 default:
                     throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
