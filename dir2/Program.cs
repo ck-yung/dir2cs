@@ -155,7 +155,7 @@ public class Program
                     .Select((it) =>
                     {
                         ItemWrite(Show.Date($"{DateFormat.Invoke(Show.GetDate(it))} "));
-                        ItemWriteLine(io.GetRelativeName(it.FullName));
+                        ItemWriteLine(Show.GetDirName(io.GetRelativeName(it.FullName)));
                         return it;
                     })
                     .Count();

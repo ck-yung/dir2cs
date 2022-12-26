@@ -7,8 +7,9 @@ namespace dir2;
 static internal class Show
 {
     static readonly Func<string, string> blank = (arg) => string.Empty;
+
     static public Func<string, string> GetDirName
-    { get; private set; } = Helper.itself;
+    { get; private set; } = (dirname) => dirname.TrimEnd(Path.DirectorySeparatorChar);
 
     static public Func<string, string> Date { get; private set; } = Helper.itself;
     static public Func<string, string> Size { get; private set; } = Helper.itself;
@@ -27,7 +28,12 @@ static internal class Show
                         break;
                     case "size":
                         Size = blank;
-                        GetDirName = (arg) => arg + Path.DirectorySeparatorChar;
+                        GetDirName = (dirname) =>
+                        {
+                            if (dirname.EndsWith(Path.DirectorySeparatorChar))
+                                return dirname;
+                            return dirname + Path.DirectorySeparatorChar;
+                        };
                         break;
                     case "count":
                         Count = blank;
