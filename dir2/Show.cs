@@ -1,5 +1,6 @@
-using System;
 using System.Collections.Immutable;
+using System.Data.Common;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
@@ -17,7 +18,7 @@ static internal class Show
     static public Func<string, string> Size { get; private set; } = Helper.itself;
     static public Func<string, string> Count { get; private set; } = Helper.itself;
 
-    static public readonly IParse Options = new MyOptions.SimpleParser(name: "--hide",
+    static public readonly IParse Options = new SimpleParser(name: "--hide",
         help: "date,size,count",
         resolve: (parser, args) =>
         {
@@ -200,4 +201,81 @@ static internal class Show
         {
             EncodeConsoleOutput = () => Console.OutputEncoding = Encoding.UTF8;
         });
+
+    static public string DefaultDateTimeFormatString
+    { get; private set; } = "yyyy-MM-dd HH:mm";
+
+    static public readonly IInovke<DateTime, string> DateFormatOpt =
+        new ParseInvoker<DateTime, string>(name: "--date-format",
+            help: "DATE-FORMAT",
+            init: (value) => value.ToString(DefaultDateTimeFormatString),
+            resolve: (parser, args) =>
+            {
+                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
+                if (aa.Length > 1)
+                    throw new ArgumentException($"Too many values to {parser.Name}");
+                DefaultDateTimeFormatString = aa[0];
+                Func<DateTime, string> rtn = (value) => value.ToString(aa[0]);
+                _ = rtn(DateTime.MinValue);
+                parser.SetImplementation(rtn);
+            });
+
+    static public readonly ImmutableArray<string> DateTimeFormats =
+        ImmutableArray.Create(new string[] {
+            "yyyy-MM-dd",
+            "yyyyMMdd",
+            "yyyy-MM-ddTHH:mm:ss",
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy-MM-ddTHH:mm",
+            "yyyy-MM-dd HH:mm",
+            "yyyy-MM-dd hh:mmtt",
+            "yyyyMMdd HH:mm:ss",
+            "yyyyMMdd HH:mm",
+        });
+
+    record DateParse(string pattern, Func<int, TimeSpan> toTimeSpan);
+
+    static public bool TryParseDateTime(string arg, out DateTime result)
+    {
+        result = DateTime.MinValue;
+        var pattern3 = new Dictionary<string, DateParse>()
+        {
+            ["minute"] = new DateParse(@"^(?<minute>\d+)min$", (it) => TimeSpan.FromMinutes(it)),
+            ["hour"] = new DateParse(@"^(?<hour>\d+)hour$", (it) => TimeSpan.FromHours(it)),
+            ["hour2"] = new DateParse(@"^(?<hour2>\d+)hr$", (it) => TimeSpan.FromHours(it)),
+            ["day"] = new DateParse(@"^(?<day>\d+)day$", (it) => TimeSpan.FromDays(it)),
+        };
+
+        foreach (var (keyThe, parseThe) in pattern3)
+        {
+            foreach (Match match in Regex.Matches(arg, parseThe.pattern,
+                RegexOptions.IgnoreCase))
+            {
+                var numThe = int.Parse(match.Groups[keyThe].ToString());
+                result = DateTime.Now.Subtract(parseThe.toTimeSpan(numThe));
+                return true;
+            }
+        }
+
+        if (DateTime.TryParseExact(arg, DefaultDateTimeFormatString,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out DateTime goodValue))
+        {
+            result = goodValue;
+            return true;
+        }
+
+        foreach (var fmtThe in DateTimeFormats)
+        {
+            if (DateTime.TryParseExact(arg, fmtThe,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out DateTime goodValue2))
+            {
+                result = goodValue2;
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

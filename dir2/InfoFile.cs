@@ -102,9 +102,9 @@ public class InfoSum
     public void Print(Action<string> write, Action<string> writeLine)
     {
         write(Show.Size(LengthFormat.Invoke(Length)));
-        write(Show.Date($"{DateFormat.Invoke(StartTime)} "));
+        write(Show.Date($"{Show.DateFormatOpt.Invoke(StartTime)} "));
         write(Show.Date($"- "));
-        write(Show.Date($"{DateFormat.Invoke(EndTime)} "));
+        write(Show.Date($"{Show.DateFormatOpt.Invoke(EndTime)} "));
         write(Show.Count(Show.CountFormat.Invoke(Count)));
         writeLine(Name);
     }

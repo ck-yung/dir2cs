@@ -156,7 +156,7 @@ public class Program
                     .Invoke(Show.TakeDir)
                     .Select((it) =>
                     {
-                        ItemWrite(Show.Date($"{DateFormat.Invoke(Show.GetDate(it))} "));
+                        ItemWrite(Show.Date($"{Show.DateFormatOpt.Invoke(Show.GetDate(it))} "));
                         ItemWriteLine(Show.GetDirName(io.GetRelativeName(it.FullName)));
                         return it;
                     })

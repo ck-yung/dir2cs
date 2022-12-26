@@ -156,20 +156,6 @@ static public partial class MyOptions
                 }
             });
 
-    static public readonly IInovke<DateTime, string> DateFormat =
-        new ParseInvoker<DateTime, string>(name: "--date-format",
-            help: "DATE-FORMAT",
-            init: (value) => $"{value:yyyy-MM-dd HH:mm:ss}",
-            resolve: (parser, args) =>
-            {
-                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-                if (aa.Length > 1)
-                    throw new ArgumentException($"Too many values to {parser.Name}");
-                Func<DateTime, string> rtn = (value) => value.ToString(aa[0]);
-                _ = rtn(DateTime.MinValue);
-                parser.SetImplementation(rtn);
-            });
-
     static public readonly IParse TotalOption = new SimpleParser(name: "--total",
         help: "off | only", resolve: (parser, args) =>
         {
@@ -269,7 +255,7 @@ static public partial class MyOptions
         Wild.RegexOpt,
         (IParse) LengthFormat,
         (IParse) Show.CountFormat,
-        (IParse) DateFormat,
+        (IParse) Show.DateFormatOpt,
         (IParse) Wild.ExcludeFileName,
         (IParse) Wild.ExcludeDirName,
         (IParse) Wild.ExtInfoOpt,
@@ -291,10 +277,9 @@ static public partial class MyOptions
         Show.EncodeConsoleOpt,
         Wild.RegexOpt,
         Wild.CaseSensitiveOpt,
-        Sort.Options,
         (IParse) LengthFormat,
         (IParse) Show.CountFormat,
-        (IParse) DateFormat,
+        (IParse) Show.DateFormatOpt,
         (IParse) Helper.IsHiddenOpt,
         Sort.Options,
     };

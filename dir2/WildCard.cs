@@ -114,8 +114,7 @@ static public class Wild
                 return new WithData(valueThe);
             }
 
-            // TODO: Various date-formats should be supported.
-            if (DateTime.TryParse(arg, out DateTime valueDate))
+            if (Show.TryParseDateTime(arg, out DateTime valueDate))
             {
                 return new WithData(valueDate);
             }

@@ -127,7 +127,7 @@ static public partial class Helper
             .Select((it) =>
             {
                 ItemWrite(Show.Size("DIR "));
-                ItemWrite(Show.Date($"{MyOptions.DateFormat.Invoke(Show.GetDate(it))} "));
+                ItemWrite(Show.Date($"{Show.DateFormatOpt.Invoke(Show.GetDate(it))} "));
                 ItemWriteLine(Show.GetDirName(io.GetRelativeName(it.FullName)));
                 return it;
             })
@@ -178,7 +178,7 @@ static public partial class Helper
                 {
                     Write("One file is found: ");
                     Write(Show.Size(MyOptions.LengthFormat.Invoke(sum.Length)));
-                    WriteLine(Show.Date($"{MyOptions.DateFormat.Invoke(sum.StartTime)}"));
+                    WriteLine(Show.Date($"{Show.DateFormatOpt.Invoke(sum.StartTime)}"));
                 }
                 break;
             default:

@@ -33,8 +33,11 @@ static class Config
                 .Where((it) => it.Length > 0);
             try
             {
-                return MyOptions.ConfigParsers
+                var aa = MyOptions.ConfigParsers
                     .Aggregate(lines, (acc, opt) => opt.Parse2(acc))
+                    .ToArray();
+                System.Diagnostics.Debug.WriteLine($"#aa={aa.Length}");
+                return aa
                     .Where((it) => it.Length == 2)
                     .Join(MyOptions.ExclFileDirParsers,
                     outerKeySelector: (line) => line[0],
