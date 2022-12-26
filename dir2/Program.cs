@@ -139,9 +139,9 @@ public class Program
 
         pathThe = io.GetFullPath(pathThe);
         InfoSum sumThe = InfoSum.Fake;
-        if (ScanSubDir)
+        if (SubDirOpt)
         {
-            if (PrintDirOpt == MyOptions.PrintDir.Only)
+            if (MyOptions.PrintDir == MyOptions.EnumPrintDir.Only)
             {
                 var cntDir = GetAllDirs(pathThe)
                     .Select((it) => io.ToInfoDir(it))
@@ -169,19 +169,19 @@ public class Program
                     .Select((it) => io.ToInfoFile(it))
                     .Where((it) => it.IsNotFake())
                     .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
-                    .Where((it) => (false == Wild.ExcludeFileName.Invoke(it.Name)))
+                    .Where((it) => (false == Wild.ExclFileNameOpt.Invoke(it.Name)))
                     .Where((it) => Wild.IsMatchWithinSize(it.Length))
                     .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
                     .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
                     .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
-                    .Where((it) => Wild.ExtInfoOpt.Invoke(it))
+                    .Where((it) => Wild.ExtensionOpt.Invoke(it))
                     .Where((it) => IsHiddenOpt.Invoke(it))
                     .Invoke((seq) => Sum.Func(seq));
             }
         }
         else
         {
-            sumThe = PrintDirOption.Invoke(pathThe);
+            sumThe = PrintDirOpt.Invoke(pathThe);
         }
         PrintInfoTotal(sumThe);
 

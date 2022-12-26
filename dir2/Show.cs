@@ -18,7 +18,7 @@ static internal class Show
     static public Func<string, string> Size { get; private set; } = Helper.itself;
     static public Func<string, string> Count { get; private set; } = Helper.itself;
 
-    static public readonly IParse Options = new SimpleParser(name: "--hide",
+    static public readonly IParse Opt = new SimpleParser(name: "--hide",
         help: "date,size,count",
         resolve: (parser, args) =>
         {
@@ -88,7 +88,7 @@ static internal class Show
                 }
                 else
                 {
-                    if (PrintDirOpt == PrintDir.Only)
+                    if (PrintDir == EnumPrintDir.Only)
                     {
                         TakeDir = (seq) => seq.Take(takeCount);
                     }

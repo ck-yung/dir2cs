@@ -15,25 +15,25 @@ static public partial class MyOptions
         return Array.Empty<string>();
     }
 
-    static public readonly ImplicitBool ScanSubDir = new SwitchParser(name:"--sub");
+    static public readonly ImplicitBool SubDirOpt = new SwitchParser(name:"--sub");
 
-    public enum PrintDir
+    public enum EnumPrintDir
     {
         Both,
         Only,
         Off,
     };
 
-    static public PrintDir PrintDirOpt { get; private set; } = PrintDir.Both;
+    static public EnumPrintDir PrintDir { get; private set; } = EnumPrintDir.Both;
     static public void PrintDirOptBothOff()
     {
-        if (PrintDirOpt == PrintDir.Both)
+        if (PrintDir == EnumPrintDir.Both)
         {
-            ((ParseInvoker<string, InfoSum>)PrintDirOption).SetImplementation(Helper.GetFiles);
+            ((ParseInvoker<string, InfoSum>)PrintDirOpt).SetImplementation(Helper.GetFiles);
         }
     }
 
-    static public readonly IInovke<string, InfoSum> PrintDirOption =
+    static public readonly IInovke<string, InfoSum> PrintDirOpt =
         new ParseInvoker<string, InfoSum>(
         name: "--dir", help: "both | only | off | tree",
         init: (path) =>
@@ -48,7 +48,7 @@ static public partial class MyOptions
             switch (aa[0])
             {
                 case "both":
-                    PrintDirOpt = PrintDir.Both;
+                    PrintDir = EnumPrintDir.Both;
                     parser.SetImplementation((path) =>
                     {
                         Helper.PrintDir(path);
@@ -68,16 +68,16 @@ static public partial class MyOptions
                             Helper.WriteLine($"{cnt} dir are found.");
                         }
                     };
-                    PrintDirOpt = PrintDir.Only;
+                    PrintDir = EnumPrintDir.Only;
                     parser.SetImplementation(Helper.PrintDir);
                     break;
                 case "off":
-                    PrintDirOpt = PrintDir.Off;
+                    PrintDir = EnumPrintDir.Off;
                     parser.SetImplementation(Helper.GetFiles);
                     break;
                 case "tree":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
-                    PrintDirOpt = PrintDir.Only;
+                    PrintDir = EnumPrintDir.Only;
                     parser.SetImplementation(Helper.PrintDirTree);
                     break;
                 default:
@@ -97,7 +97,7 @@ static public partial class MyOptions
         return toKilo(arg, units.Length);
     }
 
-    static public readonly IInovke<long, string> LengthFormat =
+    static public readonly IInovke<long, string> LengthFormatOpt =
         new ParseInvoker<long, string>(name: "--size-format", help: "short | comma;WIDTH",
             init: (it) => $"{it,8} ", resolve: (parser, args) =>
             {
@@ -156,7 +156,7 @@ static public partial class MyOptions
                 }
             });
 
-    static public readonly IParse TotalOption = new SimpleParser(name: "--total",
+    static public readonly IParse TotalOpt = new SimpleParser(name: "--total",
         help: "off | only", resolve: (parser, args) =>
         {
             var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
@@ -248,28 +248,28 @@ static public partial class MyOptions
 
     static public readonly IParse[] Parsers = new IParse[]
     {
-        (IParse) ScanSubDir,
-        (IParse) PrintDirOption,
+        (IParse) SubDirOpt,
+        (IParse) PrintDirOpt,
         Show.EncodeConsoleOpt,
         Wild.CaseSensitiveOpt,
         Wild.RegexOpt,
-        (IParse) LengthFormat,
+        (IParse) LengthFormatOpt,
         (IParse) Show.CountFormat,
         (IParse) Show.DateFormatOpt,
-        (IParse) Wild.ExcludeFileName,
-        (IParse) Wild.ExcludeDirName,
-        (IParse) Wild.ExtInfoOpt,
+        (IParse) Wild.ExclFileNameOpt,
+        (IParse) Wild.ExclDirNameOpt,
+        (IParse) Wild.ExtensionOpt,
         (IParse) Helper.IsHiddenOpt,
-        Sort.Options,
-        Show.Options,
-        Sum.Options,
+        Sort.Opt,
+        Show.Opt,
+        Sum.Opt,
         (IParse) Helper.io.KeepDirOpt,
         Wild.WithinOpt,
         Wild.NotWithinOpt,
         Show.CreationDateOpt,
         Show.ReverseOpt,
         Show.TakeOpt,
-        TotalOption,
+        TotalOpt,
     };
 
     static public readonly IParse[] ConfigParsers = new IParse[]
@@ -277,17 +277,17 @@ static public partial class MyOptions
         Show.EncodeConsoleOpt,
         Wild.RegexOpt,
         Wild.CaseSensitiveOpt,
-        (IParse) LengthFormat,
+        (IParse) LengthFormatOpt,
         (IParse) Show.CountFormat,
         (IParse) Show.DateFormatOpt,
         (IParse) Helper.IsHiddenOpt,
-        Sort.Options,
+        Sort.Opt,
     };
 
     static public readonly IParse[] ExclFileDirParsers = new IParse[]
     {
-        (IParse) Wild.ExcludeFileName,
-        (IParse) Wild.ExcludeDirName,
+        (IParse) Wild.ExclFileNameOpt,
+        (IParse) Wild.ExclDirNameOpt,
     };
 
     static internal ImmutableDictionary<string, string> ShortcutOptions

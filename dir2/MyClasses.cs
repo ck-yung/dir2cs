@@ -183,4 +183,15 @@ static public partial class MyOptions
             return false;
         }
     }
+
+    internal class ExclFeauture<T, R> : ParseInvoker<T, R>
+    {
+        public ExclFeauture(string name
+            , Func<T, R> init
+            , Action<ParseInvoker<T, R>, IEnumerable<string>> resolve
+            , string help = ""
+            ) : base(name, init, resolve, help)
+        {
+        }
+    }
 }

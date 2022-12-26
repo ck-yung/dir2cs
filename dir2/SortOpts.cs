@@ -21,7 +21,7 @@ static public class Sort
         throw new ArgumentException($"Value pair ({bad1},{bad2}) is UNKNOWN to {name}.");
     }
 
-    static public readonly IParse Options = new SimpleParser(name: "--sort",
+    static public readonly IParse Opt = new SimpleParser(name: "--sort",
         help: "name | size | date | ext | count | last",
         resolve: (parser, args) =>
         {

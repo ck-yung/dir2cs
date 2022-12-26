@@ -118,7 +118,7 @@ static public partial class Helper
             .Select((it) => io.ToInfoDir(it))
             .Where((it) => it.IsNotFake())
             .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
-            .Where((it) => (false == Wild.ExcludeDirName.Invoke(it.Name)))
+            .Where((it) => (false == Wild.ExclDirNameOpt.Invoke(it.Name)))
             .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
             .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
             .Invoke(Sort.Dirs)
@@ -142,12 +142,12 @@ static public partial class Helper
             .Select((it) => io.ToInfoFile(it))
             .Where((it) => it.IsNotFake())
             .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
-            .Where((it) => (false == Wild.ExcludeFileName.Invoke(it.Name)))
+            .Where((it) => (false == Wild.ExclFileNameOpt.Invoke(it.Name)))
             .Where((it) => Wild.IsMatchWithinSize(it.Length))
             .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
             .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
             .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
-            .Where((it) => Wild.ExtInfoOpt.Invoke(it))
+            .Where((it) => Wild.ExtensionOpt.Invoke(it))
             .Where((it) => IsHiddenOpt.Invoke(it))
             .Invoke((seq) => Sum.Func(seq));
     }
@@ -177,7 +177,7 @@ static public partial class Helper
                 if (printEvenCountOne)
                 {
                     Write("One file is found: ");
-                    Write(Show.Size(MyOptions.LengthFormat.Invoke(sum.Length)));
+                    Write(Show.Size(MyOptions.LengthFormatOpt.Invoke(sum.Length)));
                     WriteLine(Show.Date($"{Show.DateFormatOpt.Invoke(sum.StartTime)}"));
                 }
                 break;

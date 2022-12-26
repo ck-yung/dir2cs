@@ -52,14 +52,14 @@ static public class Wild
 
     static internal void InitMatchingNames(IEnumerable<string> names)
     {
-        var a2 = PrintDirOpt != PrintDir.Only;
+        var a2 = PrintDir != EnumPrintDir.Only;
         var matchFuncs = names
             .Where((it) => it.Length > 0)
             .Distinct()
             .Select((it) => ToWildMatch(it))
             .ToArray();
         if (matchFuncs.Length == 0) return;
-        if (PrintDirOpt != PrintDir.Only)
+        if (PrintDir != EnumPrintDir.Only)
         {
             CheckIfFileNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
         }
@@ -69,8 +69,8 @@ static public class Wild
         }
     }
 
-    static internal readonly IInovke<string, bool> ExcludeFileName =
-        new ParseInvoker<string, bool>("--excl", help: "WILD[;WILD ..]",
+    static internal readonly IInovke<string, bool> ExclFileNameOpt =
+        new ExclFeauture<string, bool>("--excl", help: "WILD[;WILD ..]",
             init: Helper.Never,
             resolve: (parser, args) =>
             {
@@ -80,8 +80,8 @@ static public class Wild
                 parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
             });
 
-    static internal readonly IInovke<string, bool> ExcludeDirName =
-        new ParseInvoker<string, bool>("--excl-dir", help: "WILD[;WILD ..]",
+    static internal readonly IInovke<string, bool> ExclDirNameOpt =
+        new ExclFeauture<string, bool>("--excl-dir", help: "WILD[;WILD ..]",
             init: Helper.Never,
             resolve: (parser, args) =>
             {
@@ -205,7 +205,7 @@ static public class Wild
                 }
             });
 
-    static internal readonly IInovke<InfoFile, bool> ExtInfoOpt =
+    static internal readonly IInovke<InfoFile, bool> ExtensionOpt =
         new ParseInvoker<InfoFile, bool>("--no-ext", help: "incl | excl | only",
             init: Always<InfoFile>.True, resolve: (parser, args) =>
             {

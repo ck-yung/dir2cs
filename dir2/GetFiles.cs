@@ -138,7 +138,7 @@ static public partial class Helper
             if (string.IsNullOrEmpty(currentDirname)) continue;
             var dirnameThe = io.GetFileName(currentDirname);
             if (string.IsNullOrEmpty(dirnameThe)) continue;
-            if (Wild.ExcludeDirName.Invoke(dirnameThe)) continue;
+            if (Wild.ExclDirNameOpt.Invoke(dirnameThe)) continue;
             foreach (var pathThe in GetAllFiles(currentDirname))
             {
                 yield return pathThe;
@@ -149,7 +149,7 @@ static public partial class Helper
     static public IEnumerable<string> GetAllDirs(string path)
     {
         var dirThe = io.GetFileName(path);
-        if (Wild.ExcludeDirName.Invoke(dirThe))
+        if (Wild.ExclDirNameOpt.Invoke(dirThe))
         {
             yield break;
         }
@@ -186,7 +186,7 @@ static public partial class Helper
                 {
                     var currDir = SafeGetCurrent(enumDir);
                     var dirThe = Path.GetFileName(currDir);
-                    if (false == Wild.ExcludeDirName.Invoke(dirThe))
+                    if (false == Wild.ExclDirNameOpt.Invoke(dirThe))
                     {
                         return currDir;
                     }

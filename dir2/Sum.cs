@@ -10,7 +10,7 @@ static public class Sum
         .Invoke(Show.TakeInfo)
         .Select((it) =>
         {
-            Helper.ItemWrite(Show.Size(MyOptions.LengthFormat.Invoke(it.Length)));
+            Helper.ItemWrite(Show.Size(MyOptions.LengthFormatOpt.Invoke(it.Length)));
             Helper.ItemWrite(Show.Date($"{Show.DateFormatOpt.Invoke(Show.GetDate(it))} "));
             Helper.ItemWriteLine(Helper.io.GetRelativeName(it.FullName));
             return it;
@@ -29,7 +29,7 @@ static public class Sum
         }
     }
 
-    static public readonly IParse Options = new MyOptions.SimpleParser(name: "--sum",
+    static public readonly IParse Opt = new MyOptions.SimpleParser(name: "--sum",
         help: "ext | dir | +dir",
         resolve: (parser, args) =>
         {
