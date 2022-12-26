@@ -282,6 +282,7 @@ static public partial class MyOptions
         (IParse) Show.DateFormatOpt,
         (IParse) Helper.IsHiddenOpt,
         Sort.Opt,
+        Show.ReverseOpt,
     };
 
     static public readonly IParse[] ExclFileDirParsers = new IParse[]

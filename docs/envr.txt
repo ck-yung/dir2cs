@@ -1,0 +1,21 @@
+Program dir2 always parses envir variable dir2
+before paring command line arguments.
+
+You can specify dir2 options by
+  set dir2=OPTION ..
+or
+  export dir2="OPTION .."
+
+For example,
+
+  set dir2=--sort date --date-format yyyy-MMM-ddTHH:mm:ss
+
+or
+
+  export "dir2=--sort date --date-format yyyy-MMM-ddTHH:mm:ss"
+
+Important remark:
+* The config value in envr var dir2 CANNOT contain space.
+* bad *    set dir2=--date-format MMM dd, yyyy
+
+You can spcify --cfg-off in envr var dir2 to skip config file dir2.opt

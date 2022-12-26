@@ -70,7 +70,7 @@ static public class Wild
     }
 
     static internal readonly IInovke<string, bool> ExclFileNameOpt =
-        new ExclFeauture<string, bool>("--excl", help: "WILD[;WILD ..]",
+        new ExclFeauture<string, bool>("--excl", help: "EXCL-WILD[;EXCL-WILD ..]",
             init: Helper.Never,
             resolve: (parser, args) =>
             {
@@ -81,7 +81,7 @@ static public class Wild
             });
 
     static internal readonly IInovke<string, bool> ExclDirNameOpt =
-        new ExclFeauture<string, bool>("--excl-dir", help: "WILD[;WILD ..]",
+        new ExclFeauture<string, bool>("--excl-dir", help: "EXCL-WILD[;EXCL-WILD ..]",
             init: Helper.Never,
             resolve: (parser, args) =>
             {
