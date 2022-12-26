@@ -57,6 +57,8 @@ public class Program
                 .SelectMany((it) => it));
         }
 
+        cfgRest = Parsers.Resolve(cfgRest).AsEnumerable();
+
         var args = Parsers.Resolve(cfgRest.Concat(ExpandFromShortCut(
             mainArgs.Where((it) => false == it.Equals(CfgOffOpt)))));
 
