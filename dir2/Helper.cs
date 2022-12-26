@@ -33,7 +33,8 @@ static public partial class Helper
     /// </summary>
     static public bool Never<T>(T _) { return false; }
 
-    static public IEnumerable<string> CommonSplit(IEnumerable<string> args) => args
+    static public IEnumerable<string> CommonSplit(IEnumerable<string> args)
+        => args
         .Select((it) => it.Split(';', ':', ','))
         .SelectMany((it) => it)
         .Where((it) => it.Length > 0)
@@ -107,6 +108,7 @@ static public partial class Helper
             textThe.Append($"  => {text2The,-12}");
             rtn.AppendLine(textThe.ToString());
         }
+        rtn.AppendLine($"Envir '{nameof(dir2)}' will be parsed before config file is involved.");
         return rtn.ToString();
     }
 

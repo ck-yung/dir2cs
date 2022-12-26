@@ -37,18 +37,27 @@ public class Program
         if (mainArgs.Contains("--help") ||
             mainArgs.Contains("-?"))
         {
-            Write(GetSyntax());
+            if (mainArgs.Contains("cfg") || mainArgs.Contains("config"))
+            {
+                Write(Config.GetHelp());
+            }
+            else
+            {
+                Write(GetSyntax());
+            }
             return false;
         }
 
-        var cfgRest = Enumerable.Empty<string>();
-        if (false == mainArgs.Contains(CfgOffOpt))
+        (bool envrCfgOff, IEnumerable<string> cfgRest) = Config.GetEnvirOpts();
+
+        if (false == envrCfgOff &&
+            false == mainArgs.Contains(CfgOffOpt))
         {
-            cfgRest = Config.ParseFile()
-                .SelectMany((it) => it);
+            cfgRest = cfgRest.Concat( Config.ParseFile()
+                .SelectMany((it) => it));
         }
 
-        var args = Parse(cfgRest.Concat(ExpandFromShortCut(
+        var args = Parsers.Resolve(cfgRest.Concat(ExpandFromShortCut(
             mainArgs.Where((it) => false == it.Equals(CfgOffOpt)))));
 
         var pathThe = "." + Path.DirectorySeparatorChar;
@@ -109,10 +118,16 @@ public class Program
             }
         }
 
-        if (!pathThe.EndsWith(Path.DirectorySeparatorChar))
+        if (pathThe.EndsWith(':'))
+        {
+            pathThe += ".";
+        }
+
+        if (false == pathThe.EndsWith(Path.DirectorySeparatorChar))
         {
             pathThe += Path.DirectorySeparatorChar;
         }
+
 
         if (!Directory.Exists(pathThe))
 		{

@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Text;
+using System.Threading.Tasks.Dataflow;
 
 namespace dir2;
 static class Config
@@ -52,21 +55,51 @@ static class Config
         }
     }
 
-    static internal IEnumerable<string> GetEnvirOpts()
+    static internal (bool, IEnumerable<string>) GetEnvirOpts()
     {
-        var envirOld = Environment.GetEnvironmentVariable(
-            nameof(dir2));
+        var envirOld = Environment.GetEnvironmentVariable(nameof(dir2));
         if (string.IsNullOrEmpty(envirOld))
         {
-            return Array.Empty<string>();
+            return (false, Enumerable.Empty<string>());
         }
 
-        return (" " + envirOld)
-            .Split(" -")
-            .Select((it) => it.Trim())
-            .Where((it) => it.Length > 0)
-            .Select((it) => "-" + it)
-            .Distinct()
-            ;
+        try
+        {
+            var aa = envirOld.Split(" ")
+                .Where((it) => it.Length > 0)
+                .GroupBy((it) => it.Equals(Program.CfgOffOpt))
+                .ToImmutableDictionary((grp) => grp.Key,
+                (grp) => grp.AsEnumerable());
+            var isCfgOff = aa.ContainsKey(true);
+            if (aa.ContainsKey(false)) return (isCfgOff, aa[false]);
+            return (isCfgOff, Enumerable.Empty<string>());
+        }
+        catch (Exception ee)
+        {
+            Console.Error.WriteLine(
+                $"Enivr {nameof(dir2)}: [{ee.GetType()}] {ee.Message}");
+            Console.Error.WriteLine();
+            return (false, Enumerable.Empty<string>());
+        }
     }
+
+    static public string GetHelp()
+    {
+        var rtn = new StringBuilder(
+            $"Load following options from '{GetFilename()}'");
+        rtn.AppendLine();
+
+        foreach (var optThe in MyOptions.ConfigParsers)
+        {
+            rtn.AppendLine($" {optThe.Name,16}  {optThe.Help}");
+        }
+
+        foreach (var optThe in MyOptions.ExclFileDirParsers)
+        {
+            rtn.AppendLine($" {optThe.Name,16}  {optThe.Help}");
+        }
+
+        return rtn.ToString();
+    }
+
 }

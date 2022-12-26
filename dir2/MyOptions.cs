@@ -5,9 +5,9 @@ namespace dir2;
 
 static public partial class MyOptions
 {
-    static public string[] Parse(IEnumerable<string> args)
+    static public string[] Resolve(this IParse[] parsers, IEnumerable<string> args)
     {
-        var rtn = Parsers.Aggregate(
+        var rtn = parsers.Aggregate(
             seed: args.Select((it) => (false, it)),
             func: (acc, it) => it.Parse(acc))
             .Select((it) => it.Item2);
@@ -282,15 +282,15 @@ static public partial class MyOptions
 
     static public readonly IParse[] ConfigParsers = new IParse[]
     {
-            //(IParser) EncodeConsoleOuput, // TODO
-            (IParse) Wild.RegexOpt,
-            Wild.CaseSensitiveOpt,
-            Sort.Options,
-            (IParse) LengthFormat,
-            (IParse) Show.CountFormat,
-            (IParse) DateFormat,
-            (IParse) Helper.IsHiddenOpt,
-            Sort.Options,
+        //(IParser) EncodeConsoleOuput, // TODO
+        (IParse) Wild.RegexOpt,
+        Wild.CaseSensitiveOpt,
+        Sort.Options,
+        (IParse) LengthFormat,
+        (IParse) Show.CountFormat,
+        (IParse) DateFormat,
+        (IParse) Helper.IsHiddenOpt,
+        Sort.Options,
     };
 
     static public readonly IParse[] ExclFileDirParsers = new IParse[]
