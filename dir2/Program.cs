@@ -60,6 +60,8 @@ public class Program
         var args = Parsers.Resolve(cfgRest.Concat(ExpandFromShortCut(
             mainArgs.Where((it) => false == it.Equals(CfgOffOpt)))));
 
+        Show.EncodeConsoleOutput();
+
         var pathThe = "." + Path.DirectorySeparatorChar;
 
         if (args.Length == 1)

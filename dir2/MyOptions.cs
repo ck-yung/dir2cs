@@ -264,6 +264,7 @@ static public partial class MyOptions
     {
         (IParse) ScanSubDir,
         (IParse) PrintDirOption,
+        Show.EncodeConsoleOpt,
         Wild.CaseSensitiveOpt,
         Wild.RegexOpt,
         (IParse) LengthFormat,
@@ -287,8 +288,8 @@ static public partial class MyOptions
 
     static public readonly IParse[] ConfigParsers = new IParse[]
     {
-        //(IParser) EncodeConsoleOuput, // TODO
-        (IParse) Wild.RegexOpt,
+        Show.EncodeConsoleOpt,
+        Wild.RegexOpt,
         Wild.CaseSensitiveOpt,
         Sort.Options,
         (IParse) LengthFormat,

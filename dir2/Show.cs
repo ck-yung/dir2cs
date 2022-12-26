@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Immutable;
+using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
 
@@ -190,4 +192,12 @@ static internal class Show
                     throw new ArgumentException($"Bad values is found to {parser.Name}");
                 }
             });
+
+    static public Action EncodeConsoleOutput { get; private set; } = () => { };
+
+    static public readonly IParse EncodeConsoleOpt = new SwitchParser("--utf8",
+        action: () =>
+        {
+            EncodeConsoleOutput = () => Console.OutputEncoding = Encoding.UTF8;
+        });
 }
