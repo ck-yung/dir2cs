@@ -2,9 +2,12 @@ using static dir2.MyOptions;
 
 namespace dir2;
 
-public record InfoBase(string Name,
-    DateTime CreationTime,
-    DateTime LastWriteTime);
+public record InfoBase(string Name
+    , string FullName
+    , DateTime CreationTime
+    , DateTime LastWriteTime
+    , string LinkTarget
+    );
 
 public record InfoDir(string Name,
     string Extension,
@@ -12,7 +15,7 @@ public record InfoDir(string Name,
     DateTime CreationTime,
     DateTime LastWriteTime,
     string LinkTarget)
-    : InfoBase(Name, CreationTime, LastWriteTime)
+    : InfoBase(Name, FullName, CreationTime, LastWriteTime, LinkTarget)
 {
     static internal readonly InfoDir Fake = new (string.Empty
         , string.Empty, string.Empty
@@ -33,7 +36,7 @@ public record InfoFile(string Name,
     DateTime LastWriteTime,
     FileAttributes Attributes,
     string LinkTarget)
-    : InfoBase(Name, CreationTime, LastWriteTime)
+    : InfoBase(Name, FullName, CreationTime, LastWriteTime, LinkTarget)
 {
     static internal readonly InfoFile Fake = new(string.Empty
         , string.Empty, string.Empty, string.Empty, 0
@@ -193,6 +196,33 @@ static public partial class Helper
                         break;
                     case "only":
                         parser.SetImplementation((it) => it.IsHidden());
+                        break;
+                    default:
+                        throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
+                }
+            });
+
+    static internal readonly IInovke<InfoBase, string> LinkOpt =
+        new ParseInvoker<InfoBase, string>("--link",
+            help: "hide | show", init: (_) => string.Empty,
+            resolve: (parser, args) =>
+            {
+                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
+                if (aa.Length > 1)
+                    throw new ArgumentException($"Too many values to {parser.Name}");
+                switch (aa[0])
+                {
+                    case "hide":
+                        parser.SetImplementation((_) => string.Empty);
+                        break;
+                    case "show":
+                        parser.SetImplementation((it) =>
+                        {
+                            if (string.IsNullOrEmpty(it.LinkTarget))
+                                return string.Empty;
+                            else
+                                return $" -> {it.LinkTarget}";
+                        });
                         break;
                     default:
                         throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");

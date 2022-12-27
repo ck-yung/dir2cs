@@ -22,7 +22,7 @@ static public class Sort
     }
 
     static public readonly IParse Opt = new SimpleParser(name: "--sort",
-        help: "name | size | date | ext | count | last",
+        help: "name | size | date | ext | count | last      (up to 2 columns)",
         resolve: (parser, args) =>
         {
             var aa = Helper.CommonSplit(args).Take(3).ToArray();

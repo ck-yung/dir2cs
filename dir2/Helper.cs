@@ -85,7 +85,7 @@ static public partial class Helper
         """);
         rtn.AppendLine();
 
-        rtn.AppendLine($" {Program.CfgOffOpt,16}");
+        rtn.AppendLine($" {Program.CfgOffOpt,16}     [CFG INFO: {ExeName} -? cfg]");
 
         foreach (var optThe in
         from parser in MyOptions.Parsers
@@ -129,7 +129,9 @@ static public partial class Helper
             {
                 ItemWrite(Show.Size("DIR "));
                 ItemWrite(Show.Date($"{Show.DateFormatOpt.Invoke(Show.GetDate(it))} "));
-                ItemWriteLine(Show.GetDirName(io.GetRelativeName(it.FullName)));
+                ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));
+                ItemWrite(LinkOpt.Invoke(it));
+                ItemWriteLine(string.Empty);
                 return it;
             })
             .Count();

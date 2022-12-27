@@ -69,7 +69,7 @@ static internal class Show
     static public Func<IEnumerable<InfoSum>, IEnumerable<InfoSum>> TakeSum
     { get; private set; } = Helper.itself;
     static internal readonly IParse TakeOpt = new SimpleParser("--take",
-        help: "NUMBER | SIZE", resolve: (parser, args) =>
+        help: "NUMBER | SIZE   where SIZE ends with k, m or g", resolve: (parser, args) =>
         {
             var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
             if (aa.Length > 1)
@@ -207,7 +207,7 @@ static internal class Show
 
     static public readonly IInovke<DateTime, string> DateFormatOpt =
         new ParseInvoker<DateTime, string>(name: "--date-format",
-            help: "DATE-FORMAT",
+            help: "DATE-FORMAT   e.g. yyyy-MMM-dd HH:mm:ss",
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {

@@ -12,7 +12,9 @@ static public class Sum
         {
             Helper.ItemWrite(Show.Size(MyOptions.LengthFormatOpt.Invoke(it.Length)));
             Helper.ItemWrite(Show.Date($"{Show.DateFormatOpt.Invoke(Show.GetDate(it))} "));
-            Helper.ItemWriteLine(Helper.io.GetRelativeName(it.FullName));
+            Helper.ItemWrite(Helper.io.GetRelativeName(it.FullName));
+            Helper.ItemWrite(Helper.LinkOpt.Invoke(it));
+            Helper.ItemWriteLine(string.Empty);
             return it;
         })
         .Aggregate(

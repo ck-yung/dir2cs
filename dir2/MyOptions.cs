@@ -262,6 +262,7 @@ static public partial class MyOptions
         (IParse) Helper.IsHiddenOpt,
         Sort.Opt,
         Show.Opt,
+        (IParse) Helper.LinkOpt,
         Sum.Opt,
         (IParse) Helper.io.KeepDirOpt,
         Wild.WithinOpt,
@@ -281,6 +282,7 @@ static public partial class MyOptions
         (IParse) Show.CountFormat,
         (IParse) Show.DateFormatOpt,
         (IParse) Helper.IsHiddenOpt,
+        (IParse) Helper.LinkOpt,
         Sort.Opt,
         Show.ReverseOpt,
     };
@@ -311,6 +313,7 @@ static public partial class MyOptions
         {
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
+            ["-L"] = ("Show link", new[] { "--link", "show" }),
             ["-t"] = ("", new[] { "--total", "only" }),
             ["-b"] = ("Brief path name", new[] {
                 "--total", "off", "--hide", "date,size,count" }),
