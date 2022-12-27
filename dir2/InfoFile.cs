@@ -104,7 +104,7 @@ public class InfoSum
 
     public void Print(Action<string> write, Action<string> writeLine)
     {
-        write(Show.Size(LengthFormatOpt.Invoke(Length)));
+        write(Show.Size(Show.LengthFormatOpt.Invoke(Length)));
         write(Show.Date($"{Show.DateFormatOpt.Invoke(StartTime)} "));
         write(Show.Date($"- "));
         write(Show.Date($"{Show.DateFormatOpt.Invoke(EndTime)} "));
@@ -132,7 +132,7 @@ static public partial class Helper
         }
     }
 
-    static InfoDir toInfoDir(string dir)
+    static internal InfoDir toInfoDir(string dir)
     {
         try
         {

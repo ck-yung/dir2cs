@@ -139,6 +139,7 @@ static public partial class Helper
             var dirnameThe = io.GetFileName(currentDirname);
             if (string.IsNullOrEmpty(dirnameThe)) continue;
             if (Wild.ExclDirNameOpt.Invoke(dirnameThe)) continue;
+            if (IsFakeDirOrLinked(currentDirname)) continue;
             foreach (var pathThe in GetAllFiles(currentDirname))
             {
                 yield return pathThe;

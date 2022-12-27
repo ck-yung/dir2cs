@@ -5,17 +5,16 @@ namespace dir2;
 
 static public partial class MyOptions
 {
-    static public string[] Resolve(this IParse[] parsers, IEnumerable<string> args)
+    static public IEnumerable<string> Resolve(this IParse[] parsers,
+        IEnumerable<string> args)
     {
         var rtn = parsers.Aggregate(
             seed: args.Select((it) => (false, it)),
             func: (acc, it) => it.Parse(acc))
             .Select((it) => it.Item2);
-        if (rtn.Any()) return rtn.Where((it) => it.Length>0).ToArray();
-        return Array.Empty<string>();
+        if (rtn.Any()) return rtn.Where((it) => it.Length>0);
+        return Enumerable.Empty<string>();
     }
-
-    static public readonly ImplicitBool SubDirOpt = new SwitchParser(name:"--sub");
 
     public enum EnumPrintDir
     {
@@ -85,74 +84,36 @@ static public partial class MyOptions
             }
         });
 
-    static public string ToKiloUnit(long arg)
-    {
-        var units = new char[] { 'T', 'G', 'M', 'K', ' ' };
-        string toKilo(float arg2, int index)
-        {
-            if (arg2 < 10_000.0F) return $"{arg2,4:F0}{units[index - 1]} ";
-            if (index == 1) return $"{arg2,4:F0}{units[0]} ";
-            return toKilo((arg2 + 512) / 1024.0F, index - 1);
-        }
-        return toKilo(arg, units.Length);
-    }
-
-    static public readonly IInovke<long, string> LengthFormatOpt =
-        new ParseInvoker<long, string>(name: "--size-format", help: "short | comma;WIDTH",
-            init: (it) => $"{it,8} ", resolve: (parser, args) =>
+    static public readonly IInovke<string, InfoSum> SubDirOpt =
+        new ParseInvoker<string, InfoSum>(name: "--sub",
+            help: "off | incl-link | skip-link",
+            init: (path) => PrintDirOpt.Invoke(path),
+            resolve: (parser, args) =>
             {
-                var pattern = @"\d+|comma|short";
-                var aa = Helper.CommonSplit(args).OrderBy((it) => it).Take(4).ToArray();
-                foreach (var a2 in aa)
-                {
-                    if (false == Regex.Match(a2, pattern, RegexOptions.None).Success)
-                    {
-                        throw new ArgumentException($"'{a2}' is bad to {parser.Name}");
-                    }
-                }
+                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
+                if (aa.Length > 1)
+                    throw new ArgumentException($"Too many values to {parser.Name}");
 
-                if (aa.Contains("short"))
+                switch (aa[0])
                 {
-                    if (aa.Length > 1) throw new ArgumentException($"Too many values to {parser.Name}");
-                    parser.SetImplementation((val) => ToKiloUnit(val));
-                    return;
-                }
-
-                if (aa.Length == 1)
-                {
-                    if (aa[0] == "comma")
-                    {
-                        parser.SetImplementation((it) => $"{it,8:N0} ");
-                        return;
-                    }
-                    else
-                    {
-                        if (int.TryParse(aa[0], out int width))
+                    case "off":
+                        parser.SetImplementation((path) => PrintDirOpt.Invoke(path));
+                        break;
+                    case "incl-link":
+                        IsFakeDirOrLinked = Helper.Never; ;
+                        parser.SetImplementation((path) => impSubDir(path));
+                        break;
+                    case "skip-link":
+                        IsFakeDirOrLinked = (path) =>
                         {
-                            if (width > 30)
-                                throw new ArgumentException($"'{aa[0]}' is too largth width to {parser.Name}");
-                            var fmtThe = $"{{0,{width}}} ";
-                            parser.SetImplementation((it) => string.Format(fmtThe, it));
-                            return;
-                        }
-                        throw new ArgumentException($"'{aa[0]}' is NOT width to {parser.Name}");
-                    }
-                }
-                else if (2 == aa.Length && aa[1] == "comma")
-                {
-                    if (int.TryParse(aa[0], out int width))
-                    {
-                        if (width > 30)
-                            throw new ArgumentException($"'{aa[0]}' is too largth width to {parser.Name}");
-                        var fmtThe = $"{{0,{width}:N0}} ";
-                        parser.SetImplementation((it) => string.Format(fmtThe, it));
-                        return;
-                    }
-                    throw new ArgumentException($"'{aa[0]}' is NOT width to {parser.Name}");
-                }
-                else
-                {
-                    throw new ArgumentException($"Bad values is found to {parser.Name}");
+                            var info = Helper.toInfoDir(path);
+                            if (false == info.IsNotFake()) return true;
+                            return false == string.IsNullOrEmpty(info.LinkTarget);
+                        };
+                        parser.SetImplementation((path) => impSubDir(path));
+                        break;
+                    default:
+                        throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
                 }
             });
 
@@ -248,12 +209,12 @@ static public partial class MyOptions
 
     static public readonly IParse[] Parsers = new IParse[]
     {
-        (IParse) SubDirOpt,
         (IParse) PrintDirOpt,
+        (IParse) SubDirOpt,
         Show.EncodeConsoleOpt,
         Wild.CaseSensitiveOpt,
         Wild.RegexOpt,
-        (IParse) LengthFormatOpt,
+        (IParse) Show.LengthFormatOpt,
         (IParse) Show.CountFormat,
         (IParse) Show.DateFormatOpt,
         (IParse) Wild.ExclFileNameOpt,
@@ -278,7 +239,7 @@ static public partial class MyOptions
         Show.EncodeConsoleOpt,
         Wild.RegexOpt,
         Wild.CaseSensitiveOpt,
-        (IParse) LengthFormatOpt,
+        (IParse) Show.LengthFormatOpt,
         (IParse) Show.CountFormat,
         (IParse) Show.DateFormatOpt,
         (IParse) Helper.IsHiddenOpt,
@@ -298,7 +259,6 @@ static public partial class MyOptions
         {
             ["-c"] = "--case-sensitive",
             ["-o"] = "--sort",
-            ["-s"] = "--sub",
             ["-k"] = "--keep-dir",
             ["-r"] = "--reverse",
             ["-w"] = "--within",
@@ -311,6 +271,7 @@ static public partial class MyOptions
         ShortcutComplexOptions
         = new Dictionary<string, (string, string[])>
         {
+            ["-s"] = ("Sub via link", new[] { "--sub", "incl-link" }),
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
             ["-L"] = ("Show link", new[] { "--link", "show" }),

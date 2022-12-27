@@ -278,4 +278,80 @@ static internal class Show
 
         return false;
     }
+
+    static public string ToKiloUnit(long arg)
+    {
+        var units = new char[] { 'T', 'G', 'M', 'K', ' ' };
+        string toKilo(float arg2, int index)
+        {
+            if (arg2 < 10_000.0F) return $"{arg2,4:F0}{units[index - 1]} ";
+            if (index == 1) return $"{arg2,4:F0}{units[0]} ";
+            return toKilo((arg2 + 512) / 1024.0F, index - 1);
+        }
+        return toKilo(arg, units.Length);
+    }
+
+    static public readonly IInovke<long, string> LengthFormatOpt =
+        new ParseInvoker<long, string>(name: "--size-format",
+            help: "short | comma;WIDTH",
+            init: (it) => $"{it,8} ", resolve: (parser, args) =>
+            {
+                var pattern = @"\d+|comma|short";
+                var aa = Helper.CommonSplit(args).OrderBy((it) => it).Take(4).ToArray();
+                foreach (var a2 in aa)
+                {
+                    if (false == Regex.Match(a2, pattern, RegexOptions.None).Success)
+                    {
+                        throw new ArgumentException($"'{a2}' is bad to {parser.Name}");
+                    }
+                }
+
+                if (aa.Contains("short"))
+                {
+                    if (aa.Length > 1)
+                        throw new ArgumentException($"Too many values to {parser.Name}");
+                    parser.SetImplementation((val) => ToKiloUnit(val));
+                    return;
+                }
+
+                if (aa.Length == 1)
+                {
+                    if (aa[0] == "comma")
+                    {
+                        parser.SetImplementation((it) => $"{it,8:N0} ");
+                        return;
+                    }
+                    else
+                    {
+                        if (int.TryParse(aa[0], out int width))
+                        {
+                            if (width > 30)
+                                throw new ArgumentException(
+                                    $"'{aa[0]}' is too largth width to {parser.Name}");
+                            var fmtThe = $"{{0,{width}}} ";
+                            parser.SetImplementation((it) => string.Format(fmtThe, it));
+                            return;
+                        }
+                        throw new ArgumentException($"'{aa[0]}' is NOT width to {parser.Name}");
+                    }
+                }
+                else if (2 == aa.Length && aa[1] == "comma")
+                {
+                    if (int.TryParse(aa[0], out int width))
+                    {
+                        if (width > 30)
+                            throw new ArgumentException(
+                                $"'{aa[0]}' is too largth width to {parser.Name}");
+                        var fmtThe = $"{{0,{width}:N0}} ";
+                        parser.SetImplementation((it) => string.Format(fmtThe, it));
+                        return;
+                    }
+                    throw new ArgumentException(
+                        $"'{aa[0]}' is NOT width to {parser.Name}");
+                }
+                else
+                {
+                    throw new ArgumentException($"Bad values is found to {parser.Name}");
+                }
+            });
 }

@@ -13,7 +13,7 @@ public class Program
 		}
 		catch (Exception ee)
 		{
-            if (GetExeEnvr().Contains(":exception.stack:"))
+            if (GetExeEnvr().Contains("--dump-exception-stack"))
             {
                 Console.WriteLine(ee);
             }
@@ -57,10 +57,13 @@ public class Program
                 .SelectMany((it) => it));
         }
 
-        cfgRest = Parsers.Resolve(cfgRest).AsEnumerable();
+        var aa = Parsers.Resolve(cfgRest);
+        cfgRest = aa.AsEnumerable();
 
         var args = Parsers.Resolve(cfgRest.Concat(ExpandFromShortCut(
-            mainArgs.Where((it) => false == it.Equals(CfgOffOpt)))));
+            mainArgs.Where((it) => false == it.Equals(CfgOffOpt)))))
+            .Where((it) => false == it.StartsWith("-"))
+            .ToArray();
 
         Show.EncodeConsoleOutput();
 
@@ -140,53 +143,7 @@ public class Program
 		}
 
         pathThe = io.GetFullPath(pathThe);
-        InfoSum sumThe = InfoSum.Fake;
-        if (SubDirOpt)
-        {
-            if (MyOptions.PrintDir == MyOptions.EnumPrintDir.Only)
-            {
-                var cntDir = GetAllDirs(pathThe)
-                    .Select((it) => io.ToInfoDir(it))
-                    .Where((it) => it.IsNotFake())
-                    .Where((it) => (false ==
-                    string.IsNullOrEmpty(io.GetRelativeName(it.FullName))))
-                    .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
-                    .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
-                    .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
-                    .Invoke(Sort.Dirs)
-                    .Invoke(Show.ReverseDir)
-                    .Invoke(Show.TakeDir)
-                    .Select((it) =>
-                    {
-                        ItemWrite(Show.Date($"{Show.DateFormatOpt.Invoke(Show.GetDate(it))} "));
-                        ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));
-                        ItemWrite(LinkOpt.Invoke(it));
-                        ItemWriteLine(string.Empty);
-                        return it;
-                    })
-                    .Count();
-                PrintDirCount(cntDir);
-            }
-            else
-            {
-                sumThe = GetAllFiles(pathThe)
-                    .Select((it) => io.ToInfoFile(it))
-                    .Where((it) => it.IsNotFake())
-                    .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
-                    .Where((it) => (false == Wild.ExclFileNameOpt.Invoke(it.Name)))
-                    .Where((it) => Wild.IsMatchWithinSize(it.Length))
-                    .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
-                    .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
-                    .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
-                    .Where((it) => Wild.ExtensionOpt.Invoke(it))
-                    .Where((it) => IsHiddenOpt.Invoke(it))
-                    .Invoke((seq) => Sum.Func(seq));
-            }
-        }
-        else
-        {
-            sumThe = PrintDirOpt.Invoke(pathThe);
-        }
+        InfoSum sumThe = SubDirOpt.Invoke(pathThe);
         PrintInfoTotal(sumThe);
 
         return true;
