@@ -5,8 +5,8 @@ namespace dir2;
 
 static public partial class MyOptions
 {
-    static public IEnumerable<string> Resolve(this IParse[] parsers,
-        IEnumerable<string> args, bool isIncludeExclNameOptions)
+    static public IEnumerable<(ArgType, string)> Resolve(this IParse[] parsers,
+        IEnumerable<(ArgType, string)> args, bool isIncludeExclNameOptions)
     {
         var bbDebug = args.ToArray();
         var parsersThe = parsers;
@@ -19,11 +19,11 @@ static public partial class MyOptions
         var rtn = parsersThe.Aggregate(
             seed: 
             bbDebug //args
-            .Select((it) => (false, it)),
+            .Select((it) => (false, it.Item1, it.Item2)),
             func: (acc, it) => it.Parse(acc))
-            .Select((it) => it.Item2);
-        if (rtn.Any()) return rtn.Where((it) => it.Length>0);
-        return Enumerable.Empty<string>();
+            .Select((it) => (it.Item2, it.Item3));
+        var ggDebug = rtn.ToArray();
+        return ggDebug.AsEnumerable();
     }
 
     public enum EnumPrintDir

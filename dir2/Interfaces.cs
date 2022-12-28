@@ -3,9 +3,8 @@ public interface IParse
 {
     string Name { get; }
     string Help { get; }
-    public IEnumerable<(bool, string)> Parse(
-        IEnumerable<(bool, string)> args);
-    //public IEnumerable<string[]> Parse2(IEnumerable<string[]> args);
+    public IEnumerable<(bool, ArgType, string)> Parse(
+        IEnumerable<(bool, ArgType, string)> args);
 }
 
 public interface IInovke<T, R>

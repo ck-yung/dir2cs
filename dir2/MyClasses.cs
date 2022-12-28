@@ -29,14 +29,15 @@ static public partial class MyOptions
             Action = action;
         }
 
-        public IEnumerable<(bool, string)> Parse(IEnumerable<(bool, string)> args)
+        public IEnumerable<(bool, ArgType, string)> Parse(
+            IEnumerable<(bool, ArgType, string)> args)
         {
             bool notYetActed = true;
             var it = args.GetEnumerator();
             while (it.MoveNext())
             {
                 var current = it.Current;
-                if (current.Item2 == Name)
+                if (current.Item3 == Name)
                 {
                     Flag = true;
                     if (notYetActed)
@@ -51,30 +52,6 @@ static public partial class MyOptions
                 }
             }
         }
-        /*
-        public IEnumerable<string[]> Parse2(IEnumerable<string[]> args)
-        {
-            bool notYetActed = true;
-            var it = args.GetEnumerator();
-            while (it.MoveNext())
-            {
-                var current = it.Current;
-                if ((current.Length == 1) && (current[0] == Name))
-                {
-                    Flag = true;
-                    if (notYetActed)
-                    {
-                        notYetActed = false;
-                        Action();
-                    }
-                }
-                else
-                {
-                    yield return current;
-                }
-            }
-        }
-        */
     }
 
     internal abstract class Parser : IParse
@@ -94,16 +71,16 @@ static public partial class MyOptions
             Resolve = resolve;
         }
 
-        public IEnumerable<(bool, string)> Parse(
-            IEnumerable<(bool, string)> args)
+        public IEnumerable<(bool, ArgType, string)> Parse(
+            IEnumerable<(bool, ArgType, string)> args)
         {
-            IEnumerable<(bool, string)> ToFlagEnum()
+            IEnumerable<(bool, ArgType, string)> ToFlagEnum()
             {
                 var it = args.GetEnumerator();
                 while (it.MoveNext())
                 {
                     var current = it.Current;
-                    if (current.Item2 != Name)
+                    if (current.Item3 != Name)
                     {
                         yield return it.Current;
                     }
@@ -114,7 +91,8 @@ static public partial class MyOptions
                             throw new ArgumentException(
                                 $"Missing value to {Name}");
                         }
-                        yield return (true, it.Current.Item2);
+                        yield return
+                            (true, it.Current.Item2, it.Current.Item3);
                     }
                 }
             }
@@ -126,28 +104,12 @@ static public partial class MyOptions
 
             if (groupThe.ContainsKey(true))
             {
-                Resolve(this, groupThe[true].Select((it) => it.Item2));
+                Resolve(this, groupThe[true].Select((it) => it.Item3));
             }
 
             if (groupThe.ContainsKey(false)) return groupThe[false];
-            return Enumerable.Empty<(bool, string)>();
+            return Enumerable.Empty<(bool, ArgType, string)>();
         }
-        /*
-        public IEnumerable<string[]> Parse2(IEnumerable<string[]> args)
-        {
-            var groupThe = args
-                .GroupBy((it) => (it.Length == 2) ? (it[0] == Name) : false)
-                .ToImmutableDictionary((grp) => grp.Key, (grp) => grp.AsEnumerable());
-
-            if (groupThe.ContainsKey(true))
-            {
-                Resolve(this, groupThe[true].Select((it) => it[1]));
-            }
-
-            if (groupThe.ContainsKey(false)) return groupThe[false];
-            return Enumerable.Empty<string[]>();
-        }
-        */
     }
 
     internal class SimpleParser : Parser

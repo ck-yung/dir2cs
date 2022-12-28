@@ -72,8 +72,8 @@ static public class Wild
 
     static internal bool IsExclFeature(IParse arg) => arg is ExclFeauture<string, bool>;
 
-    static public IEnumerable<string> SelectExclFeatures(IParse[] options,
-        IEnumerable<string> args)
+    static public IEnumerable<(ArgType, string)> SelectExclFeatures(IParse[] options,
+        IEnumerable<(ArgType, string)> args)
     {
         var ddDebug = args.ToArray();
         var optNames = options.Select((it) => it.Name).ToArray();
@@ -81,7 +81,7 @@ static public class Wild
         while (it.MoveNext())
         {
             var current = it.Current;
-            if (optNames.Contains(current))
+            if (optNames.Contains(current.Item2))
             {
                 if (it.MoveNext())
                 {

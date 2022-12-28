@@ -48,12 +48,13 @@ public class Program
             return false;
         }
 
-        (bool envrCfgOff, IEnumerable<string> cfgRest) = Config.GetEnvirOpts();
+        (bool envrCfgOff, IEnumerable<(ArgType, string)> cfgRest) =
+            Config.GetEnvirOpts();
 
         if (false == envrCfgOff &&
             false == mainArgs.Contains(CfgOffOpt))
         {
-            cfgRest = cfgRest.Concat( Config.ParseFile());
+            cfgRest = cfgRest.Concat( Config.ParseConfigFile());
         }
         var ccDebug = cfgRest.ToArray();
         cfgRest = Parsers.Resolve(
@@ -62,9 +63,31 @@ public class Program
         var eeDebug = cfgRest.ToArray();
         cfgRest = eeDebug.AsEnumerable();
 
-        var args =  Parsers.Resolve(cfgRest.Concat(
-            ExpandFromShortCut(mainArgs)),
-            isIncludeExclNameOptions: true).ToArray();
+        var tmp2 = cfgRest.Concat(ExpandFromShortCut(mainArgs)
+            .Select((it) => (ArgType.CommandLine, it)));
+        var tmp3 = Parsers.Resolve(tmp2,
+            isIncludeExclNameOptions: true)
+            .GroupBy((it) => it.Item1 == ArgType.CommandLine)
+            .ToImmutableDictionary(
+            (grp) => grp.Key,
+            (grp) => grp.AsEnumerable());
+
+        string[] args = Array.Empty<string>();
+        if (tmp3.ContainsKey(true))
+        {
+            args = tmp3[true]
+                .Select((it) => it.Item2)
+                .Where((it) => it != Program.CfgOffOpt)
+                .ToArray();
+        }
+
+        if (tmp3.ContainsKey(false))
+        {
+            foreach (var tmp4 in tmp3[false])
+            {
+                Console.Error.WriteLine($"Unknown option: {tmp4.Item1} '{tmp4.Item2}'");
+            }
+        }
 
         Show.EncodeConsoleOutput();
 
