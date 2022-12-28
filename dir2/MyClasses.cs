@@ -51,7 +51,7 @@ static public partial class MyOptions
                 }
             }
         }
-
+        /*
         public IEnumerable<string[]> Parse2(IEnumerable<string[]> args)
         {
             bool notYetActed = true;
@@ -74,6 +74,7 @@ static public partial class MyOptions
                 }
             }
         }
+        */
     }
 
     internal abstract class Parser : IParse
@@ -118,7 +119,8 @@ static public partial class MyOptions
                 }
             }
 
-            var groupThe = ToFlagEnum()
+            var aaDebug = ToFlagEnum().ToArray();
+            var groupThe = aaDebug // ToFlagEnum()
                 .GroupBy((it) => it.Item1)
                 .ToImmutableDictionary((it) => it.Key, (it) => it.AsEnumerable());
 
@@ -130,7 +132,7 @@ static public partial class MyOptions
             if (groupThe.ContainsKey(false)) return groupThe[false];
             return Enumerable.Empty<(bool, string)>();
         }
-
+        /*
         public IEnumerable<string[]> Parse2(IEnumerable<string[]> args)
         {
             var groupThe = args
@@ -145,6 +147,7 @@ static public partial class MyOptions
             if (groupThe.ContainsKey(false)) return groupThe[false];
             return Enumerable.Empty<string[]>();
         }
+        */
     }
 
     internal class SimpleParser : Parser

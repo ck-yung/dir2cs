@@ -5,8 +5,7 @@ public interface IParse
     string Help { get; }
     public IEnumerable<(bool, string)> Parse(
         IEnumerable<(bool, string)> args);
-    public IEnumerable<string[]> Parse2(
-        IEnumerable<string[]> args);
+    //public IEnumerable<string[]> Parse2(IEnumerable<string[]> args);
 }
 
 public interface IInovke<T, R>

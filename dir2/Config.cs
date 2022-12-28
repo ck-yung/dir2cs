@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+using System;
 using System.Collections.Immutable;
 using System.Text;
-using System.Threading.Tasks.Dataflow;
+using System.Text.RegularExpressions;
 
 namespace dir2;
 static class Config
@@ -16,7 +16,36 @@ static class Config
         return Path.Join(pathHome, ".local", "dir2.opt");
     }
 
-    static public IEnumerable<string[]> ParseFile()
+    static IEnumerable<string> SelectArgsFromLines(IEnumerable<string> args)
+    {
+        var patternNameValue = new Regex(
+            @"^\s*--(?<nameThe>\w.*)\s+(?<valueThe>\w.*)",
+            RegexOptions.Compiled);
+        foreach (var arg in args.Where((it) => it.Length > 0))
+        {
+            bool notFound = true;
+            foreach (Match match in patternNameValue.Matches(arg))
+            {
+                var nameThe = match.Groups["nameThe"].Value;
+                var valueThe = match.Groups["valueThe"].Value.TrimEnd();
+                if (false == string.IsNullOrEmpty(valueThe))
+                {
+                    notFound = false;
+                    yield return "--" + nameThe;
+                    yield return valueThe;
+                }
+            }
+            if (notFound)
+            {
+                if (arg.StartsWith("--"))
+                {
+                    yield return arg;
+                }
+            }
+        }
+    }
+
+    static public IEnumerable<string> ParseFile()
     {
         try
         {
@@ -24,34 +53,29 @@ static class Config
             using var fs = File.OpenText(cfgFilename);
             var lines = fs.ReadToEnd()
                 .Split('\n', '\r')
-                .Select((it) => it.Trim())
-                .Select((it) => string
-                    .Join(" ", it
-                        .Split(' ')
-                        .Where((it2) => it2.Length > 0))
-                    .Split(new char[] { ' ' }, 2))
-                .Where((it) => it.Length > 0);
+                .Select((it) => it.Trim());
+            var args = SelectArgsFromLines(lines)
+                .Select((it) => (false, it));
             try
             {
-                return MyOptions.ConfigParsers
-                    .Aggregate(lines, (acc, opt) => opt.Parse2(acc))
-                    .Where((it) => it.Length == 2)
-                    .Join(MyOptions.ExclFileDirParsers,
-                    outerKeySelector: (line) => line[0],
-                    innerKeySelector: (opt) => opt.Name,
-                    resultSelector: (line, opt) => line);
+                var tmp = MyOptions.ConfigParsers
+                    .Aggregate(args, (acc, opt) => opt.Parse(acc))
+                    .Select((it) => it.Item2);
+                return Wild.SelectExclFeatures(
+                    MyOptions.ExclFileDirParsers,
+                    tmp);
             }
             catch (Exception ee)
             {
                 Console.Error.WriteLine(
                     $"Config file {cfgFilename} [{ee.GetType()}] {ee.Message}");
                 Console.Error.WriteLine();
-                return Enumerable.Empty<string[]>();
+                return Enumerable.Empty<string>();
             }
         }
         catch
         {
-            return Enumerable.Empty<string[]>();
+            return Enumerable.Empty<string>();
         }
     }
 

@@ -1,15 +1,25 @@
 using System.Collections.Immutable;
-using System.Text.RegularExpressions;
+using static dir2.MyOptions;
 
 namespace dir2;
 
 static public partial class MyOptions
 {
     static public IEnumerable<string> Resolve(this IParse[] parsers,
-        IEnumerable<string> args)
+        IEnumerable<string> args, bool isIncludeExclNameOptions)
     {
-        var rtn = parsers.Aggregate(
-            seed: args.Select((it) => (false, it)),
+        var bbDebug = args.ToArray();
+        var parsersThe = parsers;
+        if (false == isIncludeExclNameOptions)
+        {
+            parsersThe = parsers
+                .Where((it) => false == Wild.IsExclFeature(it))
+                .ToArray();
+        }
+        var rtn = parsersThe.Aggregate(
+            seed: 
+            bbDebug //args
+            .Select((it) => (false, it)),
             func: (acc, it) => it.Parse(acc))
             .Select((it) => it.Item2);
         if (rtn.Any()) return rtn.Where((it) => it.Length>0);
@@ -236,6 +246,7 @@ static public partial class MyOptions
 
     static public readonly IParse[] ConfigParsers = new IParse[]
     {
+        Sort.Opt,
         Show.EncodeConsoleOpt,
         Wild.RegexOpt,
         Wild.CaseSensitiveOpt,
@@ -244,15 +255,12 @@ static public partial class MyOptions
         (IParse) Helper.DateFormatOpt,
         (IParse) Helper.IsHiddenOpt,
         (IParse) Helper.LinkOpt,
-        Sort.Opt,
         Show.ReverseOpt,
     };
 
-    static public readonly IParse[] ExclFileDirParsers = new IParse[]
-    {
-        (IParse) Wild.ExclFileNameOpt,
-        (IParse) Wild.ExclDirNameOpt,
-    };
+    static public readonly IParse[] ExclFileDirParsers = Parsers
+        .Where((it) => Wild.IsExclFeature(it))
+        .ToArray();
 
     static internal ImmutableDictionary<string, string> ShortcutOptions
         = new Dictionary<string, string>()

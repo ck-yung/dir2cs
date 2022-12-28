@@ -53,17 +53,18 @@ public class Program
         if (false == envrCfgOff &&
             false == mainArgs.Contains(CfgOffOpt))
         {
-            cfgRest = cfgRest.Concat( Config.ParseFile()
-                .SelectMany((it) => it));
+            cfgRest = cfgRest.Concat( Config.ParseFile());
         }
+        var ccDebug = cfgRest.ToArray();
+        cfgRest = Parsers.Resolve(
+            ccDebug // cfgRest
+            , isIncludeExclNameOptions: false);
+        var eeDebug = cfgRest.ToArray();
+        cfgRest = eeDebug.AsEnumerable();
 
-        var aa = Parsers.Resolve(cfgRest);
-        cfgRest = aa.AsEnumerable();
-
-        var args = Parsers.Resolve(cfgRest.Concat(ExpandFromShortCut(
-            mainArgs.Where((it) => false == it.Equals(CfgOffOpt)))))
-            .Where((it) => false == it.StartsWith("-"))
-            .ToArray();
+        var args =  Parsers.Resolve(cfgRest.Concat(
+            ExpandFromShortCut(mainArgs)),
+            isIncludeExclNameOptions: true).ToArray();
 
         Show.EncodeConsoleOutput();
 

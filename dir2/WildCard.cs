@@ -31,6 +31,7 @@ static public class Wild
             .Replace("{", @"\{")
             .Replace("}", @"\}")
             ).Append('$');
+        var  a9Debug = regText.ToString();
         return regText.ToString();
     };
     static internal readonly IParse RegexOpt = new SwitchParser(
@@ -66,6 +67,33 @@ static public class Wild
         else
         {
             CheckIfDirNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
+        }
+    }
+
+    static internal bool IsExclFeature(IParse arg) => arg is ExclFeauture<string, bool>;
+
+    static public IEnumerable<string> SelectExclFeatures(IParse[] options,
+        IEnumerable<string> args)
+    {
+        var ddDebug = args.ToArray();
+        var optNames = options.Select((it) => it.Name).ToArray();
+        var it = ddDebug.AsEnumerable().GetEnumerator(); // args.GetEnumerator();
+        while (it.MoveNext())
+        {
+            var current = it.Current;
+            if (optNames.Contains(current))
+            {
+                if (it.MoveNext())
+                {
+                    var valueThe = it.Current;
+                    yield return current;
+                    yield return valueThe;
+                }
+                else
+                {
+                    throw new ArgumentException($"Missing value to {current}");
+                }
+            }
         }
     }
 
