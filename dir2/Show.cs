@@ -54,12 +54,27 @@ static internal class Show
     static public Func<IEnumerable<InfoSum>, IEnumerable<InfoSum>> ReverseSum
     { get; private set; } = Helper.itself;
 
-    static internal readonly IParse ReverseOpt = new SwitchParser(
-        "--reverse", action: () =>
+    static internal readonly IParse ReverseOpt = new SimpleParser(
+        "--reverse", help: "off | on", resolve: (parser, args) =>
         {
-            ReverseInfo = (seq) => seq.Reverse();
-            ReverseDir = (seq) => seq.Reverse();
-            ReverseSum = (seq) => seq.Reverse();
+            var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
+            if (aa.Length > 1)
+                throw new ArgumentException($"Too many values to {parser.Name}");
+            switch (aa[0])
+            {
+                case "off":
+                    ReverseInfo = Helper.itself;
+                    ReverseDir = Helper.itself;
+                    ReverseSum = Helper.itself;
+                    break;
+                case "on":
+                    ReverseInfo = (seq) => seq.Reverse();
+                    ReverseDir = (seq) => seq.Reverse();
+                    ReverseSum = (seq) => seq.Reverse();
+                    break;
+                default:
+                    throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
+            }
         });
 
     static public Func<IEnumerable<InfoFile>, IEnumerable<InfoFile>> TakeInfo

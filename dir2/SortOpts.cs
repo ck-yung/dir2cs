@@ -22,7 +22,7 @@ static public class Sort
     }
 
     static public readonly IParse Opt = new SimpleParser(name: "--sort",
-        help: "name | size | date | ext | count | last      (up to 2 columns)",
+        help: "off | name | size | date | ext | count | last      (up to 2 columns)",
         resolve: (parser, args) =>
         {
             var aa = Helper.CommonSplit(args).Take(3).ToArray();
@@ -39,6 +39,12 @@ static public class Sort
             {
                 switch (aa[0])
                 {
+                    case "off":
+                        Dirs = Helper.itself;
+                        Files = Helper.itself;
+                        Sums = Helper.itself;
+                        break;
+
                     case "size":
                         Files = (seq) => seq.OrderBy((it) => it.Length);
                         Sums = (seq) => seq.OrderBy(it => it.Length);

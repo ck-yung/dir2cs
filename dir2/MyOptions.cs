@@ -264,7 +264,6 @@ static public partial class MyOptions
             ["-c"] = "--case-sensitive",
             ["-o"] = "--sort",
             ["-k"] = "--keep-dir",
-            ["-r"] = "--reverse",
             ["-w"] = "--within",
             ["-W"] = "--not-within",
             ["-x"] = "--excl",
@@ -275,6 +274,7 @@ static public partial class MyOptions
         ShortcutComplexOptions
         = new Dictionary<string, (string, string[])>
         {
+            ["-r"] = ("", new[] { "--reverse", "on" }),
             ["-s"] = ("Sub via link", new[] { "--sub", "incl-link" }),
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
