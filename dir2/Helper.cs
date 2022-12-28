@@ -1,7 +1,11 @@
-﻿using System.Reflection;
+﻿using System.Collections.Immutable;
+using System.Globalization;
+using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using static dir2.MyOptions;
 
 namespace dir2;
 
@@ -128,7 +132,7 @@ static public partial class Helper
             .Select((it) =>
             {
                 ItemWrite(Show.Size("DIR "));
-                ItemWrite(Show.Date($"{Show.DateFormatOpt.Invoke(Show.GetDate(it))} "));
+                ItemWrite(Show.Date($"{DateFormatOpt.Invoke(Show.GetDate(it))} "));
                 ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));
                 ItemWrite(LinkOpt.Invoke(it));
                 ItemWriteLine(string.Empty);
@@ -181,7 +185,7 @@ static public partial class Helper
                 {
                     Write("One file is found: ");
                     Write(Show.Size(Show.LengthFormatOpt.Invoke(sum.Length)));
-                    WriteLine(Show.Date($"{Show.DateFormatOpt.Invoke(sum.StartTime)}"));
+                    WriteLine(Show.Date($"{DateFormatOpt.Invoke(sum.StartTime)}"));
                 }
                 break;
             default:
@@ -242,5 +246,94 @@ static public partial class Helper
             .Split(Path.DirectorySeparatorChar)
             .AsEnumerable()
             .Last();
+    }
+
+    record DateParse(string pattern, Func<int, TimeSpan> toTimeSpan);
+
+    static public string DefaultDateTimeFormatString
+    { get; private set; } = "yyyy-MM-dd HH:mm";
+
+    static public readonly IInovke<DateTime, string> DateFormatOpt =
+        new ParseInvoker<DateTime, string>(name: "--date-format",
+            help: "DATE-FORMAT   e.g. yyyy-MMM-dd HH:mm:ss",
+            init: (value) => value.ToString(DefaultDateTimeFormatString),
+            resolve: (parser, args) =>
+            {
+                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
+                if (aa.Length > 1)
+                    throw new ArgumentException($"Too many values to {parser.Name}");
+                DefaultDateTimeFormatString = aa[0];
+                Func<DateTime, string> rtn = (value) => value.ToString(aa[0]);
+                _ = rtn(DateTime.MinValue);
+                parser.SetImplementation(rtn);
+            });
+
+    static public readonly ImmutableArray<string> DateTimeFormats =
+        ImmutableArray.Create(new string[] {
+            "yyyy-MM-dd",
+            "yyyyMMdd",
+            "yyyy-MM-ddTHH:mm:ss",
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy-MM-ddTHH:mm",
+            "yyyy-MM-dd HH:mm",
+            "yyyy-MM-dd hh:mmtt",
+            "yyyyMMdd HH:mm:ss",
+            "yyyyMMdd HH:mm",
+        });
+
+    static public bool TryParseDateTime(string arg, out DateTime result)
+    {
+        result = DateTime.MinValue;
+        var pattern3 = new Dictionary<string, DateParse>()
+        {
+            ["minute"] = new DateParse(@"^(?<minute>\d+)min$", (it) => TimeSpan.FromMinutes(it)),
+            ["hour"] = new DateParse(@"^(?<hour>\d+)hour$", (it) => TimeSpan.FromHours(it)),
+            ["hour2"] = new DateParse(@"^(?<hour2>\d+)hr$", (it) => TimeSpan.FromHours(it)),
+            ["day"] = new DateParse(@"^(?<day>\d+)day$", (it) => TimeSpan.FromDays(it)),
+        };
+
+        foreach (var (keyThe, parseThe) in pattern3)
+        {
+            foreach (Match match in Regex.Matches(arg, parseThe.pattern,
+                RegexOptions.IgnoreCase))
+            {
+                var numThe = int.Parse(match.Groups[keyThe].ToString());
+                result = DateTime.Now.Subtract(parseThe.toTimeSpan(numThe));
+                return true;
+            }
+        }
+
+        if (DateTime.TryParseExact(arg, DefaultDateTimeFormatString,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out DateTime goodValue))
+        {
+            result = goodValue;
+            return true;
+        }
+
+        foreach (var fmtThe in DateTimeFormats)
+        {
+            if (DateTime.TryParseExact(arg, fmtThe,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out DateTime goodValue2))
+            {
+                result = goodValue2;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    static public string ToKiloUnit(long arg)
+    {
+        var units = new char[] { 'T', 'G', 'M', 'K', ' ' };
+        string toKilo(float arg2, int index)
+        {
+            if (arg2 < 10_000.0F) return $"{arg2,4:F0}{units[index - 1]} ";
+            if (index == 1) return $"{arg2,4:F0}{units[0]} ";
+            return toKilo((arg2 + 512) / 1024.0F, index - 1);
+        }
+        return toKilo(arg, units.Length);
     }
 }

@@ -114,7 +114,7 @@ static public class Wild
                 return new WithData(valueThe);
             }
 
-            if (Show.TryParseDateTime(arg, out DateTime valueDate))
+            if (Helper.TryParseDateTime(arg, out DateTime valueDate))
             {
                 return new WithData(valueDate);
             }
