@@ -84,14 +84,6 @@ static class Config
         var envirOld = Environment.GetEnvironmentVariable(nameof(dir2));
         if (string.IsNullOrEmpty(envirOld))
         {
-            // >>> debug
-            const string envrFilename = "obj/envr.txt";
-            if (File.Exists(envrFilename))
-            {
-                return (false, SelectArgsFromLines( ArgType.Environment,
-                    File.ReadAllLines(envrFilename)));
-            }
-            // <<< debug
             return (false, Enumerable.Empty<(ArgType, string)>());
         }
 

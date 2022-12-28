@@ -31,7 +31,6 @@ static public class Wild
             .Replace("{", @"\{")
             .Replace("}", @"\}")
             ).Append('$');
-        var  a9Debug = regText.ToString();
         return regText.ToString();
     };
     static internal readonly IParse RegexOpt = new SwitchParser(
@@ -75,9 +74,8 @@ static public class Wild
     static public IEnumerable<(ArgType, string)> SelectExclFeatures(IParse[] options,
         IEnumerable<(ArgType, string)> args)
     {
-        var ddDebug = args.ToArray();
         var optNames = options.Select((it) => it.Name).ToArray();
-        var it = ddDebug.AsEnumerable().GetEnumerator(); // args.GetEnumerator();
+        var it = args.GetEnumerator();
         while (it.MoveNext())
         {
             var current = it.Current;

@@ -97,8 +97,7 @@ static public partial class MyOptions
                 }
             }
 
-            var aaDebug = ToFlagEnum().ToArray();
-            var groupThe = aaDebug // ToFlagEnum()
+            var groupThe = ToFlagEnum()
                 .GroupBy((it) => it.Item1)
                 .ToImmutableDictionary((it) => it.Key, (it) => it.AsEnumerable());
 

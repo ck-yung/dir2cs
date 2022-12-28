@@ -56,12 +56,9 @@ public class Program
         {
             cfgRest = cfgRest.Concat( Config.ParseConfigFile());
         }
-        var ccDebug = cfgRest.ToArray();
-        cfgRest = Parsers.Resolve(
-            ccDebug // cfgRest
-            , isIncludeExclNameOptions: false);
-        var eeDebug = cfgRest.ToArray();
-        cfgRest = eeDebug.AsEnumerable();
+
+        cfgRest = Parsers.Resolve(cfgRest,
+            isIncludeExclNameOptions: false);
 
         var tmp2 = cfgRest.Concat(ExpandFromShortCut(mainArgs)
             .Select((it) => (ArgType.CommandLine, it)));
@@ -83,9 +80,13 @@ public class Program
 
         if (tmp3.ContainsKey(false))
         {
-            foreach (var tmp4 in tmp3[false])
+            var tmp4 = tmp3[false].GroupBy((it) => it.Item1);
+            foreach (var tmp5 in tmp4)
             {
-                Console.Error.WriteLine($"Unknown option: {tmp4.Item1} '{tmp4.Item2}'");
+                var tmp6 = string.Join(" ",
+                    tmp5.Select((it) => it.Item2).ToArray());
+                Console.Error.WriteLine(
+                    $"Unknown '{tmp5.Key}' options: {tmp6}");
             }
         }
 

@@ -8,7 +8,6 @@ static public partial class MyOptions
     static public IEnumerable<(ArgType, string)> Resolve(this IParse[] parsers,
         IEnumerable<(ArgType, string)> args, bool isIncludeExclNameOptions)
     {
-        var bbDebug = args.ToArray();
         var parsersThe = parsers;
         if (false == isIncludeExclNameOptions)
         {
@@ -16,14 +15,11 @@ static public partial class MyOptions
                 .Where((it) => false == Wild.IsExclFeature(it))
                 .ToArray();
         }
-        var rtn = parsersThe.Aggregate(
-            seed: 
-            bbDebug //args
-            .Select((it) => (false, it.Item1, it.Item2)),
+
+        return parsersThe.Aggregate(
+            seed: args.Select((it) => (false, it.Item1, it.Item2)),
             func: (acc, it) => it.Parse(acc))
             .Select((it) => (it.Item2, it.Item3));
-        var ggDebug = rtn.ToArray();
-        return ggDebug.AsEnumerable();
     }
 
     public enum EnumPrintDir
