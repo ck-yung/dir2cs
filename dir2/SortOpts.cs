@@ -29,9 +29,9 @@ static public class Sort
 
             if ((aa.Length > 0) && aa[0] == "name")
             {
-                Dirs = (seq) => seq.OrderBy((it) => it.FullName);
-                Files = (seq) => seq.OrderBy((it) => it.FullName);
-                Sums = (seq) => seq.OrderBy((it) => it.Name);
+                Dirs = (seq) => seq.OrderBy((it) => it.FullName, Wild.StringComparer);
+                Files = (seq) => seq.OrderBy((it) => it.FullName, Wild.StringComparer);
+                Sums = (seq) => seq.OrderBy((it) => it.Name, Wild.StringComparer);
                 return;
             }
 
@@ -55,9 +55,12 @@ static public class Sort
                         Sums = (seq) => seq.OrderBy(it => it.StartTime);
                         break;
                     case "ext":
-                        Dirs = (seq) => seq.OrderBy((it) => it.Extension);
-                        Files = (seq) => seq.OrderBy((it) => it.Extension);
-                        Sums = (seq) => seq.OrderBy((it) => Path.GetExtension(it.Name));
+                        Dirs = (seq) => seq.OrderBy((it) =>
+                        it.Extension, Wild.StringComparer);
+                        Files = (seq) => seq.OrderBy((it) =>
+                        it.Extension, Wild.StringComparer);
+                        Sums = (seq) => seq.OrderBy((it) =>
+                        Path.GetExtension(it.Name), Wild.StringComparer);
                         break;
                     case "count":
                         Sums = (seq) => seq.OrderBy((it) => it.Count);
@@ -74,9 +77,11 @@ static public class Sort
                 (Dirs, Files, Sums) = (aa[0], aa[1]) switch
                 {
                     ("size", "name") => (
-                    (seq) => seq.OrderBy((it) => it.FullName),
-                    (seq2) => seq2.OrderBy((it) => it.Length).ThenBy((it) => it.FullName),
-                    (seq3) => seq3.OrderBy((it) => it.Length).ThenBy((it) => it.Name)),
+                    (seq) => seq.OrderBy((it) => it.FullName, Wild.StringComparer),
+                    (seq2) => seq2.OrderBy((it) => it.Length)
+                    .ThenBy((it) => it.FullName, Wild.StringComparer),
+                    (seq3) => seq3.OrderBy((it) => it.Length)
+                    .ThenBy((it) => it.Name, Wild.StringComparer)),
 
                     ("size", "date") => (
                     (seq) => seq.OrderBy((it) => Show.GetDate(it)),
