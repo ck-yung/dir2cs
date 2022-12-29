@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using static dir2.MyOptions;
 using static dir2.Helper;
+using System.Linq;
 
 namespace dir2;
 public class Program
@@ -13,7 +14,7 @@ public class Program
 		}
 		catch (Exception ee)
 		{
-            if (GetExeEnvr().Contains("--dump-exception-stack"))
+            if (GetExeEnvr().Contains(DumpException))
             {
                 Console.WriteLine(ee);
             }
@@ -25,8 +26,16 @@ public class Program
     }
 
     internal const string CfgOffOpt = "--cfg-off";
+    internal const string DumpException = "--dump-exception-stack";
+    internal const string DumpArgsIfNothing = "--dump-args-if-nothing";
+    static internal readonly string[] EnvrSkipOpts = new string[]
+    {
+        CfgOffOpt
+        , DumpException
+        , DumpArgsIfNothing
+    };
 
-	static bool RunMain(string[] mainArgs)
+    static bool RunMain(string[] mainArgs)
 	{
 		if (mainArgs.Contains("--version"))
 		{
@@ -60,7 +69,9 @@ public class Program
         cfgRest = Parsers.Resolve(cfgRest,
             isIncludeExclNameOptions: false);
 
-        var tmp2 = cfgRest.Concat(ExpandFromShortCut(mainArgs)
+        var tmp2 = cfgRest
+            .Where((it) => false == EnvrSkipOpts.Contains(it.Item2))
+            .Concat(ExpandFromShortCut(mainArgs)
             .Select((it) => (ArgType.CommandLine, it)));
         var tmp3 = Parsers.Resolve(tmp2,
             isIncludeExclNameOptions: true)
@@ -74,7 +85,6 @@ public class Program
         {
             args = tmp3[true]
                 .Select((it) => it.Item2)
-                .Where((it) => it != Program.CfgOffOpt)
                 .ToArray();
         }
 
@@ -110,8 +120,8 @@ public class Program
                 PrintDirOptBothOff();
                 var path2 = Path.GetDirectoryName(args[0]);
                 pathThe = string.IsNullOrEmpty(path2) ? "." : path2;
-                Wild.InitMatchingNames(
-                    new string[] { Path.GetFileName(args[0])});
+                args = new string[] { Path.GetFileName(args[0]) };
+                Wild.InitMatchingNames(args);
             }
         }
         else if (args.Length> 0)
@@ -120,15 +130,18 @@ public class Program
             if (args.Where((it) => it.Contains(Path.DirectorySeparatorChar)).Any())
             {
                 var bb = args
-                    .GroupBy((it) => Path.GetDirectoryName(it))
+                    .GroupBy((it) => Wild.GetText( Path.GetDirectoryName(it)))
                     .ToImmutableDictionary((grp)=>grp.Key, (grp)=>grp.ToArray());
                 if (bb.Count>1)
                 {
+                    var bbb = bb.Keys.ToImmutableArray();
                     WriteLine($"""
                     Syntax: {ExeName} DIR{Path.DirectorySeparatorChar}WILD [OPTION ..]
                     
                     Syntax: {ExeName} WILD [WILD ..] [OPTION ..]
                     where all WILD have same directory.
+
+                    But '{bbb[0]}' and '{bbb[1]}' is different dir name.
                     """);
                     return false;
                 }
@@ -141,7 +154,8 @@ public class Program
             if (Directory.Exists(args[0]))
             {
                 pathThe = args[0];
-                Wild.InitMatchingNames(args.Skip(1));
+                args = args.Skip(1).ToArray();
+                Wild.InitMatchingNames(args);
             }
             else
             {
@@ -160,12 +174,24 @@ public class Program
             pathThe += Path.DirectorySeparatorChar;
         }
 
-
         if (!Directory.Exists(pathThe))
 		{
 			WriteLine($"Dir '{args[0]}' is NOT found.");
 			return false;
 		}
+
+        if (GetExeEnvr().Contains(DumpArgsIfNothing))
+        {
+            DumpArgsAction = () =>
+            {
+                Console.Write($" on {pathThe}");
+                if (args.Length > 0)
+                {
+                    Console.Write(" for ");
+                    Console.Write(string.Join(' ', args));
+                }
+            };
+        }
 
         pathThe = io.GetFullPath(pathThe);
         InfoSum sumThe = SubDirOpt.Invoke(pathThe);

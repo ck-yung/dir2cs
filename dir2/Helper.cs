@@ -173,12 +173,16 @@ static public partial class Helper
         impPrintDirCount(count);
     }
 
+    static internal Action DumpArgsAction { get; set; } = () => { };
+
     static internal void PrintIntoTotalWithFlag(InfoSum sum, bool printEvenCountOne)
     {
         switch (sum.Count)
         {
             case 0:
-                WriteLine("No file is found.");
+                Write("No file is found");
+                DumpArgsAction();
+                WriteLine(".");
                 break;
             case 1:
                 if (printEvenCountOne)
