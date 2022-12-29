@@ -155,7 +155,8 @@ static public partial class Helper
             .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
             .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
             .Where((it) => Wild.ExtensionOpt.Invoke(it))
-            .Where((it) => IsHiddenOpt.Invoke(it))
+            .Where((it) => IsHiddenFileOpt.Invoke(it))
+            .Where((it) => IsLinkFileOpt.Invoke(it))
             .Invoke((seq) => Sum.Func(seq));
     }
 

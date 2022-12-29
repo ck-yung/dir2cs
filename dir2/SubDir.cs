@@ -38,7 +38,8 @@ static public partial class MyOptions
         .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
         .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
         .Where((it) => Wild.ExtensionOpt.Invoke(it))
-        .Where((it) => Helper.IsHiddenOpt.Invoke(it))
+        .Where((it) => Helper.IsHiddenFileOpt.Invoke(it))
+        .Where((it) => Helper.IsLinkFileOpt.Invoke(it))
         .Invoke((seq) => Sum.Func(seq));
     }
 

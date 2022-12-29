@@ -70,10 +70,10 @@ public class Program
             isIncludeExclNameOptions: false);
 
         var tmp2 = cfgRest
-            .Where((it) => false == EnvrSkipOpts.Contains(it.Item2))
             .Concat(ExpandFromShortCut(mainArgs)
             .Select((it) => (ArgType.CommandLine, it)));
-        var tmp3 = Parsers.Resolve(tmp2,
+        var tmp3 = Parsers.Resolve(
+            tmp2.Where((it) => false == EnvrSkipOpts.Contains(it.Item2)),
             isIncludeExclNameOptions: true)
             .GroupBy((it) => it.Item1 == ArgType.CommandLine)
             .ToImmutableDictionary(

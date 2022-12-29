@@ -179,7 +179,7 @@ static public partial class Helper
         return false;
     }
 
-    static internal readonly IInovke<InfoFile, bool> IsHiddenOpt =
+    static internal readonly IInovke<InfoFile, bool> IsHiddenFileOpt =
         new ParseInvoker<InfoFile, bool>("--hidden", help: "excl | incl | only",
             init: (it) => false == it.IsHidden(), resolve: (parser, args) =>
             {
@@ -202,9 +202,32 @@ static public partial class Helper
                 }
             });
 
+    static internal readonly IInovke<InfoFile, bool> IsLinkFileOpt =
+        new ParseInvoker<InfoFile, bool>("--link-file", help: "incl | excl | only",
+            init: Always<InfoFile>.True, resolve: (parser, args) =>
+            {
+                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
+                if (aa.Length > 1)
+                    throw new ArgumentException($"Too many values to {parser.Name}");
+                switch (aa[0])
+                {
+                    case "incl":
+                        parser.SetImplementation(Always<InfoFile>.True);
+                        break;
+                    case "excl":
+                        parser.SetImplementation((it) => string.IsNullOrEmpty(it.LinkTarget));
+                        break;
+                    case "only":
+                        parser.SetImplementation((it) => false == string.IsNullOrEmpty(it.LinkTarget));
+                        break;
+                    default:
+                        throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
+                }
+            });
+
     static internal readonly IInovke<InfoBase, string> LinkOpt =
-        new ParseInvoker<InfoBase, string>("--link",
-            help: "hide | show", init: (_) => string.Empty,
+        new ParseInvoker<InfoBase, string>("--show-link",
+            help: "off | on", init: (_) => string.Empty,
             resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
@@ -212,10 +235,10 @@ static public partial class Helper
                     throw new ArgumentException($"Too many values to {parser.Name}");
                 switch (aa[0])
                 {
-                    case "hide":
+                    case "off":
                         parser.SetImplementation((_) => string.Empty);
                         break;
-                    case "show":
+                    case "on":
                         parser.SetImplementation((it) =>
                         {
                             if (string.IsNullOrEmpty(it.LinkTarget))

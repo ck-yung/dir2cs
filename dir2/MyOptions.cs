@@ -92,7 +92,7 @@ static public partial class MyOptions
 
     static public readonly IInovke<string, InfoSum> SubDirOpt =
         new ParseInvoker<string, InfoSum>(name: "--sub",
-            help: "off | incl-link | skip-link",
+            help: "off | both | only-link | excl-link",
             init: (path) => PrintDirOpt.Invoke(path),
             resolve: (parser, args) =>
             {
@@ -105,11 +105,20 @@ static public partial class MyOptions
                     case "off":
                         parser.SetImplementation((path) => PrintDirOpt.Invoke(path));
                         break;
-                    case "incl-link":
+                    case "both":
                         IsFakeDirOrLinked = Helper.Never; ;
                         parser.SetImplementation((path) => impSubDir(path));
                         break;
-                    case "skip-link":
+                    case "only-link":
+                        IsFakeDirOrLinked = (path) =>
+                        {
+                            var info = Helper.toInfoDir(path);
+                            if (false == info.IsNotFake()) return true;
+                            return string.IsNullOrEmpty(info.LinkTarget);
+                        };
+                        parser.SetImplementation((path) => impSubDir(path));
+                        break;
+                    case "excl-link":
                         IsFakeDirOrLinked = (path) =>
                         {
                             var info = Helper.toInfoDir(path);
@@ -226,7 +235,8 @@ static public partial class MyOptions
         (IParse) Wild.ExclFileNameOpt,
         (IParse) Wild.ExclDirNameOpt,
         (IParse) Wild.ExtensionOpt,
-        (IParse) Helper.IsHiddenOpt,
+        (IParse) Helper.IsHiddenFileOpt,
+        (IParse) Helper.IsLinkFileOpt,
         Sort.Opt,
         Show.Opt,
         (IParse) Helper.LinkOpt,
@@ -249,7 +259,8 @@ static public partial class MyOptions
         (IParse) Show.LengthFormatOpt,
         (IParse) Show.CountFormat,
         (IParse) Helper.DateFormatOpt,
-        (IParse) Helper.IsHiddenOpt,
+        (IParse) Helper.IsHiddenFileOpt,
+        (IParse) Helper.IsLinkFileOpt,
         (IParse) Helper.LinkOpt,
         Show.ReverseOpt,
     };
@@ -275,10 +286,10 @@ static public partial class MyOptions
         = new Dictionary<string, (string, string[])>
         {
             ["-r"] = ("", new[] { "--reverse", "on" }),
-            ["-s"] = ("Sub via link", new[] { "--sub", "incl-link" }),
+            ["-s"] = ("Scan all sub dir", new[] { "--sub", "both" }),
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
-            ["-L"] = ("Show link", new[] { "--link", "show" }),
+            ["-l"] = ("", new[] { "--show-link", "on" }),
             ["-t"] = ("", new[] { "--total", "only" }),
             ["-b"] = ("Brief path name", new[] {
                 "--total", "off", "--hide", "date,size,count" }),
