@@ -141,7 +141,7 @@ static public partial class MyOptions
             switch (aa[0])
             {
                 case "off":
-                    Helper.impPrintInfoTotal = Helper.DoNothing;
+                    Helper.impPrintInfoTotal = InfoSum.DoNothing;
                     Helper.impPrintDirCount = Helper.DoNothing;
                     break;
                 case "only":
@@ -164,7 +164,7 @@ static public partial class MyOptions
                         }
                     };
 
-                    if (InfoSum.IsNothing(Helper.impPrintInfoTotal))
+                    if (PrintDir != EnumPrintDir.Only)
                     {
                         Helper.impPrintInfoTotal =
                             (arg) => Helper.PrintIntoTotalWithFlag(arg, printEvenCountOne: true);
