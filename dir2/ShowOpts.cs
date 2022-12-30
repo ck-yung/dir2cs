@@ -18,9 +18,10 @@ static internal class Show
     static public Func<string, string> Count { get; private set; } = Helper.itself;
     static public Func<InfoBase, string> Link { get; private set; } = Blank;
     static public Func<InfoBase, string> Attributes { get; private set; } = Blank;
- 
+    static public Func<InfoBase, string> Owner { get; private set; } = Blank;
+
     static public readonly IParse HideOpt = new SimpleParser(name: "--hide",
-        help: "date,size,count,link,attr",
+        help: "date,size,count,link,attr,owner",
         resolve: (parser, args) =>
         {
             foreach (var arg in Helper.CommonSplit(args))
@@ -48,6 +49,9 @@ static internal class Show
                     case "attr":
                         Attributes = Blank;
                         break;
+                    case "owner":
+                        Owner = Blank;
+                        break;
                     default:
                         throw new ArgumentException($"Bad value '{arg}' to {parser.Name}");
                 }
@@ -55,7 +59,7 @@ static internal class Show
         });
 
     static public readonly IParse Opt = new SimpleParser(name: "--show",
-        help: "date,size,count,link,attr",
+        help: "date,size,count,link,attr,owner",
         resolve: (parser, args) =>
         {
             foreach (var arg in Helper.CommonSplit(args))
@@ -83,6 +87,9 @@ static internal class Show
                         break;
                     case "attr":
                         Attributes = (arg) => arg.AttributeText();
+                        break;
+                    case "owner":
+                        Owner = (arg) => $"{arg.OwnerText(),30} ";
                         break;
                     default:
                         throw new ArgumentException($"Bad value '{arg}' to {parser.Name}");

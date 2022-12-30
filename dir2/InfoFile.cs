@@ -15,6 +15,9 @@ public record InfoBase(string Name
     public string AttributeText()
     {
         var rtn = new StringBuilder();
+        rtn.Append(
+            FileAttributes.HasFlag(FileAttributes.Directory)
+            ? "D" : " ");
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             rtn.Append(
@@ -39,6 +42,40 @@ public record InfoBase(string Name
         }
         rtn.Append(" ");
         return rtn.ToString();
+    }
+
+    public string OwnerText()
+    {
+        try
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (FileAttributes.HasFlag(FileAttributes.Directory))
+                {
+                    return new DirectoryInfo(FullName)
+                        .GetAccessControl().GetOwner(
+                        typeof(System.Security.Principal.NTAccount))
+                        .ToString();
+                }
+                else
+                {
+                    return new FileInfo(FullName)
+                        .GetAccessControl().GetOwner(
+                        typeof(System.Security.Principal.NTAccount))
+                        .ToString();
+                }
+            }
+            else
+            {
+                var rtn = new StringBuilder();
+                rtn.Append(' ');
+                return rtn.ToString();
+            }
+        }
+        catch
+        {
+            return "? ";
+        }
     }
 }
 

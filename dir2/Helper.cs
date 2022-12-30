@@ -132,6 +132,7 @@ static public partial class Helper
             .Select((it) =>
             {
                 ItemWrite(Show.Attributes(it));
+                ItemWrite(Show.Owner(it));
                 ItemWrite(Show.Size("DIR "));
                 ItemWrite(Show.Date($"{DateFormatOpt.Invoke(Show.GetDate(it))} "));
                 ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));

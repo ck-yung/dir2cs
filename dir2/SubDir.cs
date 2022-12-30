@@ -19,6 +19,7 @@ static public partial class MyOptions
             .Select((it) =>
             {
                 Helper.ItemWrite(Show.Attributes(it));
+                Helper.ItemWrite(Show.Owner(it));
                 Helper.ItemWrite(Show.Date($"{Helper.DateFormatOpt.Invoke(Show.GetDate(it))} "));
                 Helper.ItemWrite(Show.GetDirName(Helper.io.GetRelativeName(it.FullName)));
                 Helper.ItemWrite(Show.Link.Invoke(it));
