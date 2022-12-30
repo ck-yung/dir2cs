@@ -134,7 +134,7 @@ static public partial class Helper
                 ItemWrite(Show.Size("DIR "));
                 ItemWrite(Show.Date($"{DateFormatOpt.Invoke(Show.GetDate(it))} "));
                 ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));
-                ItemWrite(LinkOpt.Invoke(it));
+                ItemWrite(Show.Link.Invoke(it));
                 ItemWriteLine(string.Empty);
                 return it;
             })

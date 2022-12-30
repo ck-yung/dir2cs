@@ -224,31 +224,4 @@ static public partial class Helper
                         throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
                 }
             });
-
-    static internal readonly IInovke<InfoBase, string> LinkOpt =
-        new ParseInvoker<InfoBase, string>("--show-link",
-            help: "off | on", init: (_) => string.Empty,
-            resolve: (parser, args) =>
-            {
-                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-                if (aa.Length > 1)
-                    throw new ArgumentException($"Too many values to {parser.Name}");
-                switch (aa[0])
-                {
-                    case "off":
-                        parser.SetImplementation((_) => string.Empty);
-                        break;
-                    case "on":
-                        parser.SetImplementation((it) =>
-                        {
-                            if (string.IsNullOrEmpty(it.LinkTarget))
-                                return string.Empty;
-                            else
-                                return $" -> {it.LinkTarget}";
-                        });
-                        break;
-                    default:
-                        throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
-                }
-            });
 }

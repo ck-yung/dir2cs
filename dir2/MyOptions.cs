@@ -238,8 +238,8 @@ static public partial class MyOptions
         (IParse) Helper.IsHiddenFileOpt,
         (IParse) Helper.IsLinkFileOpt,
         Sort.Opt,
+        Show.HideOpt,
         Show.Opt,
-        (IParse) Helper.LinkOpt,
         Sum.Opt,
         (IParse) Helper.io.KeepDirOpt,
         Wild.WithinOpt,
@@ -253,6 +253,8 @@ static public partial class MyOptions
     static public readonly IParse[] ConfigParsers = new IParse[]
     {
         Sort.Opt,
+        Show.HideOpt,
+        Show.Opt,
         Show.EncodeConsoleOpt,
         Wild.RegexOpt,
         Wild.CaseSensitiveOpt,
@@ -261,7 +263,6 @@ static public partial class MyOptions
         (IParse) Helper.DateFormatOpt,
         (IParse) Helper.IsHiddenFileOpt,
         (IParse) Helper.IsLinkFileOpt,
-        (IParse) Helper.LinkOpt,
         Sort.ReverseOpt,
     };
 
@@ -289,7 +290,7 @@ static public partial class MyOptions
             ["-s"] = ("Scan all sub dir", new[] { "--sub", "both" }),
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
-            ["-l"] = ("", new[] { "--show-link", "on" }),
+            ["-l"] = ("", new[] { "--show", "link" }),
             ["-t"] = ("", new[] { "--total", "only" }),
             ["-b"] = ("Brief path name", new[] {
                 "--total", "off", "--hide", "date,size,count" }),

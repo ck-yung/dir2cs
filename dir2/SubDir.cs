@@ -20,7 +20,7 @@ static public partial class MyOptions
             {
                 Helper.ItemWrite(Show.Date($"{Helper.DateFormatOpt.Invoke(Show.GetDate(it))} "));
                 Helper.ItemWrite(Show.GetDirName(Helper.io.GetRelativeName(it.FullName)));
-                Helper.ItemWrite(Helper.LinkOpt.Invoke(it));
+                Helper.ItemWrite(Show.Link.Invoke(it));
                 Helper.ItemWriteLine(string.Empty);
                 return it;
             })

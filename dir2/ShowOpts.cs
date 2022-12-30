@@ -8,6 +8,7 @@ namespace dir2;
 static internal class Show
 {
     static readonly Func<string, string> blank = (arg) => string.Empty;
+    static string Blank<T>(T _) { return ""; }
 
     static public Func<string, string> GetDirName
     { get; private set; } = (dirname) => dirname.TrimEnd(Path.DirectorySeparatorChar);
@@ -15,9 +16,10 @@ static internal class Show
     static public Func<string, string> Date { get; private set; } = Helper.itself;
     static public Func<string, string> Size { get; private set; } = Helper.itself;
     static public Func<string, string> Count { get; private set; } = Helper.itself;
+    static public Func<InfoBase, string> Link { get; private set; } = Blank;
 
-    static public readonly IParse Opt = new SimpleParser(name: "--hide",
-        help: "date,size,count",
+    static public readonly IParse HideOpt = new SimpleParser(name: "--hide",
+        help: "date,size,count,link",
         resolve: (parser, args) =>
         {
             foreach (var arg in Helper.CommonSplit(args))
@@ -38,6 +40,42 @@ static internal class Show
                         break;
                     case "count":
                         Count = blank;
+                        break;
+                    case "link":
+                        Link = Blank;
+                        break;
+                    default:
+                        throw new ArgumentException($"Bad value '{arg}' to {parser.Name}");
+                }
+            }
+        });
+
+    static public readonly IParse Opt = new SimpleParser(name: "--show",
+        help: "date,size,count,link",
+        resolve: (parser, args) =>
+        {
+            foreach (var arg in Helper.CommonSplit(args))
+            {
+                switch (arg)
+                {
+                    case "date":
+                        Date = Helper.itself;
+                        break;
+                    case "size":
+                        Size = Helper.itself;
+                        GetDirName = (dirname) => dirname.TrimEnd(
+                            Path.DirectorySeparatorChar);
+                        break;
+                    case "count":
+                        Count = Helper.itself;
+                        break;
+                    case "link":
+                        Link = (arg) =>
+                        {
+                            if (string.IsNullOrEmpty(arg.LinkTarget))
+                                return string.Empty;
+                            return $" -> {arg.LinkTarget}";
+                        };
                         break;
                     default:
                         throw new ArgumentException($"Bad value '{arg}' to {parser.Name}");
