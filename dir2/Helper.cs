@@ -131,6 +131,7 @@ static public partial class Helper
             .Invoke(Sort.TakeDir)
             .Select((it) =>
             {
+                ItemWrite(Show.Attributes(it));
                 ItemWrite(Show.Size("DIR "));
                 ItemWrite(Show.Date($"{DateFormatOpt.Invoke(Show.GetDate(it))} "));
                 ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));

@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+using System.Text;
 using static dir2.MyOptions;
 
 namespace dir2;
@@ -6,20 +8,55 @@ public record InfoBase(string Name
     , string FullName
     , DateTime CreationTime
     , DateTime LastWriteTime
+    , FileAttributes FileAttributes
     , string LinkTarget
-    );
+    )
+{
+    public string AttributeText()
+    {
+        var rtn = new StringBuilder();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            rtn.Append(
+                FileAttributes.HasFlag(FileAttributes.ReadOnly)
+                ? "R" : " ");
+            rtn.Append(
+                FileAttributes.HasFlag(FileAttributes.Hidden)
+                ? "H":" ");
+            rtn.Append(
+                FileAttributes.HasFlag(FileAttributes.System)
+                ? "S" : " ");
+            rtn.Append(
+                FileAttributes.HasFlag(FileAttributes.Archive)
+                ? "A" : " ");
+            rtn.Append(
+                FileAttributes.HasFlag(FileAttributes.Normal)
+                ? "N" : " ");
+        }
+        else
+        {
+            rtn.Append("?");
+        }
+        rtn.Append(" ");
+        return rtn.ToString();
+    }
+}
 
-public record InfoDir(string Name,
-    string Extension,
-    string FullName,
-    DateTime CreationTime,
-    DateTime LastWriteTime,
-    string LinkTarget)
-    : InfoBase(Name, FullName, CreationTime, LastWriteTime, LinkTarget)
+public record InfoDir(string Name
+    , string Extension
+    , string FullName
+    , DateTime CreationTime
+    , DateTime LastWriteTime
+    , FileAttributes FileAttributes
+    , string LinkTarget
+    ) : InfoBase(Name, FullName
+        , CreationTime, LastWriteTime
+        , FileAttributes, LinkTarget)
 {
     static internal readonly InfoDir Fake = new (string.Empty
         , string.Empty, string.Empty
-        , DateTime.MinValue, DateTime.MinValue, string.Empty);
+        , DateTime.MinValue, DateTime.MinValue
+        , FileAttributes.Directory, string.Empty);
 
     public bool IsNotFake()
     {
@@ -27,16 +64,18 @@ public record InfoDir(string Name,
     }
 }
 
-public record InfoFile(string Name,
-    string Extension,
-    string FullName,
-    string DirectoryName,
-    long Length,
-    DateTime CreationTime,
-    DateTime LastWriteTime,
-    FileAttributes Attributes,
-    string LinkTarget)
-    : InfoBase(Name, FullName, CreationTime, LastWriteTime, LinkTarget)
+public record InfoFile(string Name
+    , string Extension
+    , string FullName
+    , string DirectoryName
+    , long Length
+    , DateTime CreationTime
+    , DateTime LastWriteTime
+    , FileAttributes FileAttributes
+    , string LinkTarget
+    ) : InfoBase(Name, FullName
+        , CreationTime, LastWriteTime
+        , FileAttributes, LinkTarget)
 {
     static internal readonly InfoFile Fake = new(string.Empty
         , string.Empty, string.Empty, string.Empty, 0
@@ -137,12 +176,14 @@ static public partial class Helper
         try
         {
             var rtn = new DirectoryInfo(dir);
-            return new InfoDir(Name: rtn.Name,
-                Extension: rtn.Extension,
-                FullName: rtn.FullName,
-                CreationTime: rtn.CreationTime,
-                LastWriteTime: rtn.LastWriteTime,
-                LinkTarget: rtn.LinkTarget ?? string.Empty);
+            return new InfoDir(Name: rtn.Name
+                , Extension: rtn.Extension
+                , FullName: rtn.FullName
+                , CreationTime: rtn.CreationTime
+                , LastWriteTime: rtn.LastWriteTime
+                , FileAttributes: rtn.Attributes
+                , LinkTarget: rtn.LinkTarget ?? string.Empty
+                );
         }
         catch
         {
@@ -155,15 +196,16 @@ static public partial class Helper
         try
         {
             var rtn = new FileInfo(file);
-            return new InfoFile(Name: rtn.Name,
-                Extension: rtn.Extension,
-                FullName: rtn.FullName,
-                DirectoryName: rtn.DirectoryName ?? string.Empty,
-                Length: rtn.Length,
-                CreationTime: rtn.CreationTime,
-                LastWriteTime: rtn.LastWriteTime,
-                Attributes: rtn.Attributes,
-                LinkTarget: rtn.LinkTarget ?? string.Empty);
+            return new InfoFile(Name: rtn.Name
+                , Extension: rtn.Extension
+                , FullName: rtn.FullName
+                , DirectoryName: rtn.DirectoryName ?? string.Empty
+                , Length: rtn.Length
+                , CreationTime: rtn.CreationTime
+                , LastWriteTime: rtn.LastWriteTime
+                , FileAttributes: rtn.Attributes
+                , LinkTarget: rtn.LinkTarget ?? string.Empty
+                );
         }
         catch
         {
@@ -173,7 +215,8 @@ static public partial class Helper
 
     static private bool IsHidden(this InfoFile arg)
     {
-        if (arg.Attributes.HasFlag(FileAttributes.Hidden)) return true;
+        if (arg.FileAttributes.HasFlag(FileAttributes.Hidden))
+            return true;
         if (string.IsNullOrEmpty(arg.Name)) return true;
         if (arg.Name[0] == '.') return true;
         return false;

@@ -134,10 +134,14 @@ public class Program
             {
                 var bb = args
                     .GroupBy((it) => Wild.GetText( Path.GetDirectoryName(it)))
-                    .ToImmutableDictionary((grp)=>grp.Key, (grp)=>grp.ToArray());
+                    .Take(2)
+                    .ToImmutableDictionary((grp)=>grp.Key,
+                    (grp)=>grp.First());
                 if (bb.Count>1)
                 {
-                    var bbb = bb.Keys.ToImmutableArray();
+                    var bbb = bb
+                        .Select((it) => it.Value)
+                        .ToImmutableArray();
                     WriteLine($"""
                     Syntax: {ExeName} DIR{Path.DirectorySeparatorChar}WILD [OPTION ..]
                     
