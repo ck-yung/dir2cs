@@ -3,11 +3,11 @@ namespace dir2;
 static public class Sum
 {
     static public bool IsFuncChanged { get; private set; } = false;
-    static private Func<IEnumerable<InfoFile>, InfoSum>
-        _func = (seq) => seq
+    static private Func<IEnumerable<InfoFile>, InfoSum> _func =
+        (seq) => seq
         .Invoke(Sort.Files)
-        .Invoke(Show.ReverseInfo)
-        .Invoke(Show.TakeInfo)
+        .Invoke(Sort.ReverseInfo)
+        .Invoke(Sort.TakeInfo)
         .Select((it) =>
         {
             Helper.ItemWrite(Show.Size(Show.LengthFormatOpt.Invoke(it.Length)));
@@ -21,7 +21,7 @@ static public class Sum
             seed: new InfoSum(Helper.io.RealInitPath),
             func: (acc, it) => acc.AddWith(it));
 
-    static public Func<IEnumerable<InfoFile>, InfoSum> Func
+    static public Func<IEnumerable<InfoFile>, InfoSum> Reduce
     {
         get => _func;
         private set
@@ -48,16 +48,16 @@ static public class Sum
             {
                 case "dir":
                     Helper.PrintDir = (_) => InfoSum.Fake;
-                    Func = (seq) => seq
+                    Reduce = (seq) => seq
                         .GroupBy((it) => Helper.GetFirstDir(Path.GetDirectoryName(
                             Helper.io.GetRelativeName(it.FullName))))
                         .Select((grp) => grp.Aggregate(
                             seed: new InfoSum(Name:
                             string.IsNullOrEmpty(grp.Key) ? "." : grp.Key),
                             func: (acc, it) => acc.AddWith(it)))
-                        .Invoke((seq) => Sort.Sums(seq))
-                        .Invoke(Show.ReverseSum)
-                        .Invoke(Show.TakeSum)
+                        .Invoke(Sort.Sums)
+                        .Invoke(Sort.ReverseSum)
+                        .Invoke(Sort.TakeSum)
                         .Select((it) =>
                         {
                             it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
@@ -69,15 +69,15 @@ static public class Sum
                     break;
                 case "ext":
                     Helper.PrintDir = (_) => InfoSum.Fake;
-                    Func = (seq) => seq
+                    Reduce = (seq) => seq
                         .GroupBy((it) => Wild.GetText(it.Extension))
                         .Select((grp) => grp.Aggregate(
                             seed: new InfoSum(Name:
                             string.IsNullOrEmpty(grp.Key) ? "*NO-EXT*" : grp.Key),
                             func: (acc, it) => acc.AddWith(it)))
-                        .Invoke((seq) => Sort.Sums(seq))
-                        .Invoke(Show.ReverseSum)
-                        .Invoke(Show.TakeSum)
+                        .Invoke(Sort.Sums)
+                        .Invoke(Sort.ReverseSum)
+                        .Invoke(Sort.TakeSum)
                         .Select((it) =>
                         {
                             it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
@@ -89,7 +89,7 @@ static public class Sum
                     break;
                 case "+dir":
                     Helper.PrintDir = (_) => InfoSum.Fake;
-                    Func = (seq) =>
+                    Reduce = (seq) =>
                     {
                         var qry2 = seq
                         .GroupBy((it) => Helper.GetFirstDir(
@@ -109,9 +109,9 @@ static public class Sum
                         select (joinThe == null) ? new InfoSum(dirName,false) : joinThe;
 
                         return qry3
-                        .Invoke((seq) => Sort.Sums(seq))
-                        .Invoke(Show.ReverseSum)
-                        .Invoke(Show.TakeSum)
+                        .Invoke(Sort.Sums)
+                        .Invoke(Sort.ReverseSum)
+                        .Invoke(Sort.TakeSum)
                         .Select((it) =>
                         {
                             it.Print(Helper.ItemWrite, Helper.ItemWriteLine);

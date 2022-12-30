@@ -14,8 +14,8 @@ static public partial class MyOptions
             .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
             .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
             .Invoke(Sort.Dirs)
-            .Invoke(Show.ReverseDir)
-            .Invoke(Show.TakeDir)
+            .Invoke(Sort.ReverseDir)
+            .Invoke(Sort.TakeDir)
             .Select((it) =>
             {
                 Helper.ItemWrite(Show.Date($"{Helper.DateFormatOpt.Invoke(Show.GetDate(it))} "));
@@ -40,7 +40,7 @@ static public partial class MyOptions
         .Where((it) => Wild.ExtensionOpt.Invoke(it))
         .Where((it) => Helper.IsHiddenFileOpt.Invoke(it))
         .Where((it) => Helper.IsLinkFileOpt.Invoke(it))
-        .Invoke((seq) => Sum.Func(seq));
+        .Invoke(Sum.Reduce);
     }
 
     static internal Func<string, bool> IsFakeDirOrLinked

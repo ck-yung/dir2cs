@@ -37,16 +37,19 @@ public class Program
 
     static bool RunMain(string[] mainArgs)
 	{
-		if (mainArgs.Contains("--version"))
+		if (mainArgs.Contains("--version") ||
+            mainArgs.Contains("-v"))
 		{
 			WriteLine(GetVersion());
 			return false;
 		}
 
         if (mainArgs.Contains("--help") ||
+            mainArgs.Contains("-h") ||
             mainArgs.Contains("-?"))
         {
-            if (mainArgs.Contains("cfg") || mainArgs.Contains("config"))
+            if (mainArgs.Contains("cfg") ||
+                mainArgs.Contains("config"))
             {
                 Write(Config.GetHelp());
             }

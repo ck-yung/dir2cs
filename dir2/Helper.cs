@@ -127,8 +127,8 @@ static public partial class Helper
             .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
             .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
             .Invoke(Sort.Dirs)
-            .Invoke(Show.ReverseDir)
-            .Invoke(Show.TakeDir)
+            .Invoke(Sort.ReverseDir)
+            .Invoke(Sort.TakeDir)
             .Select((it) =>
             {
                 ItemWrite(Show.Size("DIR "));
@@ -157,7 +157,7 @@ static public partial class Helper
             .Where((it) => Wild.ExtensionOpt.Invoke(it))
             .Where((it) => IsHiddenFileOpt.Invoke(it))
             .Where((it) => IsLinkFileOpt.Invoke(it))
-            .Invoke((seq) => Sum.Func(seq));
+            .Invoke(Sum.Reduce);
     }
 
     static internal Action<string> ItemWrite { get; set; } = Write;

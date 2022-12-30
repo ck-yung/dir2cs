@@ -245,8 +245,8 @@ static public partial class MyOptions
         Wild.WithinOpt,
         Wild.NotWithinOpt,
         Show.CreationDateOpt,
-        Show.ReverseOpt,
-        Show.TakeOpt,
+        Sort.ReverseOpt,
+        Sort.TakeOpt,
         TotalOpt,
     };
 
@@ -262,7 +262,7 @@ static public partial class MyOptions
         (IParse) Helper.IsHiddenFileOpt,
         (IParse) Helper.IsLinkFileOpt,
         (IParse) Helper.LinkOpt,
-        Show.ReverseOpt,
+        Sort.ReverseOpt,
     };
 
     static public readonly IParse[] ExclFileDirParsers = Parsers

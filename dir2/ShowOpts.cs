@@ -1,6 +1,4 @@
 using System.Collections.Immutable;
-using System.Data.Common;
-using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
@@ -44,100 +42,6 @@ static internal class Show
                     default:
                         throw new ArgumentException($"Bad value '{arg}' to {parser.Name}");
                 }
-            }
-        });
-
-    static public Func<IEnumerable<InfoFile>, IEnumerable<InfoFile>> ReverseInfo
-    { get; private set; } = Helper.itself;
-    static public Func<IEnumerable<InfoDir>, IEnumerable<InfoDir>> ReverseDir
-    { get; private set; } = Helper.itself;
-    static public Func<IEnumerable<InfoSum>, IEnumerable<InfoSum>> ReverseSum
-    { get; private set; } = Helper.itself;
-
-    static internal readonly IParse ReverseOpt = new SimpleParser(
-        "--reverse", help: "off | on", resolve: (parser, args) =>
-        {
-            var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-            if (aa.Length > 1)
-                throw new ArgumentException($"Too many values to {parser.Name}");
-            switch (aa[0])
-            {
-                case "off":
-                    ReverseInfo = Helper.itself;
-                    ReverseDir = Helper.itself;
-                    ReverseSum = Helper.itself;
-                    break;
-                case "on":
-                    ReverseInfo = (seq) => seq.Reverse();
-                    ReverseDir = (seq) => seq.Reverse();
-                    ReverseSum = (seq) => seq.Reverse();
-                    break;
-                default:
-                    throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
-            }
-        });
-
-    static public Func<IEnumerable<InfoFile>, IEnumerable<InfoFile>> TakeInfo
-    { get; private set; } = Helper.itself;
-    static public Func<IEnumerable<InfoDir>, IEnumerable<InfoDir>> TakeDir
-    { get; private set; } = Helper.itself;
-    static public Func<IEnumerable<InfoSum>, IEnumerable<InfoSum>> TakeSum
-    { get; private set; } = Helper.itself;
-    static internal readonly IParse TakeOpt = new SimpleParser("--take",
-        help: "NUMBER | SIZE   where SIZE ends with k, m or g", resolve: (parser, args) =>
-        {
-            var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-            if (aa.Length > 1)
-                throw new ArgumentException($"Too many values to {parser.Name}");
-            if (int.TryParse(aa[0], out int takeCount))
-            {
-                if (Sum.IsFuncChanged)
-                {
-                    int sumCount = 0;
-                    TakeSum = (seq) => seq
-                    .TakeWhile((it) =>
-                    {
-                        sumCount += it.Count;
-                        return sumCount < takeCount;
-                    });
-                }
-                else
-                {
-                    if (PrintDir == EnumPrintDir.Only)
-                    {
-                        TakeDir = (seq) => seq.Take(takeCount);
-                    }
-                    else
-                    {
-                        TakeInfo = (seq) => seq.Take(takeCount);
-                    }
-                }
-            }
-            else if (Helper.TryParseKiloNumber(aa[0], out long maxSize))
-            {
-                long sumSize = 0L;
-                if (Sum.IsFuncChanged)
-                {
-                    TakeSum = (seq) => seq
-                    .TakeWhile((it) =>
-                    {
-                        sumSize += it.Length;
-                        return sumSize < maxSize;
-                    });
-                }
-                else
-                {
-                    TakeInfo = (seq) => seq
-                    .TakeWhile((it) =>
-                    {
-                        sumSize += it.Length;
-                        return sumSize < maxSize;
-                    });
-                }
-            }
-            else
-            {
-                throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
             }
         });
 
