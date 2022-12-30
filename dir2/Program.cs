@@ -143,12 +143,12 @@ public class Program
                         .Select((it) => it.Value)
                         .ToImmutableArray();
                     WriteLine($"""
-                    Syntax: {ExeName} DIR{Path.DirectorySeparatorChar}WILD [OPTION ..]
+                    Syntax: {ExeName} DIR{Path.DirectorySeparatorChar}WILD [WILD ..] [OPTION ..]
                     
                     Syntax: {ExeName} WILD [WILD ..] [OPTION ..]
                     where all WILD have same directory.
 
-                    But '{bbb[0]}' and '{bbb[1]}' is different dir name.
+                    But dir of '{bbb[0]}' is different to '{bbb[1]}'.
                     """);
                     return false;
                 }

@@ -83,7 +83,8 @@ static public partial class Helper
     {
         var rtn = new StringBuilder($"""
         Syntax: {ExeName} --version
-        Syntax: {ExeName} [OPTION ..] [DIRNAME]
+        Syntax: {ExeName} [OPTION ..] DIRNAME\WILD
+        Syntax: {ExeName} [OPTION ..] DIRNAME [WILD [WILD ..]]
         Syntax: {ExeName} [OPTION ..] WILD [WILD ..]
         OPTION:
         """);
