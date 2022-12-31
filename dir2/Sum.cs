@@ -72,7 +72,7 @@ static public class Sum
                 case "ext":
                     Helper.PrintDir = (_) => InfoSum.Fake;
                     Reduce = (seq) => seq
-                        .GroupBy((it) => Wild.GetText(it.Extension))
+                        .GroupBy((it) => Wild.GetRawText(it.Extension))
                         .Select((grp) => grp.Aggregate(
                             seed: new InfoSum(Name:
                             string.IsNullOrEmpty(grp.Key) ? "*NO-EXT*" : grp.Key),

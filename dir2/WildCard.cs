@@ -11,7 +11,7 @@ static public class Wild
 
     static internal Func<string, Regex> MakeRegex { get; private set; }
         = (it) => new Regex(it, RegexOptions.IgnoreCase);
-    static internal Func<string, string> GetText { get; private set; }
+    static internal Func<string, string> GetRawText { get; private set; }
         = (it) => it.ToLower();
 
     static internal readonly IParse CaseSensitiveOpt = new SwitchParser(
@@ -19,7 +19,7 @@ static public class Wild
         {
             MakeRegex = (it) => new Regex(it, RegexOptions.None);
             StringComparer = StringComparer.Ordinal;
-            GetText = (it) => it;
+            GetRawText = (it) => it;
         });
 
     static internal Func<string, string> ToRegexText { get; private set; } = (it) =>

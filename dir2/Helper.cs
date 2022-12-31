@@ -83,9 +83,9 @@ static public partial class Helper
     {
         var rtn = new StringBuilder($"""
         Syntax: {ExeName} --version
-        Syntax: {ExeName} [OPTION ..] DIRNAME\WILD
-        Syntax: {ExeName} [OPTION ..] DIRNAME [WILD [WILD ..]]
-        Syntax: {ExeName} [OPTION ..] WILD [WILD ..]
+        Syntax: {ExeName} [OPTION ..] DIRNAME  [WILD [WILD2 ..]]
+        Syntax: {ExeName} [OPTION ..] DIRNAME\WILD  [DIRNAME\WILD2 ..]
+        Syntax: {ExeName} [OPTION ..] WILD  [WILD2 ..]
         OPTION:
         """);
         rtn.AppendLine();
