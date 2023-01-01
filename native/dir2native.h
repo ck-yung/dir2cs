@@ -6,6 +6,6 @@
 
 int Init();
 
-int GetFileOwner( int maxRefText, char *szPath, char *szOwner);
+int GetFileOwner(int maxLenOwner, char *szPath, char *szOwner);
 #endif
 

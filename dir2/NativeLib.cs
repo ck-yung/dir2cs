@@ -39,9 +39,14 @@ static class NativeLib
         }
     }
 
-#if DEBUG
-    static bool isNotInited = true;
-#endif
+    static bool isInited { get; set; } = false;
+    static string LibName { get; set; } = "?";
+
+    static public string LibraryName()
+    {
+        var tmp = Init() > 0 ? "" : "!";
+        return LibName + tmp;
+    }
 
     static IntPtr MyDllImportResolver(string libraryName,
         Assembly assembly, DllImportSearchPath? searchPath)
@@ -50,12 +55,13 @@ static class NativeLib
         var aa = rid.Split(new char[] { '-' }, 2);
         if (libraryName == "dir2.dll")
         {
-#if DEBUG
-            if (isNotInited)
+            if (isInited)
             {
-                Console.WriteLine($"debug:MyDllImportResolver<{rid}<{libraryName}<<");
+                return NativeLibrary.Load(
+                    Path.Join("runtimes", LibName),
+                    assembly, searchPath);
             }
-#endif
+
             var nameThe = $"libdir2-{aa[1]}.so";
             if (aa[0].StartsWith("win"))
             {
@@ -65,13 +71,10 @@ static class NativeLib
             {
                 nameThe = $"libdir2-{aa[1]}.dylib";
             }
-#if DEBUG
-            if (isNotInited)
-            {
-                Console.WriteLine($"debug:MyDllImportResolver>{nameThe}>>");
-                isNotInited = false;
-            }
-#endif
+
+            LibName = nameThe;
+            isInited = true;
+
             return NativeLibrary.Load(
                 Path.Join("runtimes", nameThe),
                 assembly, searchPath);
