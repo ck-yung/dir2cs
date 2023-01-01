@@ -30,7 +30,6 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Copyright>Copyright (c) 2021,2023 Yung, Chun Kau</Copyright>
     <PackageLicense>GPL-3.0 License</PackageLicense>
-    <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.txt</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/ck-yung/dir2cs</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ck-yung/dir2cs</RepositoryUrl>
