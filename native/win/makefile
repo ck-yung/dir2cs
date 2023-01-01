@@ -2,7 +2,7 @@
 #
 # Run: nmake
 #
-BinDir=bin-$(PLATFORM)
+BinDir=../../dir2/runtimes
 ObjDir=obj-$(PLATFORM)
 
 DllFile=$(BinDir)/libdir2-$(PLATFORM).dll

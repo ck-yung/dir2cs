@@ -1,7 +1,7 @@
 # Synax: make PLATFORM=x64
 # Synax: make PLATFORM=arm64
 
-BinDir=bin-$(PLATFORM)
+BinDir=../../dir2/runtimes
 ObjDir=obj-$(PLATFORM)
 
 DllFile=$(BinDir)/libdir2-$(PLATFORM).so
