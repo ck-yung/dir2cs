@@ -77,7 +77,7 @@ public class Program
             isIncludeExclNameOptions: false);
 
         var tmp2 = cfgRest
-            .Concat(ExpandFromShortCut(mainArgs)
+            .Concat(ExpandFromShortCut(ExpandForHomeDir(mainArgs))
             .Select((it) => (ArgType.CommandLine, it)));
         var tmp3 = Parsers.Resolve(
             tmp2.Where((it) => false == EnvrSkipOpts.Contains(it.Item2)),
@@ -256,5 +256,33 @@ public class Program
             Console.Error.WriteLine();
         }
         return false;
+    }
+
+    static IEnumerable<string> ExpandForHomeDir(string[] args)
+    {
+        var homeDir = Environment.GetEnvironmentVariable("HOME");
+        if (string.IsNullOrEmpty(homeDir))
+        {
+            homeDir = Environment.GetEnvironmentVariable("UserProfile");
+        }
+        var it = args.AsEnumerable().GetEnumerator();
+        while (it.MoveNext())
+        {
+            var current = it.Current;
+
+            if (1 == current.Length && '~' == current[0])
+            {
+                yield return homeDir;
+            }
+            else if (1 < current.Length && '~' == current[0] &&
+                Path.DirectorySeparatorChar == current[1])
+            {
+                yield return Path.Combine(homeDir, current.Substring(2));
+            }
+            else
+            {
+                yield return current;
+            }
+        }
     }
 }
