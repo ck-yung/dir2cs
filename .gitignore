@@ -12,10 +12,10 @@
 TestResults
 packages
 ipch
-[oO]bj
-[bB]in
-**/[oO]bj
-**/[bB]in
+[oO]bj*
+[bB]in*
+**/[oO]bj*
+**/[bB]in*
 [dD]ebug
 [rR]elease
 **/[dD]ebug

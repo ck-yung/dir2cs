@@ -67,9 +67,7 @@ public record InfoBase(string Name
             }
             else
             {
-                var rtn = new StringBuilder();
-                rtn.Append(' ');
-                return rtn.ToString();
+                return NativeLib.FileOwner(FullName);
             }
         }
         catch

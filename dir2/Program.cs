@@ -44,6 +44,8 @@ public class Program
             mainArgs.Contains("-v"))
 		{
 			WriteLine(GetVersion());
+            var a2 = NativeLib.Init();
+            Console.Error.WriteLine($"native {a2}");
 			return false;
 		}
 

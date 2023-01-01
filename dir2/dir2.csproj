@@ -52,4 +52,20 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="runtimes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="runtimes\libdir2-arm64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="runtimes\libdir2-arm64.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="runtimes\libdir2-arm64.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

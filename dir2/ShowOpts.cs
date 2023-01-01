@@ -89,7 +89,7 @@ static internal class Show
                         Attributes = (arg) => arg.AttributeText();
                         break;
                     case "owner":
-                        Owner = (arg) => $"{arg.OwnerText(),30} ";
+                        Owner = (arg) => arg.OwnerText().PadRight(20);
                         break;
                     default:
                         throw new ArgumentException($"Bad value '{arg}' to {parser.Name}");
