@@ -37,7 +37,7 @@ public record InfoBase(string Name
         else
         {
             rtn.Append(
-                FileAttributes.HasFlag(FileAttributes.ReadOnly)
+                FileAttributes.HasFlag(FileAttributes.Directory)
                 ? "d" : "-");
             rtn.Append(
                 UnixFileMode.HasFlag(UnixFileMode.UserRead)
