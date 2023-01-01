@@ -21,7 +21,7 @@ static internal class Show
     static public Func<InfoBase, string> Owner { get; private set; } = Blank;
 
     static public readonly IParse HideOpt = new SimpleParser(name: "--hide",
-        help: "date,size,count,link,attr,owner",
+        help: "date,size,count,link,mode,owner",
         resolve: (parser, args) =>
         {
             foreach (var arg in Helper.CommonSplit(args))
@@ -46,7 +46,7 @@ static internal class Show
                     case "link":
                         Link = Blank;
                         break;
-                    case "attr":
+                    case "mode":
                         Attributes = Blank;
                         break;
                     case "owner":
@@ -59,7 +59,7 @@ static internal class Show
         });
 
     static public readonly IParse Opt = new SimpleParser(name: "--show",
-        help: "date,size,count,link,attr,owner",
+        help: "date,size,count,link,mode,owner",
         resolve: (parser, args) =>
         {
             foreach (var arg in Helper.CommonSplit(args))
@@ -85,7 +85,7 @@ static internal class Show
                             return $" -> {arg.LinkTarget}";
                         };
                         break;
-                    case "attr":
+                    case "mode":
                         Attributes = (arg) => arg.AttributeText();
                         break;
                     case "owner":

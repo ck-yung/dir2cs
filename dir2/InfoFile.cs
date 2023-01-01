@@ -9,15 +9,13 @@ public record InfoBase(string Name
     , DateTime CreationTime
     , DateTime LastWriteTime
     , FileAttributes FileAttributes
+    , UnixFileMode UnixFileMode
     , string LinkTarget
     )
 {
     public string AttributeText()
     {
         var rtn = new StringBuilder();
-        rtn.Append(
-            FileAttributes.HasFlag(FileAttributes.Directory)
-            ? "D" : " ");
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             rtn.Append(
@@ -38,7 +36,36 @@ public record InfoBase(string Name
         }
         else
         {
-            rtn.Append("?");
+            rtn.Append(
+                FileAttributes.HasFlag(FileAttributes.ReadOnly)
+                ? "d" : "-");
+            rtn.Append(
+                UnixFileMode.HasFlag(UnixFileMode.UserRead)
+                ? "r" : "-");
+            rtn.Append(
+                UnixFileMode.HasFlag(UnixFileMode.UserWrite)
+                ? "w" : "-");
+            rtn.Append(
+                UnixFileMode.HasFlag(UnixFileMode.UserExecute)
+                ? "x" : "-");
+            rtn.Append(
+                UnixFileMode.HasFlag(UnixFileMode.GroupRead)
+                ? "r" : "-");
+            rtn.Append(
+                UnixFileMode.HasFlag(UnixFileMode.GroupWrite)
+                ? "w" : "-");
+            rtn.Append(
+                UnixFileMode.HasFlag(UnixFileMode.GroupExecute)
+                ? "x" : "-");
+            rtn.Append(
+                UnixFileMode.HasFlag(UnixFileMode.OtherRead)
+                ? "r" : "-");
+            rtn.Append(
+                UnixFileMode.HasFlag(UnixFileMode.OtherWrite)
+                ? "w" : "-");
+            rtn.Append(
+                UnixFileMode.HasFlag(UnixFileMode.OtherExecute)
+                ? "x" : "-");
         }
         rtn.Append(" ");
         return rtn.ToString();
@@ -83,15 +110,21 @@ public record InfoDir(string Name
     , DateTime CreationTime
     , DateTime LastWriteTime
     , FileAttributes FileAttributes
+    , UnixFileMode UnixFileMode
     , string LinkTarget
     ) : InfoBase(Name, FullName
         , CreationTime, LastWriteTime
-        , FileAttributes, LinkTarget)
+        , FileAttributes
+        , UnixFileMode
+        , LinkTarget
+        )
 {
     static internal readonly InfoDir Fake = new (string.Empty
         , string.Empty, string.Empty
         , DateTime.MinValue, DateTime.MinValue
-        , FileAttributes.Directory, string.Empty);
+        , FileAttributes.Directory
+        , UnixFileMode: UnixFileMode.None
+        , LinkTarget: string.Empty);
 
     public bool IsNotFake()
     {
@@ -107,15 +140,19 @@ public record InfoFile(string Name
     , DateTime CreationTime
     , DateTime LastWriteTime
     , FileAttributes FileAttributes
+    , UnixFileMode UnixFileMode
     , string LinkTarget
     ) : InfoBase(Name, FullName
         , CreationTime, LastWriteTime
-        , FileAttributes, LinkTarget)
+        , FileAttributes, UnixFileMode
+        , LinkTarget)
 {
     static internal readonly InfoFile Fake = new(string.Empty
         , string.Empty, string.Empty, string.Empty, 0
         , DateTime.MinValue, DateTime.MinValue
-        , FileAttributes.Normal, string.Empty);
+        , FileAttributes.Normal
+        , UnixFileMode: UnixFileMode.None
+        , LinkTarget: string.Empty);
 
     public bool IsNotFake()
     {
@@ -211,12 +248,18 @@ static public partial class Helper
         try
         {
             var rtn = new DirectoryInfo(dir);
+            var a2 = rtn.UnixFileMode;
+            if (a2.HasFlag(UnixFileMode.GroupExecute))
+            {
+
+            }
             return new InfoDir(Name: rtn.Name
                 , Extension: rtn.Extension
                 , FullName: rtn.FullName
                 , CreationTime: rtn.CreationTime
                 , LastWriteTime: rtn.LastWriteTime
                 , FileAttributes: rtn.Attributes
+                , UnixFileMode: rtn.UnixFileMode
                 , LinkTarget: rtn.LinkTarget ?? string.Empty
                 );
         }
@@ -239,6 +282,7 @@ static public partial class Helper
                 , CreationTime: rtn.CreationTime
                 , LastWriteTime: rtn.LastWriteTime
                 , FileAttributes: rtn.Attributes
+                , UnixFileMode: rtn.UnixFileMode
                 , LinkTarget: rtn.LinkTarget ?? string.Empty
                 );
         }
