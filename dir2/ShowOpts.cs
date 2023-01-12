@@ -33,6 +33,7 @@ static internal class Show
                         break;
                     case "size":
                         Size = blank;
+                        Helper.DirPrefixText = blank;
                         GetDirName = (dirname) =>
                         {
                             if (dirname.EndsWith(Path.DirectorySeparatorChar))
@@ -71,6 +72,7 @@ static internal class Show
                         break;
                     case "size":
                         Size = Helper.itself;
+                        Helper.DirPrefixText = Helper.itself;
                         GetDirName = (dirname) => dirname.TrimEnd(
                             Path.DirectorySeparatorChar);
                         break;
@@ -86,6 +88,7 @@ static internal class Show
                         };
                         break;
                     case "mode":
+                        Helper.DirPrefixText = blank;
                         Attributes = (arg) => arg.AttributeText();
                         break;
                     case "owner":

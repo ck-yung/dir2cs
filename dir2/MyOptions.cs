@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using static dir2.MyOptions;
 
 namespace dir2;
 

@@ -118,6 +118,8 @@ static public partial class Helper
         return rtn.ToString();
     }
 
+    static internal Func<string, string> DirPrefixText { get; set; } = (msg) => msg;
+
     static internal Func<string, InfoSum> PrintDir { get; set; } = (path) =>
     {
         var cntDir = ImpGetDirs(path)
@@ -134,7 +136,7 @@ static public partial class Helper
             {
                 ItemWrite(Show.Attributes(it));
                 ItemWrite(Show.Owner(it));
-                ItemWrite(Show.Size("DIR "));
+                ItemWrite(DirPrefixText("DIR "));
                 ItemWrite(Show.Date($"{DateFormatOpt.Invoke(Show.GetDate(it))} "));
                 ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));
                 ItemWrite(Show.Link.Invoke(it));
