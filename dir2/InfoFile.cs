@@ -226,24 +226,7 @@ public class InfoSum
 
 static public partial class Helper
 {
-    static public partial class io
-    {
-        static public Func<string, InfoDir> ToInfoDir
-        { get; private set; } = toInfoDir;
-
-        static public Func<string, InfoFile> ToInfoFile
-        { get; private set; } = toInfoFile;
-
-        static public void Init(
-            Func<string, InfoDir> ToInfoDir,
-            Func<string, InfoFile> ToInfoFile)
-        {
-            io.ToInfoDir = ToInfoDir;
-            io.ToInfoFile = ToInfoFile;
-        }
-    }
-
-    static internal InfoDir toInfoDir(string dir)
+    static internal InfoDir ToInfoDir(string dir)
     {
         try
         {
@@ -269,7 +252,7 @@ static public partial class Helper
         }
     }
 
-    static InfoFile toInfoFile(string file)
+    static internal InfoFile ToInfoFile(string file)
     {
         try
         {

@@ -112,7 +112,7 @@ static public partial class MyOptions
                     case "only-link":
                         IsFakeDirOrLinked = (path) =>
                         {
-                            var info = Helper.toInfoDir(path);
+                            var info = Helper.ToInfoDir(path);
                             if (false == info.IsNotFake()) return true;
                             return string.IsNullOrEmpty(info.LinkTarget);
                         };
@@ -121,7 +121,7 @@ static public partial class MyOptions
                     case "excl-link":
                         IsFakeDirOrLinked = (path) =>
                         {
-                            var info = Helper.toInfoDir(path);
+                            var info = Helper.ToInfoDir(path);
                             if (false == info.IsNotFake()) return true;
                             return false == string.IsNullOrEmpty(info.LinkTarget);
                         };
@@ -294,5 +294,6 @@ static public partial class MyOptions
             ["-t"] = ("", new[] { "--total", "only" }),
             ["-b"] = ("Brief path name", new[] {
                 "--total", "off", "--hide", "date,size,count,mode,owner,link" }),
+            ["-T"] = ("", new[] { "--dir", "tree" }),
         }.ToImmutableDictionary();
 }

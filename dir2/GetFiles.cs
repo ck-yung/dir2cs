@@ -19,19 +19,6 @@ static public partial class Helper
 
     static public partial class io
     {
-        static public Func<string, IEnumerable<string>> EnumerateDirectories
-        { get; private set; } = Directory.EnumerateDirectories;
-        static public Func<string, IEnumerable<string>> EnumerateFiles
-        { get; private set; } = Directory.EnumerateFiles;
-
-        static public void InitEnum(
-            Func<string, IEnumerable<string>> EnumDirs,
-            Func<string, IEnumerable<string>> EnumFiles)
-        {
-            EnumerateDirectories = EnumDirs;
-            EnumerateFiles = EnumFiles;
-        }
-
         static public string InitPath { get; private set; } = "?";
         static public string RealInitPath { get; private set; } = string.Empty;
         static public Func<string, string> GetRelativeName
@@ -76,13 +63,13 @@ static public partial class Helper
         = Enumerable.Empty<string>().GetEnumerator();
     static IEnumerator<string> SafeGetFileEnumerator(string dirname)
     {
-        try { return Helper.io.EnumerateFiles(dirname).GetEnumerator(); }
+        try { return Directory.EnumerateFiles(dirname).GetEnumerator(); }
         catch { return EmptyEnumStrings; }
     }
 
     static IEnumerator<string> SafeGetDirectoryEnumerator(string dirname)
     {
-        try { return Helper.io.EnumerateDirectories(dirname).GetEnumerator(); }
+        try { return Directory.EnumerateDirectories(dirname).GetEnumerator(); }
         catch { return EmptyEnumStrings; }
     }
 

@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dir2", "dir2\dir2.csproj", "{C66865A4-B225-436A-8DC3-4F3F7F4AB84F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test", "test\test.csproj", "{9216EE4E-257B-43BC-87E2-E62AC2A678D6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{51A3100D-D27D-4ADE-AE8C-9E1803D08C6F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -29,10 +27,6 @@ Global
 		{C66865A4-B225-436A-8DC3-4F3F7F4AB84F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C66865A4-B225-436A-8DC3-4F3F7F4AB84F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C66865A4-B225-436A-8DC3-4F3F7F4AB84F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9216EE4E-257B-43BC-87E2-E62AC2A678D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9216EE4E-257B-43BC-87E2-E62AC2A678D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9216EE4E-257B-43BC-87E2-E62AC2A678D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9216EE4E-257B-43BC-87E2-E62AC2A678D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
