@@ -238,8 +238,8 @@ static public partial class MyOptions
         (IParse) Helper.IsHiddenFileOpt,
         (IParse) Helper.IsLinkFileOpt,
         Sort.Opt,
-        Show.HideOpt,
         Show.Opt,
+        Show.HideOpt,
         Sum.Opt,
         (IParse) Helper.io.KeepDirOpt,
         Wild.WithinOpt,
@@ -253,8 +253,8 @@ static public partial class MyOptions
     static public readonly IParse[] ConfigParsers = new IParse[]
     {
         Sort.Opt,
-        Show.HideOpt,
         Show.Opt,
+        Show.HideOpt,
         Show.EncodeConsoleOpt,
         Wild.RegexOpt,
         Wild.CaseSensitiveOpt,
@@ -293,6 +293,6 @@ static public partial class MyOptions
             ["-l"] = ("", new[] { "--show", "link" }),
             ["-t"] = ("", new[] { "--total", "only" }),
             ["-b"] = ("Brief path name", new[] {
-                "--total", "off", "--hide", "date,size,count" }),
+                "--total", "off", "--hide", "date,size,count,mode,owner,link" }),
         }.ToImmutableDictionary();
 }
