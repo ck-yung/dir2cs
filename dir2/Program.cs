@@ -133,48 +133,38 @@ public class Program
         }
         else if (args.Length> 0)
 		{
-            PrintDirOptBothOff();
-            if (Directory.Exists(args[0]))
+            if (args.Where((it) => it.Contains(Path.DirectorySeparatorChar)).Any())
             {
-                if (args.Skip(1).Where((it) => it.Contains(Path.DirectorySeparatorChar)).Any())
+                var bb = args
+                    .GroupBy((it) => Path.GetDirectoryName(it))
+                    .ToImmutableDictionary((grp) => grp.Key,
+                    (grp) => grp.AsEnumerable());
+                if (bb.Count() > 1)
                 {
-                    return DirNamesAreFound(args, caseNumber: 11);
+                    return DirNamesAreFound(args);
                 }
-                pathThe = args[0];
-                args = args.Skip(1).ToArray();
-            }
-            else
-            {
-                if (args.Where((it) => it.Contains(Path.DirectorySeparatorChar)).Any())
+                PrintDirOptBothOff();
+                var pathThe2 = bb.First().Key;
+                var pathThe2Length = pathThe2.Length;
+                var pathThe3 = pathThe2 + Path.DirectorySeparatorChar;
+                var pathThe3Length = pathThe2.Length + 1;
+                args = args
+                    .Select((it) =>
+                    {
+                        if (it.StartsWith(pathThe3))
+                            return it.Substring(pathThe3Length)
+                            .TrimStart('/', '\\');
+                        return it.Substring(pathThe2Length)
+                            .TrimStart('/','\\');
+                    })
+                    .ToArray();
+                if (pathThe2.EndsWith(":"))
                 {
-                    var bb = args
-                        .GroupBy((it) => Wild.GetRawText(Path.GetDirectoryName(it)))
-                        .ToImmutableDictionary((grp) => grp.Key,
-                        (grp) => grp.AsEnumerable());
-                    if (bb.Count() > 1)
-                    {
-                        return DirNamesAreFound(args, caseNumber: 21);
-                    }
-                    var pathThe2 = bb.First().Key;
-                    var pathThe2Length = pathThe2.Length;
-                    var pathThe3 = pathThe2 + Path.DirectorySeparatorChar;
-                    var pathThe3Length = pathThe2.Length + 1;
-                    args = args
-                        .Select((it) =>
-                        {
-                            if (it.StartsWith(pathThe3))
-                                return it.Substring(pathThe3Length);
-                            return it.Substring(pathThe2Length);
-                        })
-                        .ToArray();
-                    if (pathThe2.EndsWith(":"))
-                    {
-                        pathThe = pathThe2 + "." + Path.DirectorySeparatorChar;
-                    }
-                    else
-                    {
-                        pathThe = pathThe3;
-                    }
+                    pathThe = pathThe2 + "." + Path.DirectorySeparatorChar;
+                }
+                else
+                {
+                    pathThe = pathThe3;
                 }
             }
         }
@@ -223,37 +213,62 @@ public class Program
         return true;
 	}
 
-    static bool DirNamesAreFound(string[] args, int caseNumber)
+    static bool DirNamesAreFound(string[] args)
     {
-        var bb = args
-            .GroupBy((it) => Wild.GetRawText(Path.GetDirectoryName(it)))
-            .Take(2)
-            .Select((grp) => grp.First())
-            .ToArray();
-        if (bb.Length == 2)
+        var aa = args
+            .Select((it) => (it, File.Exists(it), Directory.Exists(it)))
+            .GroupBy((pair) => pair.Item2 || pair.Item3)
+            .ToDictionary((grp) => grp.Key, (grp) => grp.ToList());
+        if (aa.ContainsKey(true))
         {
-            if (GetExeEnvr().Contains(DebugOpt))
-            {
-                Console.WriteLine($"debug: case# {caseNumber}");
-                Console.Write("args:");
-                foreach (var arg in args) Console.Write($" '{arg}'");
-                Console.WriteLine();
-            }
-            WriteLine($"""
-                    Syntax: {ExeName} DIR{Path.DirectorySeparatorChar}WILD [WILD ..] [OPTION ..]
+            var cntDir = aa[true]
+                .Where((pair) => pair.Item3)
+                .Select((pair) => pair.Item1)
+                .Select((it) => ToInfoDir(it))
+                .Where((it) => it.IsNotFake())
+                .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
+                .Where((it) => (false == Wild.ExclDirNameOpt.Invoke(it.Name)))
+                .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
+                .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
+                .Invoke(Sort.Dirs)
+                .Invoke(Sort.ReverseDir)
+                .Invoke(Sort.TakeDir)
+                .Select((it) =>
+                {
+                    ItemWrite(Show.Attributes(it));
+                    ItemWrite(Show.Owner(it));
+                    ItemWrite(DirPrefixText("DIR "));
+                    ItemWrite(Show.Date($"{DateFormatOpt.Invoke(Show.GetDate(it))} "));
+                    ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));
+                    ItemWrite(Show.Link.Invoke(it));
+                    ItemWriteLine(string.Empty);
+                    return it;
+                })
+                .Count();
+                PrintDirCount(cntDir);
 
-                    Syntax: {ExeName} WILD [WILD ..] [OPTION ..]
-                    where all WILD have same directory.
-                    """);
-            WriteLine($"But dir of '{bb[0]}' is different to '{bb[1]}'.");
+            var sumFile = aa[true]
+                .Where((pair) => pair.Item2)
+                .Select((pair) => pair.Item1)
+                .Select((it) => ToInfoFile(it))
+                .Where((it) => it.IsNotFake())
+                .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
+                .Where((it) => (false == Wild.ExclFileNameOpt.Invoke(it.Name)))
+                .Where((it) => Wild.IsMatchWithinSize(it.Length))
+                .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
+                .Where((it) => Wild.IsMatchNotWithinSize(it.Length))
+                .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
+                .Where((it) => Wild.ExtensionOpt.Invoke(it))
+                .Where((it) => IsHiddenFileOpt.Invoke(it))
+                .Where((it) => IsLinkFileOpt.Invoke(it))
+                .Invoke(Sum.Reduce);
+            PrintInfoTotal(sumFile);
         }
-        else
+        if (aa.ContainsKey(false))
         {
-            Console.Error.WriteLine("Unhandling error!");
-            Console.Error.WriteLine($"debug: case# {caseNumber}");
-            Console.Error.Write("args:");
-            foreach (var arg in args) Console.Error.Write($" '{arg}'");
-            Console.Error.WriteLine();
+            Console.WriteLine("Unknown arg: " + // *** TODO
+                string.Join(",",
+                aa[false].Select((pair)=>pair.Item1)));
         }
         return false;
     }
