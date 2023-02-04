@@ -79,10 +79,39 @@ static public partial class Helper
           {ExeName} -?
         """;
 
+    static public string ShortSyntax = $"""
+        Syntax: dir2 --version
+        Syntax: dir2 --HELP
+        Syntax: dir2 [OPTION ..] DIRNAME  [WILD [WILD2 ..]]
+        Syntax: dir2 [OPTION ..] DIRNAME{Path.DirectorySeparatorChar}WILD  [DIRNAME{Path.DirectorySeparatorChar}WILD2 ..]
+        Syntax: dir2 [OPTION ..] WILD  [WILD2 ..]
+        Frequently used options:
+            --size-format     short | WIDTH
+                              e.g --size-format short
+                   --excl -x  EXCL-WILD[;EXCL-WILD ..]
+                              e.g. -x *.tmp;*.temp
+               --excl-dir -X  EXCL-WILD[;EXCL-WILD ..]
+                   --sort -o  off | name | size | date | ext | count | last
+                              e.g. -o size
+                    --sum     ext | dir | +dir
+                 --within -w  SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, day, or hour
+                              e.g. -w 100m -w 3day
+             --not-within -W  SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, day, or hour
+        Frequently used shortcuts:
+                          -E  => --dir tree
+                          -l  => --show link
+         Scan all sub dir -s  => --sub all
+         Brief path name  -b  => --total off --hide date,size,count,mode,owner,link
+         Dir only         -d  => --dir only
+         File only        -f  => --dir off
+        Envir 'dir2' will be parsed before config file is involved.
+        """;
+
     static public string GetSyntax()
     {
         var rtn = new StringBuilder($"""
         Syntax: {ExeName} --version
+        Syntax: {ExeName} --help
         Syntax: {ExeName} [OPTION ..] DIRNAME  [WILD [WILD2 ..]]
         Syntax: {ExeName} [OPTION ..] DIRNAME\WILD  [DIRNAME\WILD2 ..]
         Syntax: {ExeName} [OPTION ..] WILD  [WILD2 ..]
@@ -105,9 +134,9 @@ static public partial class Helper
         {
             rtn.AppendLine($" {optThe.Name,16} {optThe.Shortcut}  {optThe.Help}");
         }
-        rtn.AppendLine();
+        rtn.AppendLine("SHORTCUT:");
         foreach (var kvThe in MyOptions.ShortcutComplexOptions
-            .OrderBy((it) => it.Key))
+            .OrderBy((it) => it.Value.Item1))
         {
             var textThe = new StringBuilder($" {kvThe.Value.Item1,-16} {kvThe.Key}");
             var text2The = string.Join(" ", kvThe.Value.Item2);

@@ -48,6 +48,12 @@ public class Program
 			return false;
 		}
 
+        if (mainArgs.Contains("--HELP"))
+        {
+            Write(GetSyntax());
+            return false;
+        }
+
         if (mainArgs.Contains("--help") ||
             mainArgs.Contains("-h") ||
             mainArgs.Contains("-?"))
@@ -59,7 +65,7 @@ public class Program
             }
             else
             {
-                Write(GetSyntax());
+                Write(ShortSyntax);
             }
             return false;
         }

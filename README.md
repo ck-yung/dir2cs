@@ -1,5 +1,5 @@
 # Dir2
-**v2.0.0**
+**v2.0.1**
 
 ## Syntax:
 ```
@@ -148,7 +148,7 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 | -s       | --dir sub              | Recursively sub-directory      |
 | -f       | --dir off              | List file only                 |
 | -d       | --dir only             | List dir name only             |
-| -T       | --dir tree             | List dir tree                  |
+| -E       | --dir tree             | List dir tree                  |
 | -c       | --case-sensitive       |                                |
 | -b       | --total off            | List filename (with path) only |
 |          | --hide size,date,count |                                |

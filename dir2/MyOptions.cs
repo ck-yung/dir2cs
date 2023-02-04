@@ -39,7 +39,7 @@ static public partial class MyOptions
 
     static public readonly IInovke<string, InfoSum> PrintDirOpt =
         new ParseInvoker<string, InfoSum>(
-        name: "--dir", help: "both | only | off | tree",
+        name: "--dir", help: "all | only | off | tree",
         init: (path) =>
         {
             Helper.PrintDir(path);
@@ -91,7 +91,7 @@ static public partial class MyOptions
 
     static public readonly IInovke<string, InfoSum> SubDirOpt =
         new ParseInvoker<string, InfoSum>(name: "--sub",
-            help: "off | both | only-link | excl-link",
+            help: "off | all | only-link | excl-link",
             init: (path) => PrintDirOpt.Invoke(path),
             resolve: (parser, args) =>
             {
@@ -104,7 +104,7 @@ static public partial class MyOptions
                     case "off":
                         parser.SetImplementation((path) => PrintDirOpt.Invoke(path));
                         break;
-                    case "both":
+                    case "all":
                         IsFakeDirOrLinked = Helper.Never; ;
                         parser.SetImplementation((path) => impSubDir(path));
                         break;
@@ -286,13 +286,13 @@ static public partial class MyOptions
         = new Dictionary<string, (string, string[])>
         {
             ["-r"] = ("", new[] { "--reverse", "on" }),
-            ["-s"] = ("Scan all sub dir", new[] { "--sub", "both" }),
-            ["-f"] = ("File only", new[] { "--dir", "off" }),
-            ["-d"] = ("Dir only", new[] { "--dir", "only" }),
             ["-l"] = ("", new[] { "--show", "link" }),
             ["-t"] = ("", new[] { "--total", "only" }),
+            ["-E"] = ("", new[] { "--dir", "tree" }),
+            ["-s"] = ("Scan all sub dir", new[] { "--sub", "all" }),
+            ["-f"] = ("File only", new[] { "--dir", "off" }),
+            ["-d"] = ("Dir only", new[] { "--dir", "only" }),
             ["-b"] = ("Brief path name", new[] {
                 "--total", "off", "--hide", "date,size,count,mode,owner,link" }),
-            ["-T"] = ("", new[] { "--dir", "tree" }),
         }.ToImmutableDictionary();
 }
