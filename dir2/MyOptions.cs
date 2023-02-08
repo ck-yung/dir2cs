@@ -288,7 +288,7 @@ static public partial class MyOptions
         {
             ["-r"] = ("", new[] { "--reverse", "on" }),
             ["-t"] = ("", new[] { "--total", "only" }),
-            ["-E"] = ("", new[] { "--dir", "tree" }),
+            ["-R"] = ("", new[] { "--dir", "tree" }),
             ["-s"] = ("Scan all sub dir", new[] { "--sub", "all" }),
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),

@@ -80,11 +80,8 @@ static public partial class Helper
         """;
 
     static public string ShortSyntax = $"""
-        Syntax: dir2 --version
         Syntax: dir2 --HELP
-        Syntax: dir2 [OPTION ..] DIRNAME  [WILD [WILD2 ..]]
-        Syntax: dir2 [OPTION ..] DIRNAME{Path.DirectorySeparatorChar}WILD  [DIRNAME{Path.DirectorySeparatorChar}WILD2 ..]
-        Syntax: dir2 [OPTION ..] WILD  [WILD2 ..]
+        Syntax: dir2 [OPTION ..] [DIR] [WILD ..]
         Frequently used options:
             --size-format     short | WIDTH
                               e.g --size-format short
@@ -98,7 +95,7 @@ static public partial class Helper
                               e.g. -w 100m -w 3day
              --not-within -W  SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, day, or hour
         Frequently used shortcuts:
-                          -E  => --dir tree
+                          -R  => --dir tree
          Scan all sub dir -s  => --sub all
          Brief path name  -b  => --total off --hide date,size,count,mode,owner,link
          Dir only         -d  => --dir only
@@ -110,10 +107,7 @@ static public partial class Helper
     {
         var rtn = new StringBuilder($"""
         Syntax: {ExeName} --version
-        Syntax: {ExeName} --help
-        Syntax: {ExeName} [OPTION ..] DIRNAME  [WILD [WILD2 ..]]
-        Syntax: {ExeName} [OPTION ..] DIRNAME\WILD  [DIRNAME\WILD2 ..]
-        Syntax: {ExeName} [OPTION ..] WILD  [WILD2 ..]
+        Syntax: {ExeName} [OPTION ..] [DIR] [WILD ..]
         OPTION:
         """);
         rtn.AppendLine();

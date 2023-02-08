@@ -27,7 +27,7 @@ static internal class Show
     static public Func<InfoBase, string> Owner { get; private set; } = Blank;
 
     static public readonly IParse HideOpt = new SimpleParser(name: "--hide",
-        help: "date,size,count,link,mode,owner",
+        help: "date,size,count,mode,owner,link",
         resolve: (parser, args) =>
         {
             foreach (var arg in Helper.CommonSplit(args))
@@ -66,7 +66,7 @@ static internal class Show
         });
 
     static public readonly IParse Opt = new SimpleParser(name: "--show",
-        help: "date,size,count,mode,owner",
+        help: "date,size,count,mode,owner,link",
         resolve: (parser, args) =>
         {
             foreach (var arg in Helper.CommonSplit(args))
@@ -84,6 +84,14 @@ static internal class Show
                         break;
                     case "count":
                         Count = Helper.itself;
+                        break;
+                    case "link":
+                        Link = (arg) =>
+                        {
+                            if (string.IsNullOrEmpty(arg.LinkTarget))
+                                return string.Empty;
+                            return $" -> {arg.LinkTarget}";
+                        };
                         break;
                     case "mode":
                         Helper.DirPrefixText = blank;
@@ -185,6 +193,15 @@ static internal class Show
                 {
                     if (false == Regex.Match(a2, pattern, RegexOptions.None).Success)
                     {
+                        if (a2.ToUpper().Equals("WIDTH"))
+                        {
+                            Console.Error.WriteLine($"""
+                                Command line option could be
+                                  --size-format 12
+                                or
+                                  --size-format short
+                                """);
+                        }
                         throw new ArgumentException($"'{a2}' is bad to {parser.Name}");
                     }
                 }

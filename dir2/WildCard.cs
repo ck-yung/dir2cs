@@ -149,9 +149,23 @@ static public class Wild
                 return new WithData(valueDate);
             }
 
+            if (hintSizeDate.Contains(arg.ToUpper()))
+            {
+                Console.Error.WriteLine($"""
+                                Command line option could be
+                                  {name} 123
+                                  {name} 789k
+                                  {name}  59min
+                                  {name}   7day
+                                  {name} 2019-06-12T15:20
+                                """);
+            }
+
             throw new ArgumentException($"'{arg}' is bad to {name}");
         }
     }
+
+    static readonly string[] hintSizeDate = new string[] { "SIZE", "DATE" };
 
     static internal Func<long, bool> IsMatchWithinSize
     { get; private set; } = Always<long>.True;
@@ -160,7 +174,7 @@ static public class Wild
     { get; private set; } = Always<DateTime>.True;
 
     static internal readonly IParse WithinOpt = new SimpleParser(name: "--within",
-            help: "SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, day, or hour",
+            help: "SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, hour, or day",
             resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct()
@@ -201,7 +215,7 @@ static public class Wild
     { get; private set; } = Always<DateTime>.True;
 
     static internal readonly IParse NotWithinOpt = new SimpleParser(name: "--not-within",
-            help: "SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, day, or hour",
+            help: "SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, hour, or day",
             resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct()
