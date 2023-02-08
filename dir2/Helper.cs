@@ -99,7 +99,6 @@ static public partial class Helper
              --not-within -W  SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, day, or hour
         Frequently used shortcuts:
                           -E  => --dir tree
-                          -l  => --show link
          Scan all sub dir -s  => --sub all
          Brief path name  -b  => --total off --hide date,size,count,mode,owner,link
          Dir only         -d  => --dir only

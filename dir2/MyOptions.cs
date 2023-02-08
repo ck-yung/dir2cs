@@ -287,7 +287,6 @@ static public partial class MyOptions
         = new Dictionary<string, (string, string[])>
         {
             ["-r"] = ("", new[] { "--reverse", "on" }),
-            ["-l"] = ("", new[] { "--show", "link" }),
             ["-t"] = ("", new[] { "--total", "only" }),
             ["-E"] = ("", new[] { "--dir", "tree" }),
             ["-s"] = ("Scan all sub dir", new[] { "--sub", "all" }),

@@ -308,7 +308,7 @@ static public partial class Helper
             });
 
     static internal readonly IInovke<InfoFile, bool> IsLinkFileOpt =
-        new ParseInvoker<InfoFile, bool>("--link-file", help: "incl | excl | only",
+        new ParseInvoker<InfoFile, bool>("--link", help: "incl | excl | only",
             init: Always<InfoFile>.True, resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
