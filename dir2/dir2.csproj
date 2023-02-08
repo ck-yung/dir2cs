@@ -25,7 +25,6 @@
     <ToolCommandName>dir2</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <PackageReleaseNotes>Migrate to the common syntax of command-line argument.</PackageReleaseNotes>
-    <PackageTags>easy dir;ls;subdir;size;grand total;simple command</PackageTags>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Copyright>Copyright (c) 2021,2023 Yung, Chun Kau</Copyright>
