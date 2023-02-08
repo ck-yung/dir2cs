@@ -21,11 +21,18 @@ dir2 DIR/WILD [OPT ..]
 dir2 obj/*.dll -s
 ```
 
+### Example as Unix ls:
+```
+dir2 obj/*.dll --show mode,owner
+```
+[Link to example](https://github.com/ck-yung/dir2cs/blob/main/Unix-LS)
+
+
 ## Options:
 
 | Shortcut | Description                  | Example         |
 | -------- | -----------                  | --------------- |
-| -?       | On-line help                 |                 |
+| -?       | Short help                   |                 |
 | -s       | Show on all sub-dir          |                 |
 | -b       | Show filename only           |                 |
 | -o       | Sort                         | -o size,ext     |
@@ -42,28 +49,28 @@ Option '--within' (shortcut '-w') select files as follows.
 
 | Postfix | Example   | Example Description                                    |
 | ------- | -------   | -------------------                                    |
-| k,m,g,t | -w 100k   | Show file if its size is smaller than 100 Kb.          |
+| k,m,g   | -w 100k   | Show file if its size is smaller than 100 Kb.          |
 |         | -w 10m    | Show file if its size is smaller than 10 Mb.           |
 | min     | -w 20min  | Show file if its last write-time is within 10 minutes. |
 | hour    | -w 3hour  | Show file if its last write-time is within 3 hours.    |
 | day     | -w 14day  | Show file if its last write-time is within 14 days.    |
 |         | -w 2022-12-25 | Show file if its last write-time is NOT before X'Mas. |
 |         | -w 13:30      | Show file if its last write-time is NOT before today 13:30. |
-|         | -w 2019-06-12T15:30 |                                              |
+|         | -w 2019-06-12T15:20 |                                              |
 
 ### --not-within -W
-Option '--not-within' (shortcut '-W') select files as follows.
+Option '--not-within' (shortcut '-W' upper case) select files as follows.
 
 | Postfix | Example   | Example Description                                    |
 | ------- | -------   | -------------------                                    |
-| k,m,g,t | -W 90k    | Show file if its size is bigger than 90 Kb.            |
+| k,m,g   | -W 90k    | Show file if its size is bigger than 90 Kb.            |
 |         | -W 2m     | Show file if its size is bigger than 2 Mb.             |
 | min     | -W 15min  | Show file if its last write-time is before 15 minutes. |
 | hour    | -W 2hour  | Show file if its last write-time is before 2 hours.    |
 | day     | -W 7day   | Show file if its last write-time is before 7 days.     |
 |         | -W 2022-12-25 | Show file if its last write-time is before X'Mas.  |
 |         | -W 13:30      | Show file if its last write-time is before today 13:30. |
-|         | -W 2019-06-12T15:30 |                                              |
+|         | -W 2019-06-12T15:20 |                                              |
 
 ### To exclude some files by '--excl' (shortcut -x)
 ```
@@ -85,8 +92,8 @@ dir2 -X .vs,obj*
 | ---------     | ----------- |
 | --sum ext     | Sum up by file extension (current dir only) |
 | -s --sum ext  | Sum up by file extension from all sub dir.  |
-| -s --sum dir  | Sum up by dir.                       |
-| -s --sum +dir | Sum up by dir including empty dir.  |
+| -s --sum dir  | Sum up by dir.                              |
+| -s --sum +dir | Sum up by dir including "no file found".    |
 
 ### Sum-up Dir Usage
 List all dir which has no any '.cs' file.
@@ -101,7 +108,7 @@ dir2 my_proj *.cs -bks | tar -cf ..\backup\today.tar --files-from -
 dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 ```
 
-# Complete Option List
+# Complete Option List by --HELP
 | Shortcut | Option           | Available Value         | Example |
 | -------- | ------           | ---------------         | ------- |
 | -?       | --help           | 
@@ -124,8 +131,8 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 |          |                  |                         | --size-format 
 |          | --date-format    | u, yyyy-MMM-ddTHH:mm:ss
 |          | --total          | off, only
-|          | --hide           | date,size,cout,link,mode,owner
-|          | --show           | date,size,cout,link,mode,owner
+|          | --hide           | date,size,cout,mode,owner,link
+|          | --show           | date,size,cout,mode,owner,link
 | -o       | --sort           | off,name,size,date,ext,count,last | -o date |
 |          | --take           | INTEGER,SIZE             |                  |
 |          | --sum            | ext,dir,+dir
@@ -134,11 +141,11 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 
 ## Options is renamed
 | Old Option      | New Name, and, new short-cut |
-| ----------      | -------                  |
-| --size-within   | --within -w
-| --date-within   | --within -w
-| --size-beyond   | --not-within -W
-| --date-beyond   | --not-within -W
+| ----------      | -------         |
+| --size-within   | --within -w     |
+| --date-within   | --within -w     |
+| --size-beyond   | --not-within -W |
+| --date-beyond   | --not-within -W |
 
 
 ## Daily Shortcut:
@@ -148,10 +155,10 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 | -s       | --dir sub              | Recursively sub-directory      |
 | -f       | --dir off              | List file only                 |
 | -d       | --dir only             | List dir name only             |
-| -E       | --dir tree             | List dir tree                  |
+| -R       | --dir tree             | List dir tree                  |
 | -c       | --case-sensitive       |                                |
 | -b       | --total off            | List filename (with path) only |
-|          | --hide size,date,count |                                |
+|          | --hide date,size,count,mode,owner,link |                |
 | -t       | --total only           | Display total line only        |
 
 # Setup by Config File & Environment
@@ -167,6 +174,6 @@ dir2 -? cfg
 
 Yung, Chun Kau
 
-<p><yung.chun.kau@gmail.com></p>
+<yung.chun.kau@gmail.com>
 
-2023 Jan
+2023 Feb

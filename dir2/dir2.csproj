@@ -19,7 +19,7 @@
        Features: Group by File-Ext, Group by Dir, Date Filter, Size Filter, Column Selection.
        C# source https://github.com/ck-yung/dir2cs.
    </Summary>
-    <PackageTags>dir; group by file ext; group by dir; file date filter; file size filter; dir size; dir tree</PackageTags>
+    <PackageTags>ls; dir; dir size; dir tree; ext size; dir mode; dir owner</PackageTags>
     <PackAsTool>true</PackAsTool>
     <Company>https://github.com/ck-yung/dir2cs</Company>
     <ToolCommandName>dir2</ToolCommandName>
