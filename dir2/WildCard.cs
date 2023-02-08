@@ -60,18 +60,14 @@ static public class Wild
 
     static internal void InitMatchingNames(IEnumerable<string> names)
     {
-        var a2 = PrintDir != EnumPrintDir.Only;
         var matchFuncs = names
             .Where((it) => it.Length > 0)
             .Distinct()
             .Select((it) => ToWildMatch(it))
             .ToArray();
         if (matchFuncs.Length == 0) return;
-        if (PrintDir != EnumPrintDir.Only)
-        {
-            CheckIfFileNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
-        }
-        else
+        CheckIfFileNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
+        if (PrintDir != EnumPrintDir.Tree)
         {
             CheckIfDirNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
         }

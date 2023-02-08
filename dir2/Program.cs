@@ -103,13 +103,13 @@ public class Program
 
         if (tmp3.ContainsKey(false))
         {
-            var tmp4 = tmp3[false].GroupBy((it) => it.Item1);
-            foreach (var tmp5 in tmp4)
+            foreach (var tmp4 in tmp3[false]
+                .GroupBy((it) => it.Item1))
             {
-                var tmp6 = string.Join(" ",
-                    tmp5.Select((it) => it.Item2).ToArray());
+                var tmp5 = string.Join(" ",
+                    tmp4.Select((it) => it.Item2).ToArray());
                 Console.Error.WriteLine(
-                    $"Unknown {tmp5.Key} options: {tmp6}");
+                    $"Unknown {tmp4.Key} options: {tmp5}");
             }
         }
 
@@ -117,61 +117,12 @@ public class Program
 
         var pathThe = "." + Path.DirectorySeparatorChar;
 
-        if (args.Length == 1)
+        if (args.Length > 0 )
         {
             if (Directory.Exists(args[0]))
             {
                 pathThe = args[0];
-                args = Array.Empty<string>();
-            }
-            else
-            {
-                if (args[0].EndsWith(Path.DirectorySeparatorChar))
-                {
-                    throw new ArgumentException($"Dir '{args[0]}' is NOT found.");
-                }
-
-                PrintDirOptBothOff();
-                var path2 = Path.GetDirectoryName(args[0]);
-                pathThe = string.IsNullOrEmpty(path2) ? "." : path2;
-                args = new string[] { Path.GetFileName(args[0]) };
-            }
-        }
-        else if (args.Length> 0)
-		{
-            if (args.Where((it) => it.Contains(Path.DirectorySeparatorChar)).Any())
-            {
-                var bb = args
-                    .GroupBy((it) => Path.GetDirectoryName(it))
-                    .ToImmutableDictionary((grp) => grp.Key,
-                    (grp) => grp.AsEnumerable());
-                if (bb.Count() > 1)
-                {
-                    return DirNamesAreFound(args);
-                }
-                PrintDirOptBothOff();
-                var pathThe2 = bb.First().Key;
-                var pathThe2Length = pathThe2.Length;
-                var pathThe3 = pathThe2 + Path.DirectorySeparatorChar;
-                var pathThe3Length = pathThe2.Length + 1;
-                args = args
-                    .Select((it) =>
-                    {
-                        if (it.StartsWith(pathThe3))
-                            return it.Substring(pathThe3Length)
-                            .TrimStart('/', '\\');
-                        return it.Substring(pathThe2Length)
-                            .TrimStart('/','\\');
-                    })
-                    .ToArray();
-                if (pathThe2.EndsWith(":"))
-                {
-                    pathThe = pathThe2 + "." + Path.DirectorySeparatorChar;
-                }
-                else
-                {
-                    pathThe = pathThe3;
-                }
+                args = args.Skip(1).ToArray();
             }
         }
 

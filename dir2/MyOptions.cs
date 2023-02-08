@@ -26,6 +26,7 @@ static public partial class MyOptions
         Both,
         Only,
         Off,
+        Tree,
     };
 
     static public EnumPrintDir PrintDir { get; private set; } = EnumPrintDir.Both;
@@ -81,7 +82,7 @@ static public partial class MyOptions
                     break;
                 case "tree":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
-                    PrintDir = EnumPrintDir.Only;
+                    PrintDir = EnumPrintDir.Tree;
                     parser.SetImplementation(Helper.PrintDirTree);
                     break;
                 default:
