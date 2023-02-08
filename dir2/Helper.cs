@@ -223,7 +223,7 @@ static public partial class Helper
                 {
                     Write("One file is found: ");
                     Write(Show.Size(Show.LengthFormatOpt.Invoke(sum.Length)));
-                    WriteLine(Show.Date($"{DateFormatOpt.Invoke(sum.StartTime)}"));
+                    WriteLine(Show.Date(DateFormatOpt.Invoke(sum.StartTime)));
                 }
                 break;
             default:
