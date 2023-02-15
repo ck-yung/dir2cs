@@ -8,10 +8,10 @@ and, if current folder contains ```info.txt``` and ```readme.txt``` only, comman
 
 ```dir2 -s info.txt readme.txt```
 
-is issueed actually. So ```docs/history.txt``` will NOT be found.
+is issued actually. So ```docs/history.txt``` will NOT be found.
 
 
-Therefore, below command find more files,
+Therefore, below command finds more files,
 
 ```dir2 -s "*.txt"```
 
