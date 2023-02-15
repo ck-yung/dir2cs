@@ -10,8 +10,8 @@
   <PropertyGroup>
     <Title>dir2</Title>
     <PackageId>dir2</PackageId>
-    <PackageVersion>2.0.1.0</PackageVersion>
-    <Version>2.0.1.0</Version>
+    <PackageVersion>2.0.1.1</PackageVersion>
+    <Version>2.0.1.1</Version>
     <Authors>Yung, Chun Kau</Authors>
     <Description>List files by dir or ext, with filter on date and time</Description>
     <Summary>
@@ -19,7 +19,7 @@
        Features: Group by File-Ext, Group by Dir, Date Filter, Size Filter, Column Selection.
        C# source https://github.com/ck-yung/dir2cs.
    </Summary>
-    <PackageTags>ls; dir; dir size; dir tree; ext size; dir mode; dir owner</PackageTags>
+    <PackageTags>ls; dir; size; tree</PackageTags>
     <PackAsTool>true</PackAsTool>
     <Company>https://github.com/ck-yung/dir2cs</Company>
     <ToolCommandName>dir2</ToolCommandName>

@@ -172,6 +172,8 @@ See:
 dir2 -? cfg
 ```
 
+[Link to FAQ](https://github.com/ck-yung/dir2cs/blob/main/FAQ.md)
+
 Yung, Chun Kau
 
 <yung.chun.kau@gmail.com>
