@@ -10,8 +10,8 @@
   <PropertyGroup>
     <Title>dir2</Title>
     <PackageId>dir2</PackageId>
-    <PackageVersion>2.0.1.1</PackageVersion>
-    <Version>2.0.1.1</Version>
+    <PackageVersion>2.0.1.2</PackageVersion>
+    <Version>2.0.1.2</Version>
     <Authors>Yung, Chun Kau</Authors>
     <Description>List files by dir or ext, with filter on date and time</Description>
     <Summary>
@@ -24,7 +24,7 @@
     <Company>https://github.com/ck-yung/dir2cs</Company>
     <ToolCommandName>dir2</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
-    <PackageReleaseNotes>Migrate to the common syntax of command-line argument.</PackageReleaseNotes>
+    <PackageReleaseNotes>dir-ls command tool across platform.</PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Copyright>Copyright (c) 2021,2023 Yung, Chun Kau</Copyright>

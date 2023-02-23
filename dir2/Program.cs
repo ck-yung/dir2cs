@@ -140,6 +140,30 @@ public class Program
             return arg;
         }
 
+        var dd = args
+            .Select((it) => new
+            {
+                hasColon = (it.Length > 1 && it[1] == ':'),
+                path = EnsureDirSep(it),
+            })
+            .GroupBy((it) => it.hasColon)
+            .ToImmutableDictionary((grp) => grp.Key, (grp) => grp.ToArray());
+        if (dd.ContainsKey(true) && dd[true].Length == 1)
+        {
+            if (dd.ContainsKey(false))
+            {
+                return ScanSubDir(path: dd[true].First().path,
+                    wilds: dd[false].Select((it) => it.path).ToArray(),
+                    mark: "mark-10");
+            }
+            else
+            {
+                return ScanSubDir(path: dd[true].First().path,
+                    wilds: Array.Empty<string>(),
+                    mark: "mark-20");
+            }
+        }
+
         var aa = args
             .Select((it) => EnsureDirSep(it))
             .GroupBy((it) => it.Contains(Path.DirectorySeparatorChar))
@@ -161,13 +185,13 @@ public class Program
             {
                 (1, false) => ScanSubDir(path: bb.Keys.First(),
                 wilds: bb.Values.First().ToArray(),
-                mark: "mark-1"),
+                mark: "mark-30"),
 
                 (1, true) => ScanSubDir(path: bb.Keys.First(),
                 wilds: bb.Values.First().Concat(aa[false]).ToArray(),
-                mark: "mark-1"),
+                mark: "mark-40"),
 
-                _ => ListInfo(args, mark: "mark-a")
+                _ => ListInfo(args, mark: "mark-50")
             }; ;
         }
 
@@ -179,22 +203,22 @@ public class Program
         {
             if (dirnames.Count > 1)
             {
-                return ListInfo(aa[false].ToArray(), mark: "mark-b");
+                return ListInfo(aa[false].ToArray(), mark: "mark-100");
             }
             var dirThe = dirnames.First();
             if (cc.TryGetValue(false, out var wilds))
             {
                 return ScanSubDir(dirThe, wilds.ToArray(),
-                mark: "mark-3");
+                mark: "mark-110");
             }
             return ScanSubDir(dirThe, Array.Empty<string>(),
-                mark: "mark-4");
+                mark: "mark-120");
         }
 
         if (args.Length== 0)
         {
             return ScanSubDir(path: ".", wilds: Array.Empty<string>(),
-                mark: "mark-5");
+                mark: "mark-130");
         }
 
         if (args[0].Length > 1 && args[0][1] == ':')
@@ -210,11 +234,11 @@ public class Program
             pathThe += ":.";
             pathThe += Path.DirectorySeparatorChar;
             return ScanSubDir(pathThe,
-                wilds: aa2, mark: "mark-6");
+                wilds: aa2, mark: "mark-140");
         }
 
         return ScanSubDir(path: ".", wilds: args,
-            mark: "mark-7");
+            mark: "mark-900");
 	}
 
     static bool ListInfo(string[] args, string mark)
