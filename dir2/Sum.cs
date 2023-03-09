@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace dir2;
 
 static public class Sum
@@ -34,7 +36,7 @@ static public class Sum
     }
 
     static public readonly IParse Opt = new MyOptions.SimpleParser(name: "--sum",
-        help: "ext | dir | +dir",
+        help: "ext | dir | +dir | year | month | week | day",
         resolve: (parser, args) =>
         {
             var aa = args
@@ -123,6 +125,110 @@ static public class Sum
                             seed: new InfoSum(Helper.io.RealInitPath),
                             func: (acc, it) => acc.AddWith(it));
                     };
+                    break;
+                case "year":
+                    Helper.PrintDir = (_) => InfoSum.Fake;
+                    Reduce = (seq) => seq
+                        .GroupBy((it) => "Y"+ Show.GetDate(it).ToString("yyyy"))
+                        .Select((grp) => grp.Aggregate(
+                            seed: new InfoSum(Name: grp.Key),
+                            func: (acc, it) => acc.AddWith(it)))
+                        .Invoke(Sort.Sums)
+                        .Invoke(Sort.ReverseSum)
+                        .Invoke(Sort.TakeSum)
+                        .Select((it) =>
+                        {
+                            it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
+                            return it;
+                        })
+                        .Aggregate(
+                            seed: new InfoSum(Helper.io.RealInitPath),
+                            func: (acc, it) => acc.AddWith(it));
+                    break;
+                case "month":
+                    Helper.PrintDir = (_) => InfoSum.Fake;
+                    Reduce = (seq) => seq
+                        .GroupBy((it) => "M" + Show.GetDate(it).ToString("yyyy-MM"))
+                        .Select((grp) => grp.Aggregate(
+                            seed: new InfoSum(Name: grp.Key),
+                            func: (acc, it) => acc.AddWith(it)))
+                        .Invoke(Sort.Sums)
+                        .Invoke(Sort.ReverseSum)
+                        .Invoke(Sort.TakeSum)
+                        .Select((it) =>
+                        {
+                            it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
+                            return it;
+                        })
+                        .Aggregate(
+                            seed: new InfoSum(Helper.io.RealInitPath),
+                            func: (acc, it) => acc.AddWith(it));
+                    break;
+                case "week":
+                case "weekMonday":
+                    Helper.PrintDir = (_) => InfoSum.Fake;
+                    Reduce = (seq) => seq
+                        .GroupBy((it) => "W" + Show.GetDate(it).ToString("yyyy")
+                        + "-" + CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
+                            Show.GetDate(it),
+                            CalendarWeekRule.FirstDay, DayOfWeek.Monday
+                            ).ToString("d2"))
+                        .Select((grp) => grp.Aggregate(
+                            seed: new InfoSum(Name: grp.Key),
+                            func: (acc, it) => acc.AddWith(it)))
+                        .Invoke(Sort.Sums)
+                        .Invoke(Sort.ReverseSum)
+                        .Invoke(Sort.TakeSum)
+                        .Select((it) =>
+                        {
+                            it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
+                            return it;
+                        })
+                        .Aggregate(
+                            seed: new InfoSum(Helper.io.RealInitPath),
+                            func: (acc, it) => acc.AddWith(it));
+                    break;
+                case "weekSunday":
+                    Helper.PrintDir = (_) => InfoSum.Fake;
+                    Reduce = (seq) => seq
+                        .GroupBy((it) => "W" + Show.GetDate(it).ToString("yyyy")
+                        + "-" + CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
+                            Show.GetDate(it),
+                            CalendarWeekRule.FirstDay, DayOfWeek.Sunday
+                            ).ToString("d2"))
+                        .Select((grp) => grp.Aggregate(
+                            seed: new InfoSum(Name: grp.Key),
+                            func: (acc, it) => acc.AddWith(it)))
+                        .Invoke(Sort.Sums)
+                        .Invoke(Sort.ReverseSum)
+                        .Invoke(Sort.TakeSum)
+                        .Select((it) =>
+                        {
+                            it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
+                            return it;
+                        })
+                        .Aggregate(
+                            seed: new InfoSum(Helper.io.RealInitPath),
+                            func: (acc, it) => acc.AddWith(it));
+                    break;
+                case "day":
+                    Helper.PrintDir = (_) => InfoSum.Fake;
+                    Reduce = (seq) => seq
+                        .GroupBy((it) => "D" + Show.GetDate(it).ToString("yyyy-MM-dd"))
+                        .Select((grp) => grp.Aggregate(
+                            seed: new InfoSum(Name: grp.Key),
+                            func: (acc, it) => acc.AddWith(it)))
+                        .Invoke(Sort.Sums)
+                        .Invoke(Sort.ReverseSum)
+                        .Invoke(Sort.TakeSum)
+                        .Select((it) =>
+                        {
+                            it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
+                            return it;
+                        })
+                        .Aggregate(
+                            seed: new InfoSum(Helper.io.RealInitPath),
+                            func: (acc, it) => acc.AddWith(it));
                     break;
                 default:
                     throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
