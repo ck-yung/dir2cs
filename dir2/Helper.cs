@@ -283,7 +283,7 @@ static public partial class Helper
     record DateParse(string pattern, Func<int, TimeSpan> toTimeSpan);
 
     static public string DefaultDateTimeFormatString
-    { get; private set; } = "yyyy-MM-dd HH:mm";
+    { get; } = "yyyy-MM-dd HH:mm";
 
     static public readonly IInovke<DateTime, string> DateFormatOpt =
         new ParseInvoker<DateTime, string>(name: "--date-format",
@@ -294,8 +294,8 @@ static public partial class Helper
                 var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
                 if (aa.Length > 1)
                     throw new ArgumentException($"Too many values to {parser.Name}");
-                DefaultDateTimeFormatString = aa[0];
-                Func<DateTime, string> rtn = (value) => value.ToString(aa[0]);
+                var fmtThe = System.Net.WebUtility.UrlDecode(aa[0]);
+                Func<DateTime, string> rtn = (value) => value.ToString(fmtThe);
                 _ = rtn(DateTime.MinValue);
                 parser.SetImplementation(rtn);
             });
