@@ -90,7 +90,7 @@ static public partial class Helper
                --excl-dir -X  EXCL-WILD[;EXCL-WILD ..]
                    --sort -o  off | name | size | date | ext | count | last
                               e.g. -o size
-                    --sum     ext | dir | +dir
+                    --sum     ext | dir | +dir | year
                  --within -w  SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, day, or hour
                               e.g. -w 100m -w 3day
              --not-within -W  SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, day, or hour

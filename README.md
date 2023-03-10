@@ -94,6 +94,7 @@ dir2 -X .vs,obj*
 | -s --sum ext  | Sum up by file extension from all sub dir.  |
 | -s --sum dir  | Sum up by dir.                              |
 | -s --sum +dir | Sum up by dir including "no file found".    |
+| -s --sum year | Sum up by year.                             |
 
 ### Sum-up Dir Usage
 List all dir which has no any '.cs' file.
@@ -123,19 +124,19 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 | -c       | --case-sensitive |
 |          | --creation-date  |
 | -k       | --keep-dir       |
-|          | --no-ext         | incl, excl, both
-|          | --hidden         | incl, excl, both
-|          | --size-format    | INTEGER, commna, short  | --size-format 12,comma
+|          | --no-ext         | incl  excl  both
+|          | --hidden         | incl  excl  both
+|          | --size-format    | INTEGER  commna  short  | --size-format 12,comma
 |          |                  |                         | --size-format short
-|          | --count-format   | INTEGER, commna, short  | --size-format 6,comma
+|          | --count-format   | INTEGER  commna  short  | --size-format 6,comma
 |          |                  |                         | --size-format 
 |          | --date-format    | u, yyyy-MMM-ddTHH:mm:ss
-|          | --total          | off, only
+|          | --total          | off  only
 |          | --hide           | date,size,cout,mode,owner,link
 |          | --show           | date,size,cout,mode,owner,link
-| -o       | --sort           | off,name,size,date,ext,count,last | -o date |
-|          | --take           | INTEGER,SIZE             |                  |
-|          | --sum            | ext,dir,+dir
+| -o       | --sort           | off,name,size,date,ext,count,last | -o date
+|          | --take           | INTEGER,SIZE
+|          | --sum            | ext  dir  +dir  year
 | -x       | --excl      | --excl-file \*.pdb      | -x \*.pdb        |
 | -X       | --excl-dir       | --excl-dir obj          | -X obj           |
 
@@ -178,4 +179,4 @@ Yung, Chun Kau
 
 <yung.chun.kau@gmail.com>
 
-2023 Feb
+2023 March
