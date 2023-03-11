@@ -59,7 +59,7 @@ public class Program
 			return false;
 		}
 
-        if (mainArgs.Contains("--HELP"))
+        if (mainArgs.Contains("--HELP") || mainArgs.Contains("-??"))
         {
             Write(GetSyntax());
             return false;

@@ -80,7 +80,7 @@ static public partial class Helper
         """;
 
     static public string ShortSyntax = $"""
-        Syntax: dir2 --HELP
+        Syntax: dir2 -??
         Syntax: dir2 [OPTION ..] [DIR] [WILD ..]
         Frequently used options:
             --size-format     short | WIDTH
