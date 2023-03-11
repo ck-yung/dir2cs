@@ -180,6 +180,20 @@ public class InfoSum
         EndTime= StartTime;
     }
 
+    public InfoSum(bool IsBase)
+    {
+        Name = Helper.io.RealInitPath;
+        if (Name == ("." + Path.DirectorySeparatorChar))
+        {
+            var a2 = Directory.GetCurrentDirectory();
+            a2 = Path.GetFileName(a2);
+            if (!string.IsNullOrEmpty(a2))
+            {
+                Name = a2;
+            }
+        }
+    }
+
     static internal readonly InfoSum Fake = new(string.Empty);
     static internal readonly Action<InfoSum> DoNothing = Helper.DoNothing;
 

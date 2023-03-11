@@ -22,7 +22,7 @@ static public class Sum
             return it;
         })
         .Aggregate(
-            seed: new InfoSum(Helper.io.RealInitPath),
+            seed: new InfoSum(IsBase:true),
             func: (acc, it) => acc.AddWith(it));
 
     static public Func<IEnumerable<InfoFile>, InfoSum> Reduce
@@ -60,7 +60,7 @@ static public class Sum
                 return it;
             })
             .Aggregate(
-                seed: new InfoSum(Helper.io.RealInitPath),
+                seed: new InfoSum(IsBase:true),
                 func: (acc, it) => acc.AddWith(it));
 
             switch (aa[0])
