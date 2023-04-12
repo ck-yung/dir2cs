@@ -250,11 +250,12 @@ static public partial class Helper
             {
 
             }
+            var info2 = Show.GetInfoLink(rtn);
             return new InfoDir(Name: rtn.Name
                 , Extension: rtn.Extension
                 , FullName: rtn.FullName
-                , CreationTime: rtn.CreationTime
-                , LastWriteTime: rtn.LastWriteTime
+                , CreationTime: info2.CreationTime
+                , LastWriteTime: info2.LastWriteTime
                 , FileAttributes: rtn.Attributes
                 , UnixFileMode: rtn.UnixFileMode
                 , LinkTarget: rtn.LinkTarget ?? string.Empty
@@ -271,13 +272,14 @@ static public partial class Helper
         try
         {
             var rtn = new FileInfo(file);
+            var info2 = Show.GetInfoLink(rtn);
             return new InfoFile(Name: rtn.Name
                 , Extension: rtn.Extension
                 , FullName: rtn.FullName
                 , DirectoryName: rtn.DirectoryName ?? string.Empty
-                , Length: rtn.Length
-                , CreationTime: rtn.CreationTime
-                , LastWriteTime: rtn.LastWriteTime
+                , Length: Show.GetViewSize(rtn)
+                , CreationTime: info2.CreationTime
+                , LastWriteTime: info2.LastWriteTime
                 , FileAttributes: rtn.Attributes
                 , UnixFileMode: rtn.UnixFileMode
                 , LinkTarget: rtn.LinkTarget ?? string.Empty

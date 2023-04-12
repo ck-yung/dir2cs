@@ -66,7 +66,7 @@ static internal class Show
         });
 
     static public readonly IParse Opt = new SimpleParser(name: "--show",
-        help: "date,size,count,mode,owner,link",
+        help: "date,size,count,mode,owner,link,link-size,link-date",
         resolve: (parser, args) =>
         {
             foreach (var arg in Helper.CommonSplit(args))
@@ -100,6 +100,50 @@ static internal class Show
                     case "owner":
                         Owner = (arg) => arg.OwnerText().PadRight(20);
                         break;
+                    case "link-size":
+                        GetViewSize = (info) =>
+                        {
+                            if (string.IsNullOrEmpty(info.LinkTarget))
+                            {
+                                return info.Length;
+                            }
+                            try
+                            {
+                                var infoTo = new FileInfo(info.LinkTarget);
+                                return infoTo.Length;
+                            }
+                            catch
+                            {
+                                return 0;
+                            }
+                        };
+                        break;
+                    case "link-date":
+                        GetInfoLink = (info) =>
+                        {
+                            var linkThe = info.LinkTarget;
+                            if (string.IsNullOrEmpty(linkThe))
+                            {
+                                return info;
+                            }
+                            try
+                            {
+                                if (File.Exists(linkThe))
+                                {
+                                    return new FileInfo(linkThe);
+                                }
+                                else if (Directory.Exists(linkThe))
+                                {
+                                    return new DirectoryInfo(linkThe);
+                                }
+                                else return info;
+                            }
+                            catch
+                            {
+                                return info;
+                            }
+                        };
+                        break;
                     default:
                         throw new ArgumentException($"Bad value '{arg}' to {parser.Name}");
                 }
@@ -108,6 +152,12 @@ static internal class Show
 
     static public Func<InfoBase, DateTime> GetDate { get; private set; }
     = (it) => it.LastWriteTime;
+
+    static public Func<FileInfo, long> GetViewSize { get; private set; }
+    = (it) => it.Length;
+
+    static public Func<FileSystemInfo, FileSystemInfo> GetInfoLink { get; private set; }
+    = (it) => it;
 
     static public readonly IParse CreationDateOpt = new SwitchParser("--creation-date",
         action: () =>

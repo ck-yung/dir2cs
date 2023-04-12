@@ -39,6 +39,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="nupkg\**" />
+    <EmbeddedResource Remove="nupkg\**" />
+    <None Remove="nupkg\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="runtimes\libdir2-x64.exp" />
     <None Remove="runtimes\libdir2-x64.lib" />
     <None Remove="runtimes\libdir2-x86.exp" />

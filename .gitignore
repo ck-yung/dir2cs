@@ -9,6 +9,8 @@
 *.opensdf
 *.csproj.user
 *.vcxproj.user
+lib*.exp
+lib*.lib
 TestResults
 packages
 ipch
