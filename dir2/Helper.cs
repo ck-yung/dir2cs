@@ -287,16 +287,30 @@ static public partial class Helper
 
     static public readonly IInovke<DateTime, string> DateFormatOpt =
         new ParseInvoker<DateTime, string>(name: "--date-format",
-            help: "DATE-FORMAT   e.g. yyyy-MMM-dd HH:mm:ss",
+            help: "DATE-FORMAT   e.g. yy-MM-dd%20HH:mm:ss, OR, unix ",
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
                 if (aa.Length > 1)
                     throw new ArgumentException($"Too many values to {parser.Name}");
-                var fmtThe = System.Net.WebUtility.UrlDecode(aa[0]);
-                Func<DateTime, string> rtn = (value) => value.ToString(fmtThe);
-                _ = rtn(DateTime.MinValue);
+                var formatThe = aa[0];
+                Func<DateTime, string> rtn = (_) => string.Empty;
+                if (formatThe == "unix")
+                {
+                    rtn = (value) =>
+                    {
+                        var dto = new DateTimeOffset(value.ToUniversalTime());
+                        var unixTimestamp = dto.ToUnixTimeSeconds();
+                        return $"{unixTimestamp,11}";
+                    };
+                }
+                else
+                {
+                    var fmtThe = System.Net.WebUtility.UrlDecode(formatThe);
+                    rtn = (value) => value.ToString(fmtThe);
+                }
+                _ = rtn(DateTime.MinValue); // verify if the lambda is valid
                 parser.SetImplementation(rtn);
             });
 

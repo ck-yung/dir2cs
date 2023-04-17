@@ -131,7 +131,7 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 |          |                  |                         | --size-format short
 |          | --count-format   | INTEGER  commna  short  | --size-format 6,comma
 |          |                  |                         | --size-format 
-|          | --date-format    | u, yyyy-MMM-ddTHH:mm:ss
+|          | --date-format    | u, yyyy-MMM-ddTHH:mm:ss, yy-MM-dd%20HH:mm, unix
 |          | --total          | off  only
 |          | --hide           | date,size,cout,mode,owner,link
 |          | --show           | date,size,cout,mode,owner,link
