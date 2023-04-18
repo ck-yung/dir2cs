@@ -27,3 +27,7 @@ ipch
 **/launchSettings.json
 nupkg/
 **/nupkg
+libdir2-x86.exp
+libdir2-x64.exp
+libdir2-x86.obj
+libdir2-x64.obj
