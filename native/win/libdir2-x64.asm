@@ -15,7 +15,6 @@ Init proc
 Init endp
 
 GetFileOwner proc maxLen:DWORD, szPath:DWORD, szOwner:DWORD
-;; ..................................^QDWORD^.......^QDWORD^
     mov eax, 1
     ret
 GetFileOwner endp
