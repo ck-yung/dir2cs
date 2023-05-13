@@ -127,6 +127,7 @@ static public partial class Helper
         {
             rtn.AppendLine($" {optThe.Name,16} {optThe.Shortcut}  {optThe.Help}");
         }
+        rtn.AppendLine($" {Wild.ExclNone,16}     clear all '--excl' and '--excl-dir'");
         rtn.AppendLine("SHORTCUT:");
         foreach (var kvThe in MyOptions.ShortcutComplexOptions
             .OrderBy((it) => it.Value.Item1))

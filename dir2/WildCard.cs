@@ -121,6 +121,28 @@ static public class Wild
                 parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
             });
 
+    static internal readonly string ExclNone = "--excl-none";
+    static internal string[] Parse_ExclNone(IEnumerable<string> args)
+    {
+        var chkThe = args
+            .GroupBy((it) => it == ExclNone)
+            .ToImmutableDictionary(
+            (grp) => grp.Key,
+            (grp) => grp.AsEnumerable());
+
+        if (chkThe.ContainsKey(true))
+        {
+            ((ExclFeauture<string, bool>)ExclFileNameOpt).SetImplementation(Helper.Never);
+            ((ExclFeauture<string, bool>)ExclDirNameOpt).SetImplementation(Helper.Never);
+        }
+
+        if (chkThe.ContainsKey(false))
+        {
+            return chkThe[false].ToArray();
+        }
+        return Array.Empty<string>();
+    }
+
     record WithData(bool IsSize, long Size, DateTime Date)
     {
         public WithData(long size)

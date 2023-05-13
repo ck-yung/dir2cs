@@ -107,9 +107,8 @@ public class Program
         string[] args = Array.Empty<string>();
         if (tmp3.ContainsKey(true))
         {
-            args = tmp3[true]
-                .Select((it) => it.Item2)
-                .ToArray();
+            args = Wild.Parse_ExclNone(tmp3[true]
+                .Select((it) => it.Item2));
         }
 
         if (tmp3.ContainsKey(false))
