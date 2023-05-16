@@ -22,7 +22,7 @@ static class Config
         return Path.Join(pathHome, ".local", "dir2.opt");
     }
 
-    static IEnumerable<(ArgType, string)> SelectArgsFromLines( ArgType type,
+    static IEnumerable<TypedArg> SelectArgsFromLines(ArgType type,
         IEnumerable<string> args)
     {
         foreach (var arg in args
@@ -32,21 +32,21 @@ static class Config
             var bb = arg.Split(new char[] { ' ', '\t' }, 2);
             if (bb.Length == 2)
             {
-                yield return (type, $"{bb[0].Trim()}");
+                yield return new TypedArg(type, $"{bb[0].Trim()}");
                 var b2 = bb[1].Trim();
                 if (false == string.IsNullOrEmpty(b2))
                 {
-                    yield return (type, $"{b2}");
+                    yield return new TypedArg(type, $"{b2}");
                 }
             }
             else if (bb.Length == 1)
             {
-                yield return (type, $"{bb[0].Trim()}");
+                yield return new TypedArg(type, $"{bb[0].Trim()}");
             }
         }
     }
 
-    static public IEnumerable<(ArgType, string)> ParseConfigFile()
+    static public IEnumerable<TypedArg> ParseConfigFile()
     {
         try
         {
@@ -55,36 +55,35 @@ static class Config
             var lines = fs.ReadToEnd()
                 .Split('\n', '\r');
             var args = SelectArgsFromLines(ArgType.ConfigFile, lines)
-                .Select((it) => (false, it.Item1, it.Item2));
+                .Select((it) => new ParseArg(false, it.type, it.arg));
             try
             {
                 var tmp = MyOptions.ConfigParsers
                     .Aggregate(args, (acc, opt) => opt.Parse(acc))
-                    .Select((it) => (it.Item2, it.Item3));
+                    .Select((it) => new TypedArg(it.type, it.arg));
                 return Wild.SelectExclFeatures(
-                    MyOptions.ExclFileDirParsers,
-                    tmp);
+                    MyOptions.ExclFileDirParsers, tmp);
             }
             catch (Exception ee)
             {
                 Console.Error.WriteLine(
                     $"Config file {cfgFilename} [{ee.GetType()}] {ee.Message}");
                 Console.Error.WriteLine();
-                return Enumerable.Empty<(ArgType, string)>();
+                return Enumerable.Empty<TypedArg>();
             }
         }
         catch
         {
-            return Enumerable.Empty<(ArgType, string)>();
+            return Enumerable.Empty<TypedArg>();
         }
     }
 
-    static internal (bool, IEnumerable<(ArgType, string)>) GetEnvirOpts()
+    static internal (bool, IEnumerable<TypedArg>) GetEnvirOpts()
     {
         var envirOld = Environment.GetEnvironmentVariable(nameof(dir2));
         if (string.IsNullOrEmpty(envirOld))
         {
-            return (false, Enumerable.Empty<(ArgType, string)>());
+            return (false, Enumerable.Empty<TypedArg>());
         }
 
         try
@@ -102,14 +101,14 @@ static class Config
                 return (isCfgOff, SelectArgsFromLines(
                     ArgType.Environment, aa[false]));
             }
-            return (isCfgOff, Enumerable.Empty<(ArgType, string)>());
+            return (isCfgOff, Enumerable.Empty<TypedArg>());
         }
         catch (Exception ee)
         {
             Console.Error.WriteLine(
                 $"Enivr {nameof(dir2)}: [{ee.GetType()}] {ee.Message}");
             Console.Error.WriteLine();
-            return (false, Enumerable.Empty<(ArgType, string)>());
+            return (false, Enumerable.Empty<TypedArg>());
         }
     }
 

@@ -1,10 +1,13 @@
 namespace dir2;
+
+public record ParseArg(bool flag, ArgType type, string arg);
+public record TypedArg(ArgType type, string arg);
+
 public interface IParse
 {
     string Name { get; }
     string Help { get; }
-    public IEnumerable<(bool, ArgType, string)> Parse(
-        IEnumerable<(bool, ArgType, string)> args);
+    public IEnumerable<ParseArg> Parse(IEnumerable<ParseArg> args);
 }
 
 public interface IInovke<T, R>

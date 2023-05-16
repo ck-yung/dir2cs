@@ -130,10 +130,10 @@ static public partial class Helper
         rtn.AppendLine($" {Wild.ExclNone,16}     clear all '--excl' and '--excl-dir'");
         rtn.AppendLine("SHORTCUT:");
         foreach (var kvThe in MyOptions.ShortcutComplexOptions
-            .OrderBy((it) => it.Value.Item1))
+            .OrderBy((it) => it.Value.help))
         {
-            var textThe = new StringBuilder($" {kvThe.Value.Item1,-16} {kvThe.Key}");
-            var text2The = string.Join(" ", kvThe.Value.Item2);
+            var textThe = new StringBuilder($" {kvThe.Value.help,-16} {kvThe.Key}");
+            var text2The = string.Join(" ", kvThe.Value.expands);
             textThe.Append($"  => {text2The,-12}");
             rtn.AppendLine(textThe.ToString());
         }

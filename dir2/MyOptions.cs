@@ -4,8 +4,8 @@ namespace dir2;
 
 static public partial class MyOptions
 {
-    static public IEnumerable<(ArgType, string)> Resolve(this IParse[] parsers,
-        IEnumerable<(ArgType, string)> args, bool isIncludeExclNameOptions)
+    static public IEnumerable<TypedArg> Resolve(this IParse[] parsers,
+        IEnumerable<TypedArg> args, bool isIncludeExclNameOptions)
     {
         var parsersThe = parsers;
         if (false == isIncludeExclNameOptions)
@@ -16,9 +16,11 @@ static public partial class MyOptions
         }
 
         return parsersThe.Aggregate(
-            seed: args.Select((it) => (false, it.Item1, it.Item2)),
-            func: (acc, it) => it.Parse(acc))
-            .Select((it) => (it.Item2, it.Item3));
+            seed: args.Select((it) => new ParseArg(false, it.type, it.arg)),
+            func: (acc, it) =>
+            it
+            .Parse(acc))
+            .Select((it) => new TypedArg(it.type, it.arg));
     }
 
     public enum EnumPrintDir
@@ -210,9 +212,9 @@ static public partial class MyOptions
                 yield return found;
             }
             else if (ShortcutComplexOptions.TryGetValue(current,
-                out (string, string[]) founds))
+                out (string, string[] expands) founds))
             {
-                foreach (var opt in founds.Item2)
+                foreach (var opt in founds.expands)
                     yield return opt;
             }
             else
@@ -282,7 +284,7 @@ static public partial class MyOptions
             ["-X"] = "--excl-dir",
         }.ToImmutableDictionary();
 
-    static internal ImmutableDictionary<string, (string, string[])>
+    static internal ImmutableDictionary<string, (string help, string[] expands)>
         ShortcutComplexOptions
         = new Dictionary<string, (string, string[])>
         {

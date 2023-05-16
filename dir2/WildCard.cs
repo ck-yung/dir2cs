@@ -75,15 +75,15 @@ static public class Wild
 
     static internal bool IsExclFeature(IParse arg) => arg is ExclFeauture<string, bool>;
 
-    static public IEnumerable<(ArgType, string)> SelectExclFeatures(IParse[] options,
-        IEnumerable<(ArgType, string)> args)
+    static public IEnumerable<TypedArg> SelectExclFeatures(IParse[] options,
+        IEnumerable<TypedArg> args)
     {
         var optNames = options.Select((it) => it.Name).ToArray();
         var it = args.GetEnumerator();
         while (it.MoveNext())
         {
             var current = it.Current;
-            if (optNames.Contains(current.Item2))
+            if (optNames.Contains(current.arg))
             {
                 if (it.MoveNext())
                 {
@@ -200,8 +200,8 @@ static public class Wild
             resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct()
-                .Select((it) => (WithData.Parse(parser.Name, it),it))
-                .GroupBy((it) => it.Item1.IsSize)
+                .Select((it) => (restrict: WithData.Parse(parser.Name, it), arg: it))
+                .GroupBy((it) => it.restrict.IsSize)
                 .ToImmutableDictionary(
                     (grp) => grp.Key, (grp) => grp.AsEnumerable());
 
@@ -211,9 +211,9 @@ static public class Wild
                     if (sizeWith.Length > 1)
                     {
                         throw new ArgumentException(
-                            $"Too many Size '{sizeWith[0].Item2}', '{sizeWith[1].Item2}' to {parser.Name}");
+                            $"Too many Size '{sizeWith[0].arg}', '{sizeWith[1].arg}' to {parser.Name}");
                     }
-                    var sizeMax = sizeWith[0].Item1.Size;
+                    var sizeMax = sizeWith[0].restrict.Size;
                     IsMatchWithinSize = (size) => (size <= sizeMax);
                 }
 
@@ -223,9 +223,9 @@ static public class Wild
                     if (dateWithin.Length > 1)
                     {
                         throw new ArgumentException(
-                            $"Too many DateTime '{dateWithin[0].Item2}', '{dateWithin[1].Item2}' to {parser.Name}");
+                            $"Too many DateTime '{dateWithin[0].arg}', '{dateWithin[1].arg}' to {parser.Name}");
                     }
-                    var dateMax = dateWithin[0].Item1.Date;
+                    var dateMax = dateWithin[0].restrict.Date;
                     IsMatchWithinDate = (date) => (date >= dateMax);
                 }
             });
@@ -241,8 +241,8 @@ static public class Wild
             resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct()
-                .Select((it) => (WithData.Parse(parser.Name, it), it))
-                .GroupBy((it) => it.Item1.IsSize)
+                .Select((it) => (restrict: WithData.Parse(parser.Name, it), arg: it))
+                .GroupBy((it) => it.restrict.IsSize)
                 .ToImmutableDictionary(
                     (grp) => grp.Key, (grp) => grp.AsEnumerable());
 
@@ -252,9 +252,9 @@ static public class Wild
                     if (sizeNotWith.Length > 1)
                     {
                         throw new ArgumentException(
-                            $"Too many Size '{sizeNotWith[0].Item2}', '{sizeNotWith[1].Item2}' to {parser.Name}");
+                            $"Too many Size '{sizeNotWith[0].arg}', '{sizeNotWith[1].arg}' to {parser.Name}");
                     }
-                    var sizeMin = sizeNotWith[0].Item1.Size;
+                    var sizeMin = sizeNotWith[0].restrict.Size;
                     IsMatchNotWithinSize = (size) => (size > sizeMin);
                 }
 
@@ -264,9 +264,9 @@ static public class Wild
                     if (dateNotWithin.Length > 1)
                     {
                         throw new ArgumentException(
-                            $"Too many DateTime '{dateNotWithin[0].Item2}', '{dateNotWithin[1].Item2}' to {parser.Name}");
+                            $"Too many DateTime '{dateNotWithin[0].arg}', '{dateNotWithin[1].arg}' to {parser.Name}");
                     }
-                    var dateMin = dateNotWithin[0].Item1.Date;
+                    var dateMin = dateNotWithin[0].restrict.Date;
                     IsMatchNotWithinDate = (date) => (date < dateMin);
                 }
             });

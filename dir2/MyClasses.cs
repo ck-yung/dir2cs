@@ -29,15 +29,14 @@ static public partial class MyOptions
             Action = action;
         }
 
-        public IEnumerable<(bool, ArgType, string)> Parse(
-            IEnumerable<(bool, ArgType, string)> args)
+        public IEnumerable<ParseArg> Parse(IEnumerable<ParseArg> args)
         {
             bool notYetActed = true;
             var it = args.GetEnumerator();
             while (it.MoveNext())
             {
                 var current = it.Current;
-                if (current.Item3 == Name)
+                if (current.arg == Name)
                 {
                     Flag = true;
                     if (notYetActed)
@@ -71,16 +70,16 @@ static public partial class MyOptions
             Resolve = resolve;
         }
 
-        public IEnumerable<(bool, ArgType, string)> Parse(
-            IEnumerable<(bool, ArgType, string)> args)
+        public IEnumerable<ParseArg> Parse(
+            IEnumerable<ParseArg> args)
         {
-            IEnumerable<(bool, ArgType, string)> ToFlagEnum()
+            IEnumerable<ParseArg> ToFlagEnum()
             {
                 var it = args.GetEnumerator();
                 while (it.MoveNext())
                 {
                     var current = it.Current;
-                    if (current.Item3 != Name)
+                    if (current.arg != Name)
                     {
                         yield return it.Current;
                     }
@@ -91,23 +90,23 @@ static public partial class MyOptions
                             throw new ArgumentException(
                                 $"Missing value to {Name}");
                         }
-                        yield return
-                            (true, it.Current.Item2, it.Current.Item3);
+                        yield return new ParseArg(true,
+                            it.Current.type, it.Current.arg);
                     }
                 }
             }
 
             var groupThe = ToFlagEnum()
-                .GroupBy((it) => it.Item1)
+                .GroupBy((it) => it.flag)
                 .ToImmutableDictionary((it) => it.Key, (it) => it.AsEnumerable());
 
             if (groupThe.ContainsKey(true))
             {
-                Resolve(this, groupThe[true].Select((it) => it.Item3));
+                Resolve(this, groupThe[true].Select((it) => it.arg));
             }
 
             if (groupThe.ContainsKey(false)) return groupThe[false];
-            return Enumerable.Empty<(bool, ArgType, string)>();
+            return Enumerable.Empty<ParseArg>();
         }
     }
 

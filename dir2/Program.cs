@@ -81,7 +81,7 @@ public class Program
             return false;
         }
 
-        (bool envrCfgOff, IEnumerable<(ArgType, string)> cfgRest) =
+        (bool envrCfgOff, IEnumerable<TypedArg> cfgRest) =
             Config.GetEnvirOpts();
 
         if (false == envrCfgOff &&
@@ -95,11 +95,11 @@ public class Program
 
         var tmp2 = cfgRest
             .Concat(ExpandFromShortCut(ExpandForHomeDir(mainArgs))
-            .Select((it) => (ArgType.CommandLine, it)));
+            .Select((it) => new TypedArg(ArgType.CommandLine, it)));
         var tmp3 = Parsers.Resolve(
-            tmp2.Where((it) => false == EnvrSkipOpts.Contains(it.Item2)),
+            tmp2.Where((it) => false == EnvrSkipOpts.Contains(it.arg)),
             isIncludeExclNameOptions: true)
-            .GroupBy((it) => it.Item1 == ArgType.CommandLine)
+            .GroupBy((it) => it.type == ArgType.CommandLine)
             .ToImmutableDictionary(
             (grp) => grp.Key,
             (grp) => grp.AsEnumerable());
@@ -108,16 +108,16 @@ public class Program
         if (tmp3.ContainsKey(true))
         {
             args = Wild.Parse_ExclNone(tmp3[true]
-                .Select((it) => it.Item2));
+                .Select((it) => it.arg));
         }
 
         if (tmp3.ContainsKey(false))
         {
             foreach (var tmp4 in tmp3[false]
-                .GroupBy((it) => it.Item1))
+                .GroupBy((it) => it.type))
             {
                 var tmp5 = string.Join(" ",
-                    tmp4.Select((it) => it.Item2).ToArray());
+                    tmp4.Select((it) => it.arg).ToArray());
                 Console.Error.WriteLine(
                     $"Unknown {tmp4.Key} options: {tmp5}");
             }
