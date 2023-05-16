@@ -12,12 +12,16 @@ public class Program
 {
     static public void Main(string[] args)
     {
-		try
-		{
-			RunMain(args);
-		}
-		catch (Exception ee)
-		{
+        try
+        {
+            RunMain(args);
+        }
+        catch (ArgumentException aee)
+        {
+            Console.WriteLine($"Invalid args: {aee.Message}");
+        }
+        catch (Exception ee)
+        {
             if (GetExeEnvr().Contains(DumpExceptionOpt))
             {
                 Console.WriteLine(ee);
