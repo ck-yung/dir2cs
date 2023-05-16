@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>
@@ -45,10 +45,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="runtimes\libdir2-x64.exp" />
-    <None Remove="runtimes\libdir2-x64.lib" />
-    <None Remove="runtimes\libdir2-x86.exp" />
-    <None Remove="runtimes\libdir2-x86.lib" />
+    <None Remove="runtimes\libdir2*.exp" />
+    <None Remove="runtimes\libdir2*.lib" />
   </ItemGroup>
 
   <ItemGroup>

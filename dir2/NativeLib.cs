@@ -7,22 +7,22 @@ namespace dir2;
 
 static class NativeLib
 {
-    [DllImport("dir2.dll")]
+    [DllImport("dir2native.dll")]
     static public extern int Init();
 
-    [DllImport("dir2.dll",
+    [DllImport("dir2native.dll",
     CallingConvention = CallingConvention.Cdecl,
     CharSet = CharSet.Ansi)]
-    static extern int GetFileOwner(int length,
-    [MarshalAs(UnmanagedType.LPStr)] string message,
-    [Out] byte[] lpString);
+    static extern int GetFileOwner(int lenOutput,
+    [MarshalAs(UnmanagedType.LPStr)] string pathname,
+    [Out] byte[] lpOutOwner);
 
-    static public string FileOwner(string message)
+    static public string FileOwner(string pathname)
     {
         int length = 128;
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(length + 1);
-        length = GetFileOwner(length, message, buffer);
-        return Encoding.ASCII.GetString(buffer, 0, length);
+        byte[] output = ArrayPool<byte>.Shared.Rent(length + 1);
+        length = GetFileOwner(length, pathname, output);
+        return Encoding.ASCII.GetString(output, 0, length);
     }
 
     static NativeLib()
@@ -53,7 +53,7 @@ static class NativeLib
     {
         var rid = RuntimeInformation.RuntimeIdentifier;
         var aa = rid.Split(new char[] { '-' }, 2);
-        if (libraryName == "dir2.dll")
+        if (libraryName == "dir2native.dll")
         {
             if (isInited)
             {
