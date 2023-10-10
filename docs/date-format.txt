@@ -1,0 +1,27 @@
+opt:
+  --date-format=FORMAT
+ 
+FORMAT is a combination of:
+  yyyy   4-digit year
+  MM     2-digit month
+  MMM    3-char month name (e.g. Jan, Feb)
+  dd     2-digit day (1 - 31)
+  ddd    3-char week (e.g. Mon, Tue)
+  HH     2-digit hour (in 24-hours format)
+  mm     2-digit minute
+  ss     2-digit second
+
+For example,                             Sample result
+   --date-format=yyyy-MM-dd              1997-06-30
+  "--date-format=MMM dd, yyyy HH:mm"     Sep 28, 2014 17:58
+  "--date-format=hh:mm tt ddd dd, MMM"   03:54 PM Wed 12, Jun
+
+Remark:
+
+1. Enclosing by double quotation mark is required if the format string contains any space in command line.
+
+2. The whole environment variable assignment usually is required to be enclosed by quotation mark.
+ 
+   For example,
+   set "dir2=--date-format=MMM dd --sort=size"
+   export "dir2=--date-format=MMM dd --sort=size"
