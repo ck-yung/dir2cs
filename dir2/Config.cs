@@ -51,10 +51,15 @@ static class Config
         try
         {
             var cfgFilename = GetFilename();
-            using var fs = File.OpenText(cfgFilename);
-            var lines = fs.ReadToEnd()
-                .Split('\n', '\r');
-            var args = SelectArgsFromLines(ArgType.ConfigFile, lines)
+            var buf2 = new byte[2048];
+            int readCnt = 0;
+            using (var inpFp = File.OpenRead(cfgFilename))
+            {
+                readCnt = inpFp.Read(buf2);
+            }
+            var args = SelectArgsFromLines(ArgType.ConfigFile,
+                Encoding.UTF8.GetString(buf2, 0, readCnt)
+                .Split('\n', '\r'))
                 .Select((it) => (false, it.Item1, it.Item2));
             try
             {

@@ -289,7 +289,7 @@ static public partial class Helper
 
     static public readonly IInovke<DateTime, string> DateFormatOpt =
         new ParseInvoker<DateTime, string>(name: "--date-format",
-            help: "DATE-FORMAT   e.g. yy-MM-dd%20HH:mm:ss, OR, unix ",
+            help: "DATE-FORMAT   e.g. yy-MM-dd%20HH:mm:ss, short, OR, unix ",
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {
@@ -322,12 +322,15 @@ static public partial class Helper
 
                         if (File.Exists(cfgFilename))
                         {
+                            var buf2 = new byte[2048];
+                            int readCnt = 0;
+                            using (var inpFp = File.OpenRead(cfgFilename))
+                            {
+                                readCnt = inpFp.Read(buf2);
+                            }
                             var regx = new Regex(
                                 @"^(?<name>\w{3,4})\s*\[(?<format>.*)\]");
-                            using var inpFp = File.OpenRead(cfgFilename);
-                            var buf2 = new byte[2048];
-                            var readCnt = inpFp.Read(buf2);
-                            foreach (var line in Encoding.UTF8.GetString(buf2)
+                            foreach (var line in Encoding.UTF8.GetString(buf2,0,readCnt)
                             .Split('\n','\r'))
                             {
                                 var chcek = regx.Match(line);
