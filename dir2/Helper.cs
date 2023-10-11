@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -286,8 +287,6 @@ static public partial class Helper
     static public string DefaultDateTimeFormatString
     { get; } = "yyyy-MM-dd HH:mm";
 
-    static readonly DateTime Now = DateTime.Now;
-
     static public readonly IInovke<DateTime, string> DateFormatOpt =
         new ParseInvoker<DateTime, string>(name: "--date-format",
             help: "DATE-FORMAT   e.g. yy-MM-dd%20HH:mm:ss, OR, unix ",
@@ -310,26 +309,61 @@ static public partial class Helper
                         };
                         break;
                     case "short":
+                        var formatMap = new Dictionary<string, string>()
+                        { //            12345678
+                            ["just"] = "    Just",
+                            ["day"] =  " hh:mmtt",
+                            ["week"] = "ddd hhtt",
+                            ["year"] = "  MMM dd",
+                            ["else"] = "yyyy MMM",
+                        };
+                        var cfgFilename = Config.GetFilename()[..^4]
+                        + ".date-short.opt";
+
+                        if (File.Exists(cfgFilename))
+                        {
+                            var regx = new Regex(
+                                @"^(?<name>\w{3,4})\s*\[(?<format>.*)\]");
+                            using var inpFp = File.OpenRead(cfgFilename);
+                            var buf2 = new byte[2048];
+                            var readCnt = inpFp.Read(buf2);
+                            foreach (var line in Encoding.UTF8.GetString(buf2)
+                            .Split('\n','\r'))
+                            {
+                                var chcek = regx.Match(line);
+                                if (!chcek.Success) continue;
+                                var nameThe = chcek.Groups["name"].Value.ToLower();
+                                var format = chcek.Groups["format"].Value;
+                                if (string.IsNullOrEmpty(format)) continue;
+                                if (formatMap.ContainsKey(nameThe))
+                                {
+                                    formatMap[nameThe] = format;
+                                }
+                            }
+                        }
+
+                        var now = DateTime.Now;
                         rtn = (timeThe) =>
                         {
-                            var diffThe = Now - timeThe;
+                            var diffThe = now - timeThe;
                             if (diffThe < TimeSpan.FromMinutes(2))
-                            { //        12345678
-                                return "    Just";
+                            {
+                                return formatMap["just"];
                             }
                             if (diffThe < TimeSpan.FromHours(23))
-                            { //                         12345678
-                                return timeThe.ToString(" hh:mmtt");
+                            {
+                                return timeThe.ToString(formatMap["day"]);
                             }
                             if (diffThe < TimeSpan.FromDays(6))
-                            { //                         12345678
-                                return timeThe.ToString("ddd hhtt");
+                            {
+                                return timeThe.ToString(formatMap["week"]);
                             }
                             if (diffThe < TimeSpan.FromDays(330))
-                            { //                         12345678
-                                return timeThe.ToString("  MMM dd");
-                            } //                     12345678
-                            return timeThe.ToString("yyyy MMM");
+                            {
+                                return timeThe.ToString(formatMap["year"]);
+                            }
+
+                            return timeThe.ToString(formatMap["else"]);
                         };
                         break;
                     default:
