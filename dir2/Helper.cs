@@ -352,8 +352,9 @@ static public partial class Helper
                                 }
                                 catch (Exception ex)
                                 {
-                                    throw new FileLoadException($"Loading '{cfgFilename}', "+
-                                        $"key='{key}', format=[{format}]", ex);
+                                    Console.Error.WriteLine(
+                                        $"Loading '{cfgFilename}', key='{key}', format=[{format}]");
+                                    Console.Error.WriteLine($"{ex.GetType()}: {ex.Message}");
                                 }
                             }
                         }
