@@ -310,7 +310,7 @@ static public partial class Helper
                         break;
                     case "short":
                         var formatMap = new Dictionary<string, string>()
-                        { //            12345678
+                        {
                             ["just"] = "    Just",
                             ["day"] =  " hh:mmtt",
                             ["week"] = "ddd hhtt",
@@ -340,30 +340,48 @@ static public partial class Helper
                                     formatMap[nameThe] = format;
                                 }
                             }
+                            // verify formats ..
+                            foreach ((string key, string format) in formatMap)
+                            {
+                                try
+                                {
+                                    DateTime.MinValue.ToString(format);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new FileLoadException($"Loading '{cfgFilename}', "+
+                                        $"key='{key}', format=[{format}]", ex);
+                                }
+                            }
                         }
 
                         var now = DateTime.Now;
+                        var justText = formatMap["just"];
+                        var dayFormat = formatMap["day"];
+                        var weekFormat = formatMap["week"];
+                        var yearFormat = formatMap["year"];
+                        var elseFormat = formatMap["else"];
                         rtn = (timeThe) =>
                         {
-                            var diffThe = now - timeThe;
-                            if (diffThe < TimeSpan.FromMinutes(2))
+                            if ((now.Year == timeThe.Year) && (now >= timeThe))
                             {
-                                return formatMap["just"];
+                                var diffThe = now - timeThe;
+                                if (diffThe < TimeSpan.FromDays(6))
+                                {
+                                    if (now.Month == timeThe.Month
+                                    && now.Day == timeThe.Day)
+                                    {
+                                        if (diffThe < TimeSpan.FromMinutes(2))
+                                        {
+                                            return justText;
+                                        }
+                                        return timeThe.ToString(dayFormat);
+                                    }
+                                    return timeThe.ToString(weekFormat);
+                                }
+                                return timeThe.ToString(yearFormat);
                             }
-                            if (diffThe < TimeSpan.FromHours(23))
-                            {
-                                return timeThe.ToString(formatMap["day"]);
-                            }
-                            if (diffThe < TimeSpan.FromDays(6))
-                            {
-                                return timeThe.ToString(formatMap["week"]);
-                            }
-                            if (diffThe < TimeSpan.FromDays(330))
-                            {
-                                return timeThe.ToString(formatMap["year"]);
-                            }
-
-                            return timeThe.ToString(formatMap["else"]);
+                            return timeThe.ToString(elseFormat);
                         };
                         break;
                     default:
