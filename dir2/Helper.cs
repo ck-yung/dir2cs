@@ -286,6 +286,8 @@ static public partial class Helper
     static public string DefaultDateTimeFormatString
     { get; } = "yyyy-MM-dd HH:mm";
 
+    static readonly DateTime Now = DateTime.Now;
+
     static public readonly IInovke<DateTime, string> DateFormatOpt =
         new ParseInvoker<DateTime, string>(name: "--date-format",
             help: "DATE-FORMAT   e.g. yy-MM-dd%20HH:mm:ss, OR, unix ",
@@ -297,20 +299,44 @@ static public partial class Helper
                     throw new ArgumentException($"Too many values to {parser.Name}");
                 var formatThe = aa[0];
                 Func<DateTime, string> rtn = (_) => string.Empty;
-                if (formatThe == "unix")
+                switch (formatThe)
                 {
-                    rtn = (value) =>
-                    {
-                        var dto = new DateTimeOffset(value.ToUniversalTime());
-                        var unixTimestamp = dto.ToUnixTimeSeconds();
-                        return $"{unixTimestamp,11}";
-                    };
-                }
-                else
-                {
-                    var fmtThe = System.Net.WebUtility.UrlDecode(formatThe);
-                    rtn = (value) => value.ToString(fmtThe);
-                }
+                    case "unix":
+                        rtn = (value) =>
+                        {
+                            var dto = new DateTimeOffset(value.ToUniversalTime());
+                            var unixTimestamp = dto.ToUnixTimeSeconds();
+                            return $"{unixTimestamp,11}";
+                        };
+                        break;
+                    case "short":
+                        rtn = (timeThe) =>
+                        {
+                            var diffThe = Now - timeThe;
+                            if (diffThe < TimeSpan.FromMinutes(2))
+                            { //        12345678
+                                return "    Just";
+                            }
+                            if (diffThe < TimeSpan.FromHours(23))
+                            { //                         12345678
+                                return timeThe.ToString(" hh:mmtt");
+                            }
+                            if (diffThe < TimeSpan.FromDays(6))
+                            { //                         12345678
+                                return timeThe.ToString("ddd hhtt");
+                            }
+                            if (diffThe < TimeSpan.FromDays(330))
+                            { //                         12345678
+                                return timeThe.ToString("  MMM dd");
+                            } //                     12345678
+                            return timeThe.ToString("yyyy MMM");
+                        };
+                        break;
+                    default:
+                        var fmtThe = System.Net.WebUtility.UrlDecode(formatThe);
+                        rtn = (value) => value.ToString(fmtThe);
+                        break;
+                };
                 _ = rtn(DateTime.MinValue); // verify if the lambda is valid
                 parser.SetImplementation(rtn);
             });
