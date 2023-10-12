@@ -1,5 +1,0 @@
-just [    Just]
-day  [ HH:mmtt]
-week [ddd HHtt]
-year [  MMM dd]
-else [yyyy MMM]

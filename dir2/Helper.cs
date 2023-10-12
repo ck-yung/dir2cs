@@ -309,88 +309,88 @@ static public partial class Helper
                         };
                         break;
                     case "short":
-                        const string keyLength = "length";
-                        const string keyPad = "pad";
+                        Func<string, string> fnPad = (it) => it.PadRight(8);
                         const string keyJust = "just";
                         const string keyToday = "today";
                         const string keyYsDay = "ysday";
                         const string keyWeek = "week";
                         const string keyYear = "year";
                         const string keyElse = "else";
-                        int maxLength = 8;
-                        bool isPadRight = true;
                         var formatMap = new Dictionary<string, string>()
                         {
-                            [keyJust] = "    Just",
-                            [keyToday]= " hh:mmtt",
-                            [keyYsDay]= " \"Yd\" hhtt",
+                            [keyJust] = "Just",
+                            [keyToday]= "hh:mmtt",
+                            [keyYsDay]= "\"Yd\" hhtt",
                             [keyWeek] = "ddd hhtt",
-                            [keyYear] = "  MMM dd",
+                            [keyYear] = "MMM dd",
                             [keyElse] = "yyyy MMM",
                         };
                         var cfgFilename = Config.GetFilename()[..^4]
                         + ".date-short.opt";
 
+                        var justText = formatMap[keyJust];
+
                         if (File.Exists(cfgFilename))
                         {
+                            var regPad = new Regex(
+                                @"^pad=(?<Length>\d{1,2}),(?<Pad>left|right)$",
+                                RegexOptions.IgnoreCase);
+                            var regFormat = new Regex(
+                                @"^(?<Name>\w{4,5})(\s=\s|\s=|=\s|=)(?<Format>\w.*)$",
+                                RegexOptions.IgnoreCase);
+
                             var buf2 = new byte[2048];
                             int readCnt = 0;
                             using (var inpFp = File.OpenRead(cfgFilename))
                             {
                                 readCnt = inpFp.Read(buf2);
                             }
-                            var regLength = new Regex(
-                                @"^length(\s=\s|\s=|=\s|=)(?<length>\w.*)$",
-                                RegexOptions.IgnoreCase);
-                            var regPad = new Regex(
-                                @"^pad(\s=\s|\s=|=\s|=)(?<pad>left|right)$",
-                                RegexOptions.IgnoreCase);
-                            var regFormat = new Regex(
-                                @"^(?<name>\w{4,5})(\s=\s|\s=|=\s|=)(?<format>\w.*)$",
-                                RegexOptions.IgnoreCase);
                             foreach (var line in Encoding.UTF8.GetString(buf2,0,readCnt)
                             .Split('\n','\r')
                             .Select((it) => it.Trim())
                             .Where((it) => it.Length > 0)
                             )
                             {
-                                var check = regLength.Match(line);
+                                var check = regPad.Match(line);
                                 if (check.Success)
                                 {
-                                    var lenText = check.Groups["length"].Value.Trim();
+                                    int padLength = 8;
+                                    var lenText = check.Groups["Length"].Value.Trim();
                                     if (int.TryParse(lenText, out int lenThe))
                                     {
-                                        if (lenThe > 3 && lenThe < 21)
+                                        if (lenThe > 3 && lenThe < 41)
                                         {
-                                            maxLength = lenThe;
+                                            padLength = lenThe;
                                         }
                                         else
                                         {
                                             Console.Error.WriteLine(
-                                                $"Loading '{cfgFilename}', 'length' should be between 2 and 20.");
+                                                $"Loading '{cfgFilename}',  '{line}' is invalid");
+                                            continue;
                                         }
                                     }
                                     else
                                     {
                                         Console.Error.WriteLine(
-                                            $"Loading '{cfgFilename}', '{lenText}' is found to 'length'");
+                                            $"Loading '{cfgFilename}',  '{line}' is invalid");
+                                        continue;
                                     }
-                                    continue;
-                                }
-
-                                check = regPad.Match(line);
-                                if (check.Success)
-                                {
-                                    isPadRight = string.Compare(
-                                        "right", check.Groups["pad"].Value,
-                                        ignoreCase: true) == 0;
+                                    if (0 != string.Compare("right",
+                                        check.Groups["Pad"].Value.ToLower()))
+                                    {
+                                        fnPad = (it) => it.PadRight(padLength);
+                                    }
+                                    else
+                                    {
+                                        fnPad = (it) => it.PadLeft(padLength);
+                                    }
                                     continue;
                                 }
 
                                 check = regFormat.Match(line);
                                 if (!check.Success) continue;
-                                var nameThe = check.Groups["name"].Value.ToLower();
-                                var format = check.Groups["format"].Value;
+                                var nameThe = check.Groups["Name"].Value.ToLower();
+                                var format = check.Groups["Format"].Value;
                                 if (string.IsNullOrEmpty(format)) continue;
                                 if (formatMap.ContainsKey(nameThe))
                                 {
@@ -400,6 +400,12 @@ static public partial class Helper
                             // verify formats ..
                             foreach ((string key, string format) in formatMap)
                             {
+                                if (key== keyJust)
+                                {
+                                    justText = fnPad(formatMap[keyJust]);
+                                    continue;
+                                }
+
                                 try
                                 {
                                     DateTime.MinValue.ToString(format);
@@ -417,7 +423,6 @@ static public partial class Helper
                         var withinTwoMinutes = now.AddMinutes(-2);
                         var todayMidnight = new DateTime(now.Year, now.Month, now.Day);
                         var yesterday = todayMidnight.AddDays(-1);
-                        var justText = formatMap[keyJust];
                         var todayFormat = formatMap[keyToday];
                         var ysDayFormat = formatMap[keyYsDay];
                         var weekFormat = formatMap[keyWeek];
@@ -425,31 +430,24 @@ static public partial class Helper
                         var elseFormat = formatMap[keyElse];
                         rtn = (timeThe) =>
                         {
-                            if (timeThe > withinTwoMinutes)
-                            {
-                                return justText;
-                            }
+                            if (timeThe > withinTwoMinutes) return justText;
 
                             if (timeThe > todayMidnight)
-                            {
-                                return timeThe.ToString(todayFormat);
-                            }
+                                return fnPad(timeThe.ToString(todayFormat));
 
                             if (timeThe > yesterday)
-                            {
-                                return timeThe.ToString(ysDayFormat);
-                            }
+                                return fnPad(timeThe.ToString(ysDayFormat));
 
                             if ((now.Year == timeThe.Year) && (now >= timeThe))
                             {
                                 if ((now - timeThe) < TimeSpan.FromDays(6)
                                 && timeThe.DayOfWeek < now.DayOfWeek)
                                 {
-                                    return timeThe.ToString(weekFormat);
+                                    return fnPad(timeThe.ToString(weekFormat));
                                 }
-                                return timeThe.ToString(yearFormat);
+                                return fnPad(timeThe.ToString(yearFormat));
                             }
-                            return timeThe.ToString(elseFormat);
+                            return fnPad(timeThe.ToString(elseFormat));
                         };
                         break;
                     default:
