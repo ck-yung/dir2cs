@@ -309,13 +309,24 @@ static public partial class Helper
                         };
                         break;
                     case "short":
+                        const string keyLength = "length";
+                        const string keyPad = "pad";
+                        const string keyJust = "just";
+                        const string keyToday = "today";
+                        const string keyYsDay = "ysday";
+                        const string keyWeek = "week";
+                        const string keyYear = "year";
+                        const string keyElse = "else";
+                        int maxLength = 8;
+                        bool isPadRight = true;
                         var formatMap = new Dictionary<string, string>()
                         {
-                            ["just"] = "    Just",
-                            ["day"] =  " hh:mmtt",
-                            ["week"] = "ddd hhtt",
-                            ["year"] = "  MMM dd",
-                            ["else"] = "yyyy MMM",
+                            [keyJust] = "    Just",
+                            [keyToday]= " hh:mmtt",
+                            [keyYsDay]= " \"Yd\" hhtt",
+                            [keyWeek] = "ddd hhtt",
+                            [keyYear] = "  MMM dd",
+                            [keyElse] = "yyyy MMM",
                         };
                         var cfgFilename = Config.GetFilename()[..^4]
                         + ".date-short.opt";
@@ -328,15 +339,58 @@ static public partial class Helper
                             {
                                 readCnt = inpFp.Read(buf2);
                             }
-                            var regx = new Regex(
-                                @"^(?<name>\w{3,4})\s*\[(?<format>.*)\]");
+                            var regLength = new Regex(
+                                @"^length(\s=\s|\s=|=\s|=)(?<length>\w.*)$",
+                                RegexOptions.IgnoreCase);
+                            var regPad = new Regex(
+                                @"^pad(\s=\s|\s=|=\s|=)(?<pad>left|right)$",
+                                RegexOptions.IgnoreCase);
+                            var regFormat = new Regex(
+                                @"^(?<name>\w{4,5})(\s=\s|\s=|=\s|=)(?<format>\w.*)$",
+                                RegexOptions.IgnoreCase);
                             foreach (var line in Encoding.UTF8.GetString(buf2,0,readCnt)
-                            .Split('\n','\r'))
+                            .Split('\n','\r')
+                            .Select((it) => it.Trim())
+                            .Where((it) => it.Length > 0)
+                            )
                             {
-                                var chcek = regx.Match(line);
-                                if (!chcek.Success) continue;
-                                var nameThe = chcek.Groups["name"].Value.ToLower();
-                                var format = chcek.Groups["format"].Value;
+                                var check = regLength.Match(line);
+                                if (check.Success)
+                                {
+                                    var lenText = check.Groups["length"].Value.Trim();
+                                    if (int.TryParse(lenText, out int lenThe))
+                                    {
+                                        if (lenThe > 3 && lenThe < 21)
+                                        {
+                                            maxLength = lenThe;
+                                        }
+                                        else
+                                        {
+                                            Console.Error.WriteLine(
+                                                $"Loading '{cfgFilename}', 'length' should be between 2 and 20.");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.Error.WriteLine(
+                                            $"Loading '{cfgFilename}', '{lenText}' is found to 'length'");
+                                    }
+                                    continue;
+                                }
+
+                                check = regPad.Match(line);
+                                if (check.Success)
+                                {
+                                    isPadRight = string.Compare(
+                                        "right", check.Groups["pad"].Value,
+                                        ignoreCase: true) == 0;
+                                    continue;
+                                }
+
+                                check = regFormat.Match(line);
+                                if (!check.Success) continue;
+                                var nameThe = check.Groups["name"].Value.ToLower();
+                                var format = check.Groups["format"].Value;
                                 if (string.IsNullOrEmpty(format)) continue;
                                 if (formatMap.ContainsKey(nameThe))
                                 {
@@ -360,27 +414,37 @@ static public partial class Helper
                         }
 
                         var now = DateTime.Now;
-                        var justText = formatMap["just"];
-                        var dayFormat = formatMap["day"];
-                        var weekFormat = formatMap["week"];
-                        var yearFormat = formatMap["year"];
-                        var elseFormat = formatMap["else"];
+                        var withinTwoMinutes = now.AddMinutes(-2);
+                        var todayMidnight = new DateTime(now.Year, now.Month, now.Day);
+                        var yesterday = todayMidnight.AddDays(-1);
+                        var justText = formatMap[keyJust];
+                        var todayFormat = formatMap[keyToday];
+                        var ysDayFormat = formatMap[keyYsDay];
+                        var weekFormat = formatMap[keyWeek];
+                        var yearFormat = formatMap[keyYear];
+                        var elseFormat = formatMap[keyElse];
                         rtn = (timeThe) =>
                         {
+                            if (timeThe > withinTwoMinutes)
+                            {
+                                return justText;
+                            }
+
+                            if (timeThe > todayMidnight)
+                            {
+                                return timeThe.ToString(todayFormat);
+                            }
+
+                            if (timeThe > yesterday)
+                            {
+                                return timeThe.ToString(ysDayFormat);
+                            }
+
                             if ((now.Year == timeThe.Year) && (now >= timeThe))
                             {
-                                var diffThe = now - timeThe;
-                                if (diffThe < TimeSpan.FromDays(6))
+                                if ((now - timeThe) < TimeSpan.FromDays(6)
+                                && timeThe.DayOfWeek < now.DayOfWeek)
                                 {
-                                    if (now.Month == timeThe.Month
-                                    && now.Day == timeThe.Day)
-                                    {
-                                        if (diffThe < TimeSpan.FromMinutes(2))
-                                        {
-                                            return justText;
-                                        }
-                                        return timeThe.ToString(dayFormat);
-                                    }
                                     return timeThe.ToString(weekFormat);
                                 }
                                 return timeThe.ToString(yearFormat);
