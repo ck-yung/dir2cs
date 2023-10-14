@@ -16,6 +16,7 @@ Else= yyyy MMM<br/>
 
 ## Demo Configuration for zn-tw Display
 <fixed>
+culture=zh-TW<br/>
 pad=7,tab<br/>
 just=剛剛<br/>
 today=tth:mm<br/>
@@ -27,6 +28,7 @@ else=yy年MMM<br/>
 
 ## Demo Configuration for zn-hk Display
 <fixed>
+culture=zh-HK<br/>
 pad=10,tab<br/>
 just=剛剛<br/>
 today=tth:mm<br/>

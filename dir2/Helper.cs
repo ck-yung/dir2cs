@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Globalization;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
@@ -306,34 +307,48 @@ static public partial class Helper
                         };
                         break;
                     case "short":
-                        Func<string, string> fnPad = (it) => it.PadRight(8);
                         const string keyJust = "just";
                         const string keyToday = "today";
                         const string keyYsDay = "ysday";
                         const string keyWeek = "week";
                         const string keyYear = "year";
                         const string keyElse = "else";
-                        var formatMap = new Dictionary<string, string>()
+
+                        Func<string> fnJust = () => "Just".PadRight(8);
+                        var formatMap = new Dictionary<string, Func<DateTime, string>>()
                         {
-                            [keyJust] = "Just",
-                            [keyToday]= "hh:mmtt",
-                            [keyYsDay]= "\"Yd\" hhtt",
-                            [keyWeek] = "ddd hhtt",
-                            [keyYear] = "MMM dd",
-                            [keyElse] = "yyyy MMM",
+                            [keyToday] = (it) =>
+                            it.ToString("hh:mmtt", CultureInfo.InvariantCulture).PadRight(8),
+
+                            [keyYsDay] = (it) =>
+                            it.ToString("\"Yd\" hhtt", CultureInfo.InvariantCulture).PadRight(8),
+
+                            [keyWeek] = (it) =>
+                            it.ToString("ddd hhtt", CultureInfo.InvariantCulture).PadRight(8),
+
+                            [keyYear] = (it) =>
+                            it.ToString("MMM ddd", CultureInfo.InvariantCulture).PadRight(8),
+
+                            [keyElse] = (it) =>
+                            it.ToString("yyyy MMM", CultureInfo.InvariantCulture).PadRight(8),
                         };
                         var cfgFilename = Config.GetFilename()[..^4]
                         + ".date-short.opt";
 
-                        var justText = formatMap[keyJust];
-
                         if (File.Exists(cfgFilename))
                         {
+                            var padLength = 8;
+                            var isTabEnd = false;
+                            var cultureThe = CultureInfo.InvariantCulture;
+
                             var regPadTab = new Regex(
                                 @"^pad=(?<Length>\d{1,2})(?<Tab>(|,tab))$",
                                 RegexOptions.IgnoreCase);
                             var regFormat = new Regex(
                                 @"^(?<Name>\w{4,5})(\s=\s|\s=|=\s|=)(?<Format>\w.*)$",
+                                RegexOptions.IgnoreCase);
+                            var regCulture = new Regex(
+                                @"^culture=(?<Culture>\w.*)$",
                                 RegexOptions.IgnoreCase);
 
                             var buf2 = new byte[2048];
@@ -351,7 +366,6 @@ static public partial class Helper
                                 var check = regPadTab.Match(line);
                                 if (check.Success)
                                 {
-                                    int padLength = 8;
                                     var lenText = check.Groups["Length"].Value;
                                     if (int.TryParse(lenText, out int lenThe))
                                     {
@@ -372,44 +386,68 @@ static public partial class Helper
                                             $"Loading '{cfgFilename}',  '{line}' is invalid");
                                         continue;
                                     }
-                                    if (string.IsNullOrEmpty(check.Groups["Tab"].Value))
-                                    {
-                                        fnPad = (it) => it.PadRight(padLength);
-                                    }
-                                    else
-                                    {
-                                        fnPad = (it) => it.PadRight(padLength) + "\t";
-                                    }
+                                    isTabEnd = !string.IsNullOrEmpty(check.Groups["Tab"].Value);
                                     continue;
                                 } // regPadTab.Match().Success
+
+                                check = regCulture.Match(line);
+                                if (check.Success)
+                                {
+                                    var cultureFound = check.Groups["Culture"].Value;
+                                    try
+                                    {
+                                        cultureThe = CultureInfo
+                                        .CreateSpecificCulture(cultureFound);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.Error.WriteLine(
+                                            $"Loading '{cfgFilename}', key=culture, value=[{cultureFound}]");
+                                        Console.Error.WriteLine($"{ex.GetType()}: {ex.Message}");
+                                    }
+                                    continue;
+                                } // regCulture.Match().Success
 
                                 check = regFormat.Match(line);
                                 if (!check.Success) continue;
                                 var nameThe = check.Groups["Name"].Value.ToLower();
-                                var format = check.Groups["Format"].Value;
-                                if (string.IsNullOrEmpty(format)) continue;
-                                if (formatMap.ContainsKey(nameThe))
+                                var dateFmtThe = check.Groups["Format"].Value;
+                                if (string.IsNullOrEmpty(dateFmtThe)) continue;
+                                if (nameThe == keyJust)
                                 {
-                                    formatMap[nameThe] = format;
+                                    if (isTabEnd)
+                                    {
+                                        fnJust = () => dateFmtThe.PadRight(padLength) + "\t";
+                                    }
+                                    else
+                                    {
+                                        fnJust = () => dateFmtThe.PadRight(padLength);
+                                    }
+                                }
+                                else if (formatMap.ContainsKey(nameThe))
+                                {
+                                    if (isTabEnd)
+                                    {
+                                        formatMap[nameThe] = (it) =>
+                                        it.ToString(dateFmtThe, cultureThe).PadRight(padLength) + "\t";
+                                    }
+                                    else
+                                    {
+                                        formatMap[nameThe] = (it) =>
+                                        it.ToString(dateFmtThe, cultureThe).PadRight(padLength);
+                                    }
                                 }
                             }
                             // verify formats ..
-                            foreach ((string key, string format) in formatMap)
+                            foreach ((string key, var fnFmt) in formatMap)
                             {
-                                if (key== keyJust)
-                                {
-                                    justText = fnPad(formatMap[keyJust]);
-                                    continue;
-                                }
-
                                 try
                                 {
-                                    DateTime.MinValue.ToString(format);
+                                    fnFmt(DateTime.MinValue);
                                 }
                                 catch (Exception ex)
                                 {
-                                    Console.Error.WriteLine(
-                                        $"Loading '{cfgFilename}', key='{key}', format=[{format}]");
+                                    Console.Error.WriteLine($"Loading '{cfgFilename}', key='{key}'");
                                     Console.Error.WriteLine($"{ex.GetType()}: {ex.Message}");
                                 }
                             }
@@ -419,31 +457,29 @@ static public partial class Helper
                         var withinTwoMinutes = now.AddMinutes(-2);
                         var todayMidnight = new DateTime(now.Year, now.Month, now.Day);
                         var yesterday = todayMidnight.AddDays(-1);
-                        var todayFormat = formatMap[keyToday];
-                        var ysDayFormat = formatMap[keyYsDay];
-                        var weekFormat = formatMap[keyWeek];
-                        var yearFormat = formatMap[keyYear];
-                        var elseFormat = formatMap[keyElse];
+                        var fnToday = formatMap[keyToday];
+                        var fnYsDay = formatMap[keyYsDay];
+                        var fnWeek = formatMap[keyWeek];
+                        var fnYear = formatMap[keyYear];
+                        var fnElse = formatMap[keyElse];
                         rtn = (timeThe) =>
                         {
-                            if (timeThe > withinTwoMinutes) return justText;
+                            if (timeThe > withinTwoMinutes) return fnJust();
 
-                            if (timeThe > todayMidnight)
-                                return fnPad(timeThe.ToString(todayFormat));
+                            if (timeThe > todayMidnight) return fnToday(timeThe);
 
-                            if (timeThe > yesterday)
-                                return fnPad(timeThe.ToString(ysDayFormat));
+                            if (timeThe > yesterday) return fnYsDay(timeThe);
 
                             if ((now.Year == timeThe.Year) && (now >= timeThe))
                             {
                                 if ((now - timeThe) < TimeSpan.FromDays(6)
                                 && timeThe.DayOfWeek < now.DayOfWeek)
                                 {
-                                    return fnPad(timeThe.ToString(weekFormat));
+                                    return fnWeek(timeThe);
                                 }
-                                return fnPad(timeThe.ToString(yearFormat));
+                                return fnYear(timeThe);
                             }
-                            return fnPad(timeThe.ToString(elseFormat));
+                            return fnElse(timeThe);
                         };
                         break;
                     default:
