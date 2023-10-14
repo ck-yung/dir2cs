@@ -1,11 +1,8 @@
 ﻿using System.Collections.Immutable;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using static dir2.MyOptions;
 
 namespace dir2;
@@ -332,8 +329,8 @@ static public partial class Helper
 
                         if (File.Exists(cfgFilename))
                         {
-                            var regPad = new Regex(
-                                @"^pad=(?<Length>\d{1,2}),(?<Pad>left|right)$",
+                            var regPadTab = new Regex(
+                                @"^pad=(?<Length>\d{1,2})(?<Tab>(|,tab))$",
                                 RegexOptions.IgnoreCase);
                             var regFormat = new Regex(
                                 @"^(?<Name>\w{4,5})(\s=\s|\s=|=\s|=)(?<Format>\w.*)$",
@@ -351,11 +348,11 @@ static public partial class Helper
                             .Where((it) => it.Length > 0)
                             )
                             {
-                                var check = regPad.Match(line);
+                                var check = regPadTab.Match(line);
                                 if (check.Success)
                                 {
                                     int padLength = 8;
-                                    var lenText = check.Groups["Length"].Value.Trim();
+                                    var lenText = check.Groups["Length"].Value;
                                     if (int.TryParse(lenText, out int lenThe))
                                     {
                                         if (lenThe > 3 && lenThe < 41)
@@ -375,17 +372,16 @@ static public partial class Helper
                                             $"Loading '{cfgFilename}',  '{line}' is invalid");
                                         continue;
                                     }
-                                    if (0 != string.Compare("right",
-                                        check.Groups["Pad"].Value.ToLower()))
+                                    if (string.IsNullOrEmpty(check.Groups["Tab"].Value))
                                     {
                                         fnPad = (it) => it.PadRight(padLength);
                                     }
                                     else
                                     {
-                                        fnPad = (it) => it.PadLeft(padLength);
+                                        fnPad = (it) => it.PadRight(padLength) + "\t";
                                     }
                                     continue;
-                                }
+                                } // regPadTab.Match().Success
 
                                 check = regFormat.Match(line);
                                 if (!check.Success) continue;

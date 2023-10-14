@@ -14,6 +14,8 @@ or
 
   export "dir2=--sort date --date-format yyyy-MMM-ddTHH:mm:ss"
 
+  export "dir2=--sort date --date-format yyyy-MMM-dd%20HH:mm:ss"
+
 Important remark:
 * The config value in envr var dir2 CANNOT contain space.
 * bad *    set dir2=--date-format MMM dd, yyyy
