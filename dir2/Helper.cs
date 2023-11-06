@@ -562,18 +562,24 @@ static public partial class Helper
         return false;
     }
 
-    static public bool TryParseDateDelta(string arg, out TimeSpan result)
-    {
-        result = TimeSpan.Zero;
-        return false;
-    }
-
     static public string ToKiloUnit(long arg)
     {
         var units = new char[] { 'T', 'G', 'M', 'K', ' ' };
         string toKilo(float arg2, int index)
         {
             if (arg2 < 10_000.0F) return $"{arg2,4:F0}{units[index - 1]} ";
+            if (index == 1) return $"{arg2,4:F0}{units[0]} ";
+            return toKilo((arg2 + 512) / 1024.0F, index - 1);
+        }
+        return toKilo(arg, units.Length);
+    }
+
+    static public string ToExtraShortKiloUnit(long arg)
+    {
+        var units = new char[] { 'T', 'G', 'M', 'K', ' ' };
+        string toKilo(float arg2, int index)
+        {
+            if (arg2 < 520.0F) return $"{arg2,4:F0}{units[index - 1]} ";
             if (index == 1) return $"{arg2,4:F0}{units[0]} ";
             return toKilo((arg2 + 512) / 1024.0F, index - 1);
         }

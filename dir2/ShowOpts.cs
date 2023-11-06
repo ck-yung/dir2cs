@@ -234,7 +234,7 @@ static internal class Show
 
     static public readonly IInovke<long, string> LengthFormatOpt =
         new ParseInvoker<long, string>(name: "--size-format",
-            help: "short | comma;WIDTH",
+            help: "short | +short | comma;WIDTH",
             init: (it) => $"{it,8} ", resolve: (parser, args) =>
             {
                 var pattern = @"\d+|comma|short";
@@ -261,6 +261,14 @@ static internal class Show
                     if (aa.Length > 1)
                         throw new ArgumentException($"Too many values to {parser.Name}");
                     parser.SetImplementation((val) => Helper.ToKiloUnit(val));
+                    return;
+                }
+
+                if (aa.Contains("+short"))
+                {
+                    if (aa.Length > 1)
+                        throw new ArgumentException($"Too many values to {parser.Name}");
+                    parser.SetImplementation((val) => Helper.ToExtraShortKiloUnit(val));
                     return;
                 }
 
