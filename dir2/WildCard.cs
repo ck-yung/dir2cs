@@ -143,14 +143,22 @@ static public class Wild
         return Array.Empty<string>();
     }
 
-    record WithData(bool IsSize, long Size, DateTime Date)
+    enum DataType
+    {
+        Invalid,
+        Size,
+        DateTime,
+        DeltaDate, // ** TODO **
+    };
+
+    record WithData(DataType Type, long Size, DateTime Date)
     {
         public WithData(long size)
-            : this(IsSize: true, Size: size, Date: DateTime.MinValue)
+            : this(DataType.Size, Size: size, Date: DateTime.MinValue)
         { }
 
         public WithData(DateTime date)
-            : this(IsSize: false, Size: 0, Date: date)
+            : this(DataType.DateTime, Size: 0, Date: date)
         { }
 
         static public WithData Parse(string name, string arg)
@@ -171,23 +179,43 @@ static public class Wild
                 return new WithData(valueDate);
             }
 
-            if (hintSizeDate.Contains(arg.ToUpper()))
+            if (hintSizeDate.ContainsKey(arg.ToLower()))
             {
-                Console.Error.WriteLine($"""
-                                Command line option could be
-                                  {name} 123
-                                  {name} 789k
-                                  {name}  59min
-                                  {name}   7day
-                                  {name} 2019-06-12T15:20
-                                """);
+                Console.Error.WriteLine("Command line option could be");
+                foreach (var hintThe in hintSizeDate[arg.ToLower()])
+                {
+                    Console.Error.WriteLine($"  {name} {hintThe}");
+                }
+                throw new ArgumentException(string.Empty);
             }
 
             throw new ArgumentException($"'{arg}' is bad to {name}");
         }
     }
 
-    static readonly string[] hintSizeDate = new string[] { "SIZE", "DATE" };
+    static readonly ImmutableDictionary<string, string[]> hintSizeDate =
+        new Dictionary<string, string[]>
+        {
+            ["size"] = new string[]
+            {
+                "123",
+                "23k",
+                "34m",
+                "45g",
+                "6t",
+            },
+            ["date"] = new string[]
+            {
+                "2minute",
+                "3hour",
+                "4hr",
+                "5day",
+                "20190614",
+                "2019-06-13",
+                "2019-06-12T15:31:52",
+                "2019-06-12T15:32",
+            },
+        }.ToImmutableDictionary();
 
     static internal Func<long, bool> IsMatchWithinSize
     { get; private set; } = Always<long>.True;
@@ -201,13 +229,13 @@ static public class Wild
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct()
                 .Select((it) => (WithData.Parse(parser.Name, it),it))
-                .GroupBy((it) => it.Item1.IsSize)
+                .GroupBy((it) => it.Item1.Type)
                 .ToImmutableDictionary(
                     (grp) => grp.Key, (grp) => grp.AsEnumerable());
 
-                if (aa.ContainsKey(true))
+                if (aa.ContainsKey(DataType.Size))
                 {
-                    var sizeWith = aa[true].Take(2).ToArray();
+                    var sizeWith = aa[DataType.Size].Take(2).ToArray();
                     if (sizeWith.Length > 1)
                     {
                         throw new ArgumentException(
@@ -217,9 +245,9 @@ static public class Wild
                     IsMatchWithinSize = (size) => (size <= sizeMax);
                 }
 
-                if (aa.ContainsKey(false))
+                if (aa.ContainsKey(DataType.DateTime))
                 {
-                    var dateWithin = aa[false].Take(2).ToArray();
+                    var dateWithin = aa[DataType.DateTime].Take(2).ToArray();
                     if (dateWithin.Length > 1)
                     {
                         throw new ArgumentException(
@@ -236,19 +264,19 @@ static public class Wild
     static internal Func<DateTime, bool> IsMatchNotWithinDate
     { get; private set; } = Always<DateTime>.True;
 
-    static internal readonly IParse NotWithinOpt = new SimpleParser(name: "--not-within",
+    static internal readonly IParse NotWithinOpt = new ComplexParser(name: "--not-within",
             help: "SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, hour, or day",
-            resolve: (parser, args) =>
+            resolve: (parser, args, argsOther) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct()
                 .Select((it) => (WithData.Parse(parser.Name, it), it))
-                .GroupBy((it) => it.Item1.IsSize)
+                .GroupBy((it) => it.Item1.Type)
                 .ToImmutableDictionary(
                     (grp) => grp.Key, (grp) => grp.AsEnumerable());
 
-                if (aa.ContainsKey(true))
+                if (aa.ContainsKey(DataType.Size))
                 {
-                    var sizeNotWith = aa[true].Take(2).ToArray();
+                    var sizeNotWith = aa[DataType.Size].Take(2).ToArray();
                     if (sizeNotWith.Length > 1)
                     {
                         throw new ArgumentException(
@@ -258,9 +286,9 @@ static public class Wild
                     IsMatchNotWithinSize = (size) => (size > sizeMin);
                 }
 
-                if (aa.ContainsKey(false))
+                if (aa.ContainsKey(DataType.DateTime))
                 {
-                    var dateNotWithin = aa[false].Take(2).ToArray();
+                    var dateNotWithin = aa[DataType.DateTime].Take(2).ToArray();
                     if (dateNotWithin.Length > 1)
                     {
                         throw new ArgumentException(

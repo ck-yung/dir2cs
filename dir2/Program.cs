@@ -16,6 +16,14 @@ public class Program
 		{
 			RunMain(args);
 		}
+        catch (ArgumentException aee)
+        {
+            var messageThe = aee.Message;
+            if (!string.IsNullOrEmpty(messageThe))
+            {
+                Console.WriteLine(messageThe);
+            }
+        }
 		catch (Exception ee)
 		{
             if (GetExeEnvr().Contains(DumpExceptionOpt))
