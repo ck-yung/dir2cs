@@ -524,8 +524,9 @@ static public partial class Helper
         {
             ["minute"] = new DateParse(@"^(?<minute>\d+)min$", (it) => TimeSpan.FromMinutes(it)),
             ["hour"] = new DateParse(@"^(?<hour>\d+)hour$", (it) => TimeSpan.FromHours(it)),
-            ["hour2"] = new DateParse(@"^(?<hour2>\d+)hr$", (it) => TimeSpan.FromHours(it)),
+            ["hr"] = new DateParse(@"^(?<hr>\d+)hr$", (it) => TimeSpan.FromHours(it)),
             ["day"] = new DateParse(@"^(?<day>\d+)day$", (it) => TimeSpan.FromDays(it)),
+            ["year"] = new DateParse(@"^(?<year>\d+)year$", (it) => TimeSpan.FromDays(365*it)),
         };
 
         foreach (var (keyThe, parseThe) in pattern3)
@@ -558,6 +559,12 @@ static public partial class Helper
             }
         }
 
+        return false;
+    }
+
+    static public bool TryParseDateDelta(string arg, out TimeSpan result)
+    {
+        result = TimeSpan.Zero;
         return false;
     }
 

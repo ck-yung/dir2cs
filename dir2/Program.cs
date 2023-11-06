@@ -1,11 +1,7 @@
 ﻿using System.Collections.Immutable;
 using static dir2.MyOptions;
 using static dir2.Helper;
-using System.Linq;
-using dir2;
 using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
 
 namespace dir2;
 public class Program
@@ -18,10 +14,13 @@ public class Program
 		}
         catch (ArgumentException aee)
         {
-            var messageThe = aee.Message;
-            if (!string.IsNullOrEmpty(messageThe))
+            if (GetExeEnvr().Contains(DumpExceptionOpt))
             {
-                Console.WriteLine(messageThe);
+                Console.WriteLine(aee);
+            }
+            else
+            {
+                Console.WriteLine(aee.Message);
             }
         }
 		catch (Exception ee)

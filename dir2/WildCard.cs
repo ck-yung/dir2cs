@@ -1,6 +1,8 @@
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace dir2;
 
@@ -148,21 +150,75 @@ static public class Wild
         Invalid,
         Size,
         DateTime,
-        DeltaDate, // ** TODO **
+        DeltaDate,
     };
 
-    record WithData(DataType Type, long Size, DateTime Date)
+    record WithData(DataType Type, long Size, DateTime Date, TimeSpan DateDelta)
     {
         public WithData(long size)
-            : this(DataType.Size, Size: size, Date: DateTime.MinValue)
+            : this(DataType.Size, Size: size, Date: DateTime.MinValue
+                  , DateDelta: TimeSpan.Zero)
         { }
 
         public WithData(DateTime date)
-            : this(DataType.DateTime, Size: 0, Date: date)
+            : this(DataType.DateTime, Size: 0, Date: date, DateDelta: TimeSpan.Zero)
+        { }
+        public WithData(TimeSpan dateDelta)
+            : this(DataType.DeltaDate, Size: 0, Date: DateTime.MinValue
+                  , DateDelta: dateDelta)
         { }
 
-        static public WithData Parse(string name, string arg)
+        static ImmutableDictionary<string, (Regex, Func<int, TimeSpan>)> TryParseTimeSpans
+            = new Dictionary<string, (Regex, Func<int, TimeSpan>)>
+            {
+                ["year"] = (new Regex(@"^\+(?<year>\d+)year$", RegexOptions.Compiled),
+                (it) => TimeSpan.FromDays(365 * it)),
+                ["day"] = (new Regex(@"^\+(?<day>\d+)day$", RegexOptions.Compiled),
+                (it) => TimeSpan.FromDays(it)),
+                ["hour"] = (new Regex(@"^\+(?<hour>\d+)hour$", RegexOptions.Compiled),
+                (it) => TimeSpan.FromHours(it)),
+                ["hr"] = (new Regex(@"^\+(?<hr>\d+)hr$", RegexOptions.Compiled),
+                (it) => TimeSpan.FromHours(it)),
+                ["min"] = (new Regex(@"^\+(?<min>\d+)min$", RegexOptions.Compiled),
+                (it) => TimeSpan.FromMinutes(it)),
+            }.ToImmutableDictionary();
+
+        static public WithData Parse(string name, string arg, bool hasDateDelta)
         {
+            ImmutableDictionary<string, string[]> hintSizeDate =
+                new Dictionary<string, string[]>
+                {
+                    ["size"] = new string[]
+                    {
+                        "123",
+                        "23k",
+                        "34m",
+                        "45g",
+                        "6t",
+                    },
+                    ["date"] = new string[]
+                    {
+                        "2minute",
+                        "3hour",
+                        "4hr",
+                        "5day",
+                        "6year",
+                        "20140928",
+                        "2019-03-31",
+                        "2019-06-12T07:46",
+                        "2019-06-30T21:21:32",
+                    },
+                }.ToImmutableDictionary();
+
+            string[] hintNotWithinDate = new string[]
+            {
+                "+5year",
+                "+6day",
+                "+7hour",
+                "+8hr",
+                "+9min",
+            };
+
             long valueThe;
             if (long.TryParse(arg, out valueThe))
             {
@@ -179,6 +235,18 @@ static public class Wild
                 return new WithData(valueDate);
             }
 
+            if (hasDateDelta)
+            {
+                foreach (var nameThe in TryParseTimeSpans.Keys)
+                {
+                    (var checkThe, var toDelta) = TryParseTimeSpans[nameThe];
+                    var checkResult = checkThe.Match(arg);
+                    if (false == checkResult.Success) continue;
+                    var intThe = int.Parse(checkResult.Groups[nameThe].Value);
+                    return new WithData(toDelta(intThe));
+                }
+            }
+
             if (hintSizeDate.ContainsKey(arg.ToLower()))
             {
                 Console.Error.WriteLine("Command line option could be");
@@ -186,36 +254,19 @@ static public class Wild
                 {
                     Console.Error.WriteLine($"  {name} {hintThe}");
                 }
+                if (hasDateDelta && 0==string.Compare(arg,"date",ignoreCase:true))
+                {
+                    foreach (var hintThe in hintNotWithinDate)
+                    {
+                        Console.Error.WriteLine($"  {name} {hintThe}");
+                    }
+                }
                 throw new ArgumentException(string.Empty);
             }
 
             throw new ArgumentException($"'{arg}' is bad to {name}");
         }
     }
-
-    static readonly ImmutableDictionary<string, string[]> hintSizeDate =
-        new Dictionary<string, string[]>
-        {
-            ["size"] = new string[]
-            {
-                "123",
-                "23k",
-                "34m",
-                "45g",
-                "6t",
-            },
-            ["date"] = new string[]
-            {
-                "2minute",
-                "3hour",
-                "4hr",
-                "5day",
-                "20190614",
-                "2019-06-13",
-                "2019-06-12T15:31:52",
-                "2019-06-12T15:32",
-            },
-        }.ToImmutableDictionary();
 
     static internal Func<long, bool> IsMatchWithinSize
     { get; private set; } = Always<long>.True;
@@ -228,33 +279,39 @@ static public class Wild
             resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct()
-                .Select((it) => (WithData.Parse(parser.Name, it),it))
+                .Select((it) => (WithData.Parse(parser.Name, it, hasDateDelta:false), it))
                 .GroupBy((it) => it.Item1.Type)
                 .ToImmutableDictionary(
                     (grp) => grp.Key, (grp) => grp.AsEnumerable());
 
-                if (aa.ContainsKey(DataType.Size))
+                foreach (var typeThe in aa.Keys)
                 {
-                    var sizeWith = aa[DataType.Size].Take(2).ToArray();
-                    if (sizeWith.Length > 1)
+                    switch (typeThe)
                     {
-                        throw new ArgumentException(
-                            $"Too many Size '{sizeWith[0].Item2}', '{sizeWith[1].Item2}' to {parser.Name}");
+                        case DataType.Size:
+                            var sizeWith = aa[typeThe].Take(2).ToArray();
+                            if (sizeWith.Length > 1)
+                            {
+                                throw new ArgumentException(
+                                    $"Too many Size '{sizeWith[0].Item2}', '{sizeWith[1].Item2}' to {parser.Name}");
+                            }
+                            var sizeMax = sizeWith[0].Item1.Size;
+                            IsMatchWithinSize = (size) => (size <= sizeMax);
+                            break;
+                        case DataType.DateTime:
+                            var dateWithin = aa[typeThe].Take(2).ToArray();
+                            if (dateWithin.Length > 1)
+                            {
+                                throw new ArgumentException(
+                                    $"Too many DateTime '{dateWithin[0].Item2}', '{dateWithin[1].Item2}' to {parser.Name}");
+                            }
+                            var dateMax = dateWithin[0].Item1.Date;
+                            IsMatchWithinDate = (date) => (date >= dateMax);
+                            break;
+                        default:
+                            var valueThe = aa[typeThe].FirstOrDefault().Item2;
+                            throw new ArgumentException($"{valueThe} is bad to {parser.Name}");
                     }
-                    var sizeMax = sizeWith[0].Item1.Size;
-                    IsMatchWithinSize = (size) => (size <= sizeMax);
-                }
-
-                if (aa.ContainsKey(DataType.DateTime))
-                {
-                    var dateWithin = aa[DataType.DateTime].Take(2).ToArray();
-                    if (dateWithin.Length > 1)
-                    {
-                        throw new ArgumentException(
-                            $"Too many DateTime '{dateWithin[0].Item2}', '{dateWithin[1].Item2}' to {parser.Name}");
-                    }
-                    var dateMax = dateWithin[0].Item1.Date;
-                    IsMatchWithinDate = (date) => (date >= dateMax);
                 }
             });
 
@@ -269,7 +326,7 @@ static public class Wild
             resolve: (parser, args, argsOther) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct()
-                .Select((it) => (WithData.Parse(parser.Name, it), it))
+                .Select((it) => (WithData.Parse(parser.Name, it, hasDateDelta: true), it))
                 .GroupBy((it) => it.Item1.Type)
                 .ToImmutableDictionary(
                     (grp) => grp.Key, (grp) => grp.AsEnumerable());
@@ -286,16 +343,51 @@ static public class Wild
                     IsMatchNotWithinSize = (size) => (size > sizeMin);
                 }
 
-                if (aa.ContainsKey(DataType.DateTime))
+                switch (aa.ContainsKey(DataType.DateTime), aa.ContainsKey(DataType.DeltaDate))
                 {
-                    var dateNotWithin = aa[DataType.DateTime].Take(2).ToArray();
-                    if (dateNotWithin.Length > 1)
-                    {
+                    case (false, false):
+                        break;
+                    case (true, false):
+                        var dateNotWithin = aa[DataType.DateTime].Take(2).ToArray();
+                        if (dateNotWithin.Length > 1)
+                        {
+                            throw new ArgumentException(
+                                $"Too many DateTime '{dateNotWithin[0].Item2}', '{dateNotWithin[1].Item2}' to {parser.Name}");
+                        }
+                        var dateMin = dateNotWithin[0].Item1.Date;
+                        IsMatchNotWithinDate = (date) => (date < dateMin);
+                        break;
+                    case (false, true):
+                        var deltaFound = aa[DataType.DeltaDate].Take(2).ToArray();
+                        if (deltaFound.Length > 1)
+                        {
+                            throw new ArgumentException(
+                                $"Too many DateTime '{deltaFound[0].Item2}', '{deltaFound[1].Item2}' to {parser.Name}");
+                        }
+                        var deltaThe = deltaFound[0].Item1.DateDelta;
+                        int ndxMax = argsOther.Length;
+                        int ndxThe = 0;
+                        bool isFound = false;
+                        for (; (ndxThe+1) < ndxMax; ndxThe+=1)
+                        {
+                            if (argsOther[ndxThe] != "--within") continue;
+                            var a4 = WithData.Parse("_", argsOther[ndxThe + 1], hasDateDelta: false);
+                            if (a4.Type == DataType.DateTime)
+                            {
+                                var notWithinThe = a4.Date.Add(deltaThe);
+                                IsMatchNotWithinDate = (date) => (date < notWithinThe);
+                                isFound = true;
+                                break;
+                            }
+                        }
+                        if (isFound == false)
+                        {
+                            throw new ArgumentException("Option --within or -w is expected but not found!");
+                        }
+                        break;
+                    default:
                         throw new ArgumentException(
-                            $"Too many DateTime '{dateNotWithin[0].Item2}', '{dateNotWithin[1].Item2}' to {parser.Name}");
-                    }
-                    var dateMin = dateNotWithin[0].Item1.Date;
-                    IsMatchNotWithinDate = (date) => (date < dateMin);
+                            $"Too many values to {parser.Name}");
                 }
             });
 
