@@ -1,7 +1,6 @@
 ﻿using System.Collections.Immutable;
 using static dir2.MyOptions;
 using static dir2.Helper;
-using System.Diagnostics;
 
 namespace dir2;
 public class Program
@@ -49,7 +48,7 @@ public class Program
     };
 
     static Action<string> MyDebugWrite { get; set; }
-        = (msg) => Debug.WriteLine(msg);
+        = (msg) => System.Diagnostics.Debug.WriteLine(msg);
 
     static bool RunMain(string[] mainArgs)
 	{

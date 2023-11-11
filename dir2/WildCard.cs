@@ -1,8 +1,6 @@
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace dir2;
 
@@ -268,6 +266,11 @@ static public class Wild
         }
     }
 
+    static Func<TimeSpan, string, DateTime> AssignNotWithinDate { get; set; } = (_, deltaText) =>
+    {
+        throw new ArgumentException($"Option '--within' is required for '--not-wihtin {deltaText}' !");
+    };
+
     static internal Func<long, bool> IsMatchWithinSize
     { get; private set; } = Always<long>.True;
 
@@ -307,6 +310,7 @@ static public class Wild
                             }
                             var dateMax = dateWithin[0].Item1.Date;
                             IsMatchWithinDate = (date) => (date >= dateMax);
+                            AssignNotWithinDate = (delta, _) => dateMax.Add(delta);
                             break;
                         default:
                             var valueThe = aa[typeThe].FirstOrDefault().Item2;
@@ -321,9 +325,9 @@ static public class Wild
     static internal Func<DateTime, bool> IsMatchNotWithinDate
     { get; private set; } = Always<DateTime>.True;
 
-    static internal readonly IParse NotWithinOpt = new ComplexParser(name: "--not-within",
+    static internal readonly IParse NotWithinOpt = new SimpleParser(name: "--not-within",
             help: "SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, hour, or day",
-            resolve: (parser, args, argsOther) =>
+            resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct()
                 .Select((it) => (WithData.Parse(parser.Name, it, hasDateDelta: true), it))
@@ -365,25 +369,8 @@ static public class Wild
                                 $"Too many DateTime '{deltaFound[0].Item2}', '{deltaFound[1].Item2}' to {parser.Name}");
                         }
                         var deltaThe = deltaFound[0].Item1.DateDelta;
-                        int ndxMax = argsOther.Length;
-                        int ndxThe = 0;
-                        bool isFound = false;
-                        for (; (ndxThe+1) < ndxMax; ndxThe+=1)
-                        {
-                            if (argsOther[ndxThe] != "--within") continue;
-                            var a4 = WithData.Parse("_", argsOther[ndxThe + 1], hasDateDelta: false);
-                            if (a4.Type == DataType.DateTime)
-                            {
-                                var notWithinThe = a4.Date.Add(deltaThe);
-                                IsMatchNotWithinDate = (date) => (date < notWithinThe);
-                                isFound = true;
-                                break;
-                            }
-                        }
-                        if (isFound == false)
-                        {
-                            throw new ArgumentException("Option --within or -w is expected but not found!");
-                        }
+                        var dateMin2 = AssignNotWithinDate(deltaThe, deltaFound[0].Item2);
+                        IsMatchNotWithinDate = (date) => (date < dateMin2);
                         break;
                     default:
                         throw new ArgumentException(
