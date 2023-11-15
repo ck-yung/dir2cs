@@ -278,7 +278,7 @@ static public class Wild
     { get; private set; } = Always<DateTime>.True;
 
     static internal readonly IParse WithinOpt = new SimpleParser(name: "--within",
-            help: "SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, hour, or day",
+            help: "SIZE | DATE",
             resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct()
@@ -326,7 +326,7 @@ static public class Wild
     { get; private set; } = Always<DateTime>.True;
 
     static internal readonly IParse NotWithinOpt = new SimpleParser(name: "--not-within",
-            help: "SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, hour, or day",
+            help: "SIZE | DATE",
             resolve: (parser, args) =>
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct()

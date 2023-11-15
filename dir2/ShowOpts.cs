@@ -245,11 +245,12 @@ static internal class Show
                     {
                         if (a2.ToUpper().Equals("WIDTH"))
                         {
-                            Console.Error.WriteLine($"""
+                            throw new ArgumentException($"""
                                 Command line option could be
                                   --size-format 12
-                                or
+                                  --size-format comma,12
                                   --size-format short
+                                  --size-format +short
                                 """);
                         }
                         throw new ArgumentException($"'{a2}' is bad to {parser.Name}");

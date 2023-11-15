@@ -4,7 +4,7 @@ dir2 will load the following options from config file
 --regex
 --utf8
 --case-sensitive
---reverse
+--reverse      CONFIG
 --sort         CONFIG
 --size-format  CONFIG
 --count-format CONFIG
@@ -12,6 +12,9 @@ dir2 will load the following options from config file
 --hidden       CONFIG
 --excl         CONFIG
 --excl-dir     CONFIG
+--link         CONFIG
+--hide         CONFIG
+--show         CONFIG
 
 No shortcut will be referred.
 

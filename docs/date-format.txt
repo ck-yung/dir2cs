@@ -1,4 +1,5 @@
 opt:
+  --date-format short
   --date-format FORMAT
  
 FORMAT is a combination of:
@@ -20,12 +21,14 @@ For example,                               Sample result
 
 
 Remark:
+1. Please refer to
+   https://github.com/ck-yung/dir2cs/blob/main/docs/dir2.date-short.opt.md
+   for option '--date-format short'.
+2. Enclosing by double quotation mark is required if the format string contains any space in command line.
 
-1. Enclosing by double quotation mark is required if the format string contains any space in command line.
+3. It is allowed to encode a space as %20
 
-2. It is allowed to encode a space as %20
-
-3. The whole environment variable assignment usually is required to be enclosed by quotation mark.
+4. The whole environment variable assignment usually is required to be enclosed by quotation mark.
  
    For example, on non-Windows OS,
      export dir2=--date-format MMM dd --sort size"

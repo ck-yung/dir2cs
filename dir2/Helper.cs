@@ -82,24 +82,28 @@ static public partial class Helper
         Syntax: dir2 -??
         Syntax: dir2 [OPTION ..] [DIR] [WILD ..]
         Frequently used options:
-            --size-format     short | WIDTH
-                              e.g --size-format short
+            --size-format     short | +short | WIDTH
+                              e.g --size-format +short
                    --excl -x  EXCL-WILD[;EXCL-WILD ..]
                               e.g. -x *.tmp;*.temp
                --excl-dir -X  EXCL-WILD[;EXCL-WILD ..]
                    --sort -o  off | name | size | date | ext | count | last
                               e.g. -o size
                     --sum     ext | dir | +dir | year
-                 --within -w  SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, day, or hour
-                              e.g. -w 100m -w 3day
-             --not-within -W  SIZE | DATE   where SIZE ends with k, m, or g; DATE ends with min, day, or hour
-        Frequently used shortcuts:
+                 --within -w  SIZE | DATE
+                              e.g. -w 100m -w 30day
+             --not-within -W  SIZE | DATE
+                              e.g. -W 10k -w 3day
+                              e.g. -w +7day
+         Frequently used shortcuts:
                           -R  => --dir tree
          Scan all sub dir -s  => --sub all
          Brief path name  -b  => --total off --hide date,size,count,mode,owner,link
          Dir only         -d  => --dir only
          File only        -f  => --dir off
         Envir 'dir2' will be parsed before config file is involved.
+        Please refer to below links for '--size-format'
+        https://github.com/ck-yung/dir2cs/blob/main/docs/size-format.txt
         """;
 
     static public string GetSyntax()
@@ -137,6 +141,11 @@ static public partial class Helper
             rtn.AppendLine(textThe.ToString());
         }
         rtn.AppendLine($"Envir '{nameof(dir2)}' will be parsed before config file is involved.");
+        rtn.AppendLine("""
+            Please refer to below links for '--size-format' and '--date-format'
+            https://github.com/ck-yung/dir2cs/blob/main/docs/size-format.txt
+            https://github.com/ck-yung/dir2cs/blob/main/docs/date-format.txt
+            """);
         return rtn.ToString();
     }
 
@@ -287,7 +296,7 @@ static public partial class Helper
 
     static public readonly IInovke<DateTime, string> DateFormatOpt =
         new ParseInvoker<DateTime, string>(name: "--date-format",
-            help: "DATE-FORMAT   e.g. yy-MM-dd%20HH:mm:ss, short, OR, unix ",
+            help: "DATE-FORMAT   e.g. short, unix, OR yy-MM-dd%20HH:mm:ss",
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {

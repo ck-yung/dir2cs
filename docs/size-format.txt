@@ -1,0 +1,17 @@
+opt:
+  --size-format short
+  --size-format +short
+  --size-format comma
+  --size-format comma;WIDTH   e.g. --size-format comma;9
+
+
+For example,                           Sample result
+  --size-format short                  600k
+  --size-format +short                 1m
+  --size-format comma                  40,960
+  --size-format comma,9                   40,960
+
+
+Difference between 'short' and '+short'
+Option the display of option 'short' is in the range of 1 to 9999.
+Option the display of option '+short' is in the range of 1 to 520.
