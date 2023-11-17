@@ -71,6 +71,9 @@ Option '--not-within' (shortcut '-W' upper case) select files as follows.
 |         | -W 2022-12-25 | Show file if its last write-time is before X'Mas.  |
 |         | -W 13:30      | Show file if its last write-time is before today 13:30. |
 |         | -W 2019-06-12T15:20 |                                              |
+|         | -W +16min | Show file if its last write-time is within 16 min after '--within' option |
+|         | -W +3hour | Show file if its last write-time is within 3 hours after '--within' option |
+|         | -W +6day | Show file if its last write-time is within 6 days after '--within' option |
 
 ### To exclude some files by '--excl' (shortcut -x)
 ```
@@ -116,7 +119,9 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 | -?       | --help           | 
 | -? cfg   | --help cfg       | 
 | -v       | --version        | 
-|          | --dir            | both, only, off, tree
+|          | --dir            | both  only  off  tree
+|          | --sub            | off   all   excl-link    ???only-link
+|          | --link-dir       | incl  excl  only
 |          | --cfg-off        |
 |          | --utf8           |
 | -w       | --within         | DATE or SIZE | -w 12m  -w 3day
@@ -125,20 +130,20 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 | -c       | --case-sensitive |
 |          | --creation-date  |
 | -k       | --keep-dir       |
-|          | --no-ext         | incl  excl  both
-|          | --hidden         | incl  excl  both
+|          | --no-ext         | incl  excl  only
+|          | --hidden         | incl  excl  only
 |          | --size-format    | INTEGER  commna  short  | --size-format 12,comma
 |          |                  |                         | --size-format short
 |          | --count-format   | INTEGER  commna  short  | --size-format 6,comma
 |          |                  |                         | --size-format 
-|          | --date-format    | u, yyyy-MMM-ddTHH:mm:ss, yy-MM-dd%20HH:mm, unix
+|          | --date-format    | u+20, yyyy-MMM-ddTHH:mm:ss, yy-MM-dd%20HH:mm, unix
 |          | --total          | off  only
 |          | --hide           | date,size,cout,mode,owner,link
-|          | --show           | date,size,cout,mode,owner,link
+|          | --show           | date,size,cout,mode,owner,link,link-size,link-date
 | -o       | --sort           | off,name,size,date,ext,count,last | -o date
 |          | --take           | INTEGER,SIZE
 |          | --sum            | ext  dir  +dir  year
-| -x       | --excl      | --excl-file \*.pdb      | -x \*.pdb        |
+| -x       | --excl           | --excl-file \*.pdb      | -x \*.pdb        |
 | -X       | --excl-dir       | --excl-dir obj          | -X obj           |
 
 ## Options is renamed
