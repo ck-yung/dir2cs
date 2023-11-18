@@ -66,7 +66,7 @@ static public class Sum
             switch (aa[0])
             {
                 case "dir":
-                    Helper.PrintDir = (_) => InfoSum.Fake;
+                    Helper.PrintDir = (_, _) => InfoSum.Fake;
                     Reduce = (seq) => seq
                         .GroupBy((it) => Helper.GetFirstDir(Path.GetDirectoryName(
                             Helper.io.GetRelativeName(it.FullName))))
@@ -77,7 +77,7 @@ static public class Sum
                         .Invoke(reduceTotal);
                     break;
                 case "ext":
-                    Helper.PrintDir = (_) => InfoSum.Fake;
+                    Helper.PrintDir = (_,_ ) => InfoSum.Fake;
                     Reduce = (seq) => seq
                         .GroupBy((it) => Wild.GetRawText(it.Extension))
                         .Select((grp) => grp.Aggregate(
@@ -87,7 +87,7 @@ static public class Sum
                         .Invoke(reduceTotal);
                     break;
                 case "+dir":
-                    Helper.PrintDir = (_) => InfoSum.Fake;
+                    Helper.PrintDir = (_, _) => InfoSum.Fake;
                     Reduce = (seq) =>
                     {
                         var qry2 = seq
@@ -111,7 +111,7 @@ static public class Sum
                     };
                     break;
                 case "year":
-                    Helper.PrintDir = (_) => InfoSum.Fake;
+                    Helper.PrintDir = (_, _) => InfoSum.Fake;
                     Reduce = (seq) => seq
                         .GroupBy((it) => Show.GetDate(it).ToString("Yyyyy"))
                         .Select((grp) => grp.Aggregate(

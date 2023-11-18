@@ -67,7 +67,7 @@ static public class Wild
             .ToArray();
         if (matchFuncs.Length == 0) return;
         CheckIfFileNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
-        if (PrintDir != EnumPrintDir.Tree)
+        if (PrintDir != EnumPrint.DirTree)
         {
             CheckIfDirNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
         }

@@ -3,7 +3,7 @@ static public partial class MyOptions
 {
     static InfoSum impSubDir(string path)
     {
-        if (PrintDir == EnumPrintDir.Only)
+        if (PrintDir == EnumPrint.OnlyDir)
         {
             var cntDir = Helper.GetAllDirs(path)
             .Select((it) => Helper.ToInfoDir(it))

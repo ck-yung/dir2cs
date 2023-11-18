@@ -268,7 +268,7 @@ static public class Sort
                 }
                 else
                 {
-                    if (PrintDir == EnumPrintDir.Only)
+                    if (PrintDir == EnumPrint.OnlyDir)
                     {
                         TakeDir = (seq) => seq.Take(takeCount);
                     }

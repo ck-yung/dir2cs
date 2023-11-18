@@ -151,11 +151,29 @@ static public partial class Helper
 
     static internal Func<string, string> DirPrefixText { get; set; } = (msg) => msg;
 
-    static internal Func<string, InfoSum> PrintDir { get; set; } = (path) =>
-    {
-        var cntDir = ImpGetDirs(path)
+    static internal Func<string, IncludingOption, InfoSum> PrintDir { get; set; }
+        = (path, linkOption) =>
+        {
+            Func<InfoDir, bool> CheckLink = Always<InfoDir>.True; // default:All
+            switch (linkOption)
+            {
+                case IncludingOption.All:
+                    break;
+                case IncludingOption.Excluded:
+                    CheckLink = (info) => true == string.IsNullOrEmpty(info.LinkTarget);
+                    break;
+                case IncludingOption.Only:
+                    CheckLink = (info) => false == string.IsNullOrEmpty(info.LinkTarget);
+                    break;
+                default:
+                    throw new InvalidOperationException(
+                        $"Unknown  {nameof(linkOption)}:'{linkOption}' is found in {nameof(PrintDir)}!");
+            }
+
+            var cntDir = ImpGetDirs(path)
             .Select((it) => ToInfoDir(it))
             .Where((it) => false==it.IsFake())
+            .Where((it) => CheckLink(it))
             .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
             .Where((it) => (false == Wild.ExclDirNameOpt.Invoke(it.Name)))
             .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))

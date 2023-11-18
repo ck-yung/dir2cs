@@ -25,6 +25,5 @@ public enum IncludingOption
 {
     All,
     Only,
-    Included,
     Excluded,
 }

@@ -119,7 +119,7 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 | -?       | --help           | 
 | -? cfg   | --help cfg       | 
 | -v       | --version        | 
-|          | --dir            | both  only  off  tree  tree-excl-link
+|          | --dir            | both  off  only  only-link  only-excl-link  tree  tree-excl-link
 |          | --sub            | off   all   excl-link
 |          | --link-dir       | incl  excl  only
 |          | --cfg-off        |

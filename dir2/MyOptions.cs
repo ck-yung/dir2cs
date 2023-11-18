@@ -21,29 +21,22 @@ static public partial class MyOptions
             .Select((it) => (it.Item2, it.Item3));
     }
 
-    public enum EnumPrintDir
+    public enum EnumPrint
     {
-        Both,
-        Only,
-        Off,
-        Tree,
+        FileAndDir,
+        OnlyDir,
+        OnlyFile,
+        DirTree,
     };
 
-    static public EnumPrintDir PrintDir { get; private set; } = EnumPrintDir.Both;
-    static public void PrintDirOptBothOff()
-    {
-        if (PrintDir == EnumPrintDir.Both)
-        {
-            ((ParseInvoker<string, InfoSum>)PrintDirOpt).SetImplementation(Helper.GetFiles);
-        }
-    }
+    static public EnumPrint PrintDir { get; private set; } = EnumPrint.FileAndDir;
 
     static public readonly IInovke<string, InfoSum> PrintDirOpt =
         new ParseInvoker<string, InfoSum>(
-        name: "--dir", help: "all | only | off | tree | tree-excl-link",
+        name: "--dir", help: "both | off | only | only-link | only-excl-link | tree | tree-excl-link",
         init: (path) =>
         {
-            Helper.PrintDir(path);
+            Helper.PrintDir(path, IncludingOption.All);
             return Helper.GetFiles(path);
         }, resolve: (parser, args) =>
         {
@@ -53,10 +46,10 @@ static public partial class MyOptions
             switch (aa[0])
             {
                 case "both":
-                    PrintDir = EnumPrintDir.Both;
+                    PrintDir = EnumPrint.FileAndDir;
                     parser.SetImplementation((path) =>
                     {
-                        Helper.PrintDir(path);
+                        Helper.PrintDir(path, IncludingOption.All);
                         return Helper.GetFiles(path);
                     });
                     break;
@@ -73,22 +66,57 @@ static public partial class MyOptions
                             Helper.WriteLine($"{cnt} dir are found.");
                         }
                     };
-                    PrintDir = EnumPrintDir.Only;
-                    parser.SetImplementation(Helper.PrintDir);
+                    PrintDir = EnumPrint.OnlyDir;
+                    parser.SetImplementation((dirname) =>
+                        Helper.PrintDir(dirname, IncludingOption.All));
+                    break;
+                case "only-link":
+                    Helper.impPrintInfoTotal = InfoSum.DoNothing;
+                    Helper.impPrintDirCount = (cnt) =>
+                    {
+                        if (cnt == 0)
+                        {
+                            Helper.WriteLine("No dir is found.");
+                        }
+                        else if (cnt > 1)
+                        {
+                            Helper.WriteLine($"{cnt} dir are found.");
+                        }
+                    };
+                    PrintDir = EnumPrint.OnlyDir;
+                    parser.SetImplementation((dirname) =>
+                        Helper.PrintDir(dirname, IncludingOption.Only));
+                    break;
+                case "only-excl-link":
+                    Helper.impPrintInfoTotal = InfoSum.DoNothing;
+                    Helper.impPrintDirCount = (cnt) =>
+                    {
+                        if (cnt == 0)
+                        {
+                            Helper.WriteLine("No dir is found.");
+                        }
+                        else if (cnt > 1)
+                        {
+                            Helper.WriteLine($"{cnt} dir are found.");
+                        }
+                    };
+                    PrintDir = EnumPrint.OnlyDir;
+                    parser.SetImplementation((dirname) =>
+                        Helper.PrintDir(dirname, IncludingOption.Excluded));
                     break;
                 case "off":
-                    PrintDir = EnumPrintDir.Off;
+                    PrintDir = EnumPrint.OnlyFile;
                     parser.SetImplementation(Helper.GetFiles);
                     break;
                 case "tree":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
-                    PrintDir = EnumPrintDir.Tree;
+                    PrintDir = EnumPrint.DirTree;
                     parser.SetImplementation((arg) =>
                     Helper.PrintDirTree(arg, linkOption: IncludingOption.All));
                     break;
                 case "tree-excl-link":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
-                    PrintDir = EnumPrintDir.Tree;
+                    PrintDir = EnumPrint.DirTree;
                     parser.SetImplementation((arg) =>
                     Helper.PrintDirTree(arg, linkOption: IncludingOption.Excluded));
                     break;
@@ -162,7 +190,7 @@ static public partial class MyOptions
                         }
                     };
 
-                    if (PrintDir != EnumPrintDir.Only)
+                    if (PrintDir != EnumPrint.OnlyDir)
                     {
                         Helper.impPrintInfoTotal =
                             (arg) => Helper.PrintIntoTotalWithFlag(arg, printEvenCountOne: true);
