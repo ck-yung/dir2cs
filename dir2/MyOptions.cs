@@ -30,26 +30,32 @@ static public partial class MyOptions
     };
 
     static public EnumPrint PrintDir { get; private set; } = EnumPrint.FileAndDir;
+    static internal Func<InfoDir, bool> CheckDirLink { get; private set; }
+        = Always<InfoDir>.True;
 
     static public readonly IInovke<string, InfoSum> PrintDirOpt =
         new ParseInvoker<string, InfoSum>(
         name: "--dir", help: "both | off | only | only-link | only-excl-link | tree | tree-excl-link",
         init: (path) =>
         {
-            Helper.PrintDir(path, IncludingOption.All);
+            Helper.PrintDir(path);
             return Helper.GetFiles(path);
         }, resolve: (parser, args) =>
         {
-            var aa = args.Where((it)=>it.Length>0).Distinct().Take(2).ToArray();
+            var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
             if (aa.Length > 1)
-                throw new ArgumentException($"Too many values to {parser.Name}");
+            {
+                throw new ArgumentException(
+                    "Valid option: " + parser.Help + Environment.NewLine +
+                    $"Too many values to {parser.Name}");
+            }
             switch (aa[0])
             {
                 case "both":
                     PrintDir = EnumPrint.FileAndDir;
                     parser.SetImplementation((path) =>
                     {
-                        Helper.PrintDir(path, IncludingOption.All);
+                        Helper.PrintDir(path);
                         return Helper.GetFiles(path);
                     });
                     break;
@@ -67,8 +73,7 @@ static public partial class MyOptions
                         }
                     };
                     PrintDir = EnumPrint.OnlyDir;
-                    parser.SetImplementation((dirname) =>
-                        Helper.PrintDir(dirname, IncludingOption.All));
+                    parser.SetImplementation((dirname) => Helper.PrintDir(dirname));
                     break;
                 case "only-link":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
@@ -84,8 +89,8 @@ static public partial class MyOptions
                         }
                     };
                     PrintDir = EnumPrint.OnlyDir;
-                    parser.SetImplementation((dirname) =>
-                        Helper.PrintDir(dirname, IncludingOption.Only));
+                    CheckDirLink = (info) => true != string.IsNullOrEmpty(info.LinkTarget);
+                    parser.SetImplementation((dirname) => Helper.PrintDir(dirname));
                     break;
                 case "only-excl-link":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
@@ -101,8 +106,8 @@ static public partial class MyOptions
                         }
                     };
                     PrintDir = EnumPrint.OnlyDir;
-                    parser.SetImplementation((dirname) =>
-                        Helper.PrintDir(dirname, IncludingOption.Excluded));
+                    CheckDirLink = (info) => true == string.IsNullOrEmpty(info.LinkTarget);
+                    parser.SetImplementation((dirname) => Helper.PrintDir(dirname));
                     break;
                 case "off":
                     PrintDir = EnumPrint.OnlyFile;
@@ -121,7 +126,9 @@ static public partial class MyOptions
                     Helper.PrintDirTree(arg, linkOption: IncludingOption.Excluded));
                     break;
                 default:
-                    throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
+                    throw new ArgumentException(
+                        "Valid option: " + parser.Help + Environment.NewLine +
+                        $"Bad value '{aa[0]}' to {parser.Name}");
             }
         });
 
@@ -133,7 +140,11 @@ static public partial class MyOptions
             {
                 var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
                 if (aa.Length > 1)
-                    throw new ArgumentException($"Too many values to {parser.Name}");
+                {
+                    throw new ArgumentException(
+                        "Valid option: " + parser.Help + Environment.NewLine +
+                        $"Too many values to {parser.Name}");
+                }
 
                 switch (aa[0])
                 {
@@ -154,7 +165,9 @@ static public partial class MyOptions
                         parser.SetImplementation((path) => impSubDir(path));
                         break;
                     default:
-                        throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
+                        throw new ArgumentException(
+                            "Valid option: "+ parser.Help + Environment.NewLine +
+                            $"Bad value '{aa[0]}' to {parser.Name}");
                 }
             });
 

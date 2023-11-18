@@ -124,8 +124,11 @@ public class Program
             {
                 var tmp5 = string.Join(" ",
                     tmp4.Select((it) => it.Item2).ToArray());
-                Console.Error.WriteLine(
-                    $"Unknown {tmp4.Key} options: {tmp5}");
+                if (!tmp5.StartsWith("--debug:"))
+                {
+                    Console.Error.WriteLine(
+                        $"Unknown {tmp4.Key} options: {tmp5}");
+                }
             }
         }
 

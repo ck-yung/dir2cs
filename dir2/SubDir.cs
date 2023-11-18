@@ -8,6 +8,7 @@ static public partial class MyOptions
             var cntDir = Helper.GetAllDirs(path)
             .Select((it) => Helper.ToInfoDir(it))
             .Where((it) => true!=it.IsFake())
+            .Where((it) => CheckDirLink(it))
             .Where((it) => (false ==
             string.IsNullOrEmpty(Helper.io.GetRelativeName(it.FullName))))
             .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
