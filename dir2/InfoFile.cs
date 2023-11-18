@@ -126,9 +126,9 @@ public record InfoDir(string Name
         , UnixFileMode: UnixFileMode.None
         , LinkTarget: string.Empty);
 
-    public bool IsNotFake()
+    public bool IsFake()
     {
-        return !Object.ReferenceEquals(Fake, this);
+        return Object.ReferenceEquals(Fake, this);
     }
 }
 

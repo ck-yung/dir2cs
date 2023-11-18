@@ -40,7 +40,7 @@ static public partial class MyOptions
 
     static public readonly IInovke<string, InfoSum> PrintDirOpt =
         new ParseInvoker<string, InfoSum>(
-        name: "--dir", help: "all | only | off | tree",
+        name: "--dir", help: "all | only | off | tree | tree-excl-link",
         init: (path) =>
         {
             Helper.PrintDir(path);
@@ -83,7 +83,14 @@ static public partial class MyOptions
                 case "tree":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
                     PrintDir = EnumPrintDir.Tree;
-                    parser.SetImplementation(Helper.PrintDirTree);
+                    parser.SetImplementation((arg) =>
+                    Helper.PrintDirTree(arg, linkOption: IncludingOption.All));
+                    break;
+                case "tree-excl-link":
+                    Helper.impPrintInfoTotal = InfoSum.DoNothing;
+                    PrintDir = EnumPrintDir.Tree;
+                    parser.SetImplementation((arg) =>
+                    Helper.PrintDirTree(arg, linkOption: IncludingOption.Excluded));
                     break;
                 default:
                     throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
@@ -113,7 +120,7 @@ static public partial class MyOptions
                         IsFakeDirOrLinked = (path) =>
                         {
                             var info = Helper.ToInfoDir(path);
-                            if (false == info.IsNotFake()) return true;
+                            if (info.IsFake()) return true;
                             return false == string.IsNullOrEmpty(info.LinkTarget);
                         };
                         parser.SetImplementation((path) => impSubDir(path));

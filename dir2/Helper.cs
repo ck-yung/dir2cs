@@ -155,7 +155,7 @@ static public partial class Helper
     {
         var cntDir = ImpGetDirs(path)
             .Select((it) => ToInfoDir(it))
-            .Where((it) => it.IsNotFake())
+            .Where((it) => false==it.IsFake())
             .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
             .Where((it) => (false == Wild.ExclDirNameOpt.Invoke(it.Name)))
             .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
