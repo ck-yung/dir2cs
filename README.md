@@ -20,6 +20,9 @@ dir2 DIR/WILD [OPT ..]
 ```
 dir2 obj/*.dll -s
 ```
+[Link to complete example](https://github.com/ck-yung/dir2cs/blob/docs/HELP.md)
+
+[Link to ```--date-format``` example](https://github.com/ck-yung/dir2cs/blob/docs/date-format.md)
 
 ### Example as Unix ls:
 ```
@@ -54,6 +57,7 @@ Option '--within' (shortcut '-w') select files as follows.
 | min     | -w 20min  | Show file if its last write-time is within 10 minutes. |
 | hour    | -w 3hour  | Show file if its last write-time is within 3 hours.    |
 | day     | -w 14day  | Show file if its last write-time is within 14 days.    |
+| | | |
 |         | -w 2022-12-25 | Show file if its last write-time is NOT before X'Mas. |
 |         | -w 13:30      | Show file if its last write-time is NOT before today 13:30. |
 |         | -w 2019-06-12T15:20 |                                              |
@@ -68,9 +72,11 @@ Option '--not-within' (shortcut '-W' upper case) select files as follows.
 | min     | -W 15min  | Show file if its last write-time is before 15 minutes. |
 | hour    | -W 2hour  | Show file if its last write-time is before 2 hours.    |
 | day     | -W 7day   | Show file if its last write-time is before 7 days.     |
+| | | |
 |         | -W 2022-12-25 | Show file if its last write-time is before X'Mas.  |
 |         | -W 13:30      | Show file if its last write-time is before today 13:30. |
 |         | -W 2019-06-12T15:20 |                                              |
+| | | |
 |         | -W +16min | Show file if its last write-time is within 16 min after '--within' option |
 |         | -W +3hour | Show file if its last write-time is within 3 hours after '--within' option |
 |         | -W +6day | Show file if its last write-time is within 6 days after '--within' option |
@@ -113,38 +119,42 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 ```
 
 # Complete Option List by -??
-### --HELP
+### ```--HELP```
 | Shortcut | Option           | Available Value         | Example |
 | -------- | ------           | ---------------         | ------- |
 | -?       | --help           | 
 | -? cfg   | --help cfg       | 
 | -v       | --version        | 
-|          | --dir            | both  off  only  only-link  only-excl-link  tree  tree-excl-link
-|          | --sub            | off   all   excl-link
-|          | --link-dir       | incl  excl  only
+|          | --dir            | ```both``` ```off``` ```only``` ```only-link``` ```only-excl-link``` ```tree```  ```tree-excl-link```
+|          | --sub            | ```off``` ```all``` ```excl-link```
 |          | --cfg-off        |
 |          | --utf8           |
-| -w       | --within         | DATE or SIZE | -w 12m  -w 3day
-| -W       | --not-within     | DATE or SIZE | -W 10k  -W 2hour
+| -w       | --within         | DATE or SIZE | ```-w 12m``` ```-w 3day```
+| -W       | --not-within     | DATE or SIZE | ```-W 10k``` ```-W 2hour```
+| -x       | --excl           | WILD[,WILD ..]      | ```-x \*.tmp,\*.temp```    |
+| -X       | --excl-dir       | WILD[,WILD ..]      | ```-X obj,bin```           |
 |          | --regex          |
 | -c       | --case-sensitive |
 |          | --creation-date  |
 | -k       | --keep-dir       |
-|          | --no-ext         | incl  excl  only
-|          | --hidden         | incl  excl  only
-|          | --size-format    | INTEGER  commna  short  | --size-format 12,comma
-|          |                  |                         | --size-format short
-|          | --count-format   | INTEGER  commna  short  | --size-format 6,comma
-|          |                  |                         | --size-format 
-|          | --date-format    | u+20, yyyy-MMM-ddTHH:mm:ss, yy-MM-dd%20HH:mm, unix
-|          | --total          | off  only
-|          | --hide           | date,size,cout,mode,owner,link
-|          | --show           | date,size,cout,mode,owner,link,link-size,link-date
-| -o       | --sort           | off,name,size,date,ext,count,last | -o date
-|          | --take           | INTEGER,SIZE
-|          | --sum            | ext  dir  +dir  year
-| -x       | --excl           | --excl-file \*.pdb      | -x \*.pdb        |
-| -X       | --excl-dir       | --excl-dir obj          | -X obj           |
+|          | --no-ext         | ```incl``` ```excl``` ```only```
+|          | --hidden         | ```incl``` ```excl``` ```only```
+|          | --size-format    | INTEGER  ```commna``` ```short``` ```+short```  | ```--size-format 12,comma```
+|          |                  |                         | ```--size-format short```
+|          | --count-format   | INTEGER  ```commna``` ```short```  | ```--size-format 6,comma```
+|          |                  |                         | ```--size-format```
+|          | --date-format    | ```short``` ```u+20``` ```yyyy-MMM-ddTHH:mm:ss``` ```yy-MM-dd%20HH:mm``` ```unix```
+|          | --creation-date  |
+|          | --total          | ```off``` ```only```
+|          | --hide           | ```date,size,cout,mode,owner,link```
+|          | --show           | ```date,size,cout,mode,owner,link,link-size,link-date```
+|          | --link           | ```incl``` ```excl``` ```only```
+|          | --excl-none      | [Clear all ```--excl``` and ```--excl-dir```]
+| -o       | --sort           | ```off``` ```name,size,date,ext,count,last``` [up to 2 columns] | ```-o date```
+| -r       | --reverse        | ```off``` ```on```
+|          | --take           | INTEGER  SIZE  | ```--take 10``` ```--take 500m```
+|          | --total          | ```off``` ```only```
+|          | --sum            | ```ext``` ```dir``` ```+dir``` ```year```
 
 ## Options is renamed
 | Old Option      | New Name, and, new short-cut |
@@ -159,14 +169,14 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 
 | Shortcut | Stand for              | Description                    |
 | -------- | ---------              | -----------                    |
-| -s       | --dir sub              | Recursively sub-directory      |
+| -s       | --sub all              | Recursively sub-directory      |
 | -f       | --dir off              | List file only                 |
 | -d       | --dir only             | List dir name only             |
 | -R       | --dir tree             | List dir tree                  |
-| -c       | --case-sensitive       |                                |
 | -b       | --total off            | List filename (with path) only |
 |          | --hide date,size,count,mode,owner,link |                |
 | -t       | --total only           | Display total line only        |
+| -H       | --excl-none --hidden only | Proper list hidden files    |
 
 # Setup by Config File & Environment
  

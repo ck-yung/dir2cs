@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A9B2CD0D-D
 		cnfg.txt = cnfg.txt
 		docs\dir2.date-short.opt.md = docs\dir2.date-short.opt.md
 		envr.txt = envr.txt
+		docs\HELP.md = docs\HELP.md
 	EndProjectSection
 EndProject
 Global
