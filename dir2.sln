@@ -5,18 +5,17 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dir2", "dir2\dir2.csproj", "{C66865A4-B225-436A-8DC3-4F3F7F4AB84F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{51A3100D-D27D-4ADE-AE8C-9E1803D08C6F}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A9B2CD0D-DD34-4EFD-8332-E7E3FDC22A13}"
 	ProjectSection(SolutionItems) = preProject
 		0000.txt = 0000.txt
 		cnfg.txt = cnfg.txt
+		docs\date-format.md = docs\date-format.md
 		docs\dir2.date-short.opt.md = docs\dir2.date-short.opt.md
 		envr.txt = envr.txt
+		FAQ.md = FAQ.md
 		docs\HELP.md = docs\HELP.md
+		README.md = README.md
+		Unix-LS = Unix-LS
 	EndProjectSection
 EndProject
 Global

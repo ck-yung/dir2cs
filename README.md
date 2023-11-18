@@ -20,9 +20,9 @@ dir2 DIR/WILD [OPT ..]
 ```
 dir2 obj/*.dll -s
 ```
-[Link to complete example](https://github.com/ck-yung/dir2cs/blob/docs/HELP.md)
+[Link to complete example](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
 
-[Link to ```--date-format``` example](https://github.com/ck-yung/dir2cs/blob/docs/date-format.md)
+[Link to ```--date-format``` example](https://github.com/ck-yung/dir2cs/blob/main/docs/date-format.md)
 
 ### Example as Unix ls:
 ```
