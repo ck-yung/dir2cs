@@ -206,10 +206,12 @@ static public partial class Helper
             {
                 var currDir = GetNext();
                 if (string.IsNullOrEmpty(currDir)) break;
-                var dirThe = Path.GetFileName(prevDir);
-                if (true != CheckLink(currDir)) continue;
-                Console.WriteLine($"{prefix}+- {dirThe}");
-                PrintSubTree($"{prefix}|  ", prevDir);
+                if (CheckLink(prevDir))
+                {
+                    var dirThe = Path.GetFileName(prevDir);
+                    Console.WriteLine($"{prefix}+- {dirThe}");
+                    PrintSubTree($"{prefix}|  ", prevDir);
+                }
                 prevDir = currDir;
             }
 
