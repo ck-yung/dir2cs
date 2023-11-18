@@ -92,7 +92,7 @@ static public partial class MyOptions
 
     static public readonly IInovke<string, InfoSum> SubDirOpt =
         new ParseInvoker<string, InfoSum>(name: "--sub",
-            help: "off | all | only-link | excl-link",
+            help: "off | all | excl-link",
             init: (path) => PrintDirOpt.Invoke(path),
             resolve: (parser, args) =>
             {
@@ -107,15 +107,6 @@ static public partial class MyOptions
                         break;
                     case "all":
                         IsFakeDirOrLinked = Helper.Never; ;
-                        parser.SetImplementation((path) => impSubDir(path));
-                        break;
-                    case "only-link":
-                        IsFakeDirOrLinked = (path) =>
-                        {
-                            var info = Helper.ToInfoDir(path);
-                            if (false == info.IsNotFake()) return true;
-                            return string.IsNullOrEmpty(info.LinkTarget);
-                        };
                         parser.SetImplementation((path) => impSubDir(path));
                         break;
                     case "excl-link":
