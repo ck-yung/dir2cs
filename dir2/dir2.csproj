@@ -10,8 +10,8 @@
   <PropertyGroup>
     <Title>dir2</Title>
     <PackageId>dir2</PackageId>
-    <PackageVersion>2.1.0.0</PackageVersion>
-    <Version>2.1.0.0</Version>
+    <PackageVersion>2.1.1.0</PackageVersion>
+    <Version>2.1.1.0</Version>
     <Authors>Yung, Chun Kau</Authors>
     <Description>List files by dir or ext, with filter on size, date and link.</Description>
     <Summary>
