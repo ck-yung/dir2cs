@@ -103,7 +103,8 @@ static public partial class Helper
          Dir only         -d  => --dir only
          File only        -f  => --dir off
         Envir 'dir2' will be parsed before config file is involved.
-        Please refer to below links for '--size-format'
+
+        More information:
         https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md
         """;
 
@@ -143,7 +144,7 @@ static public partial class Helper
         }
         rtn.AppendLine($"Envir '{nameof(dir2)}' will be parsed before config file is involved.");
         rtn.AppendLine("""
-            Please refer to below links for '--size-format' and '--date-format'
+            More information:
             https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md
             """);
         return rtn.ToString();
