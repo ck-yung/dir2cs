@@ -148,7 +148,7 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 |          | --total          | ```off``` ```only```
 |          | --hide           | ```date,size,cout,mode,owner,link```
 |          | --show           | ```date,size,cout,mode,owner,link,link-size,link-date```
-|          | --link           | ```incl``` ```excl``` ```only```
+|          | --link           | ```incl``` ```only```
 |          | --excl-none      | [Clear all ```--excl``` and ```--excl-dir```]
 | -o       | --sort           | ```off``` ```name,size,date,ext,count,last``` [up to 2 columns] | ```-o date```
 | -r       | --reverse        | ```off``` ```on```

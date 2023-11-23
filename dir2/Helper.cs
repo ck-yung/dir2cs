@@ -38,7 +38,7 @@ static public partial class Helper
 
     static public IEnumerable<string> CommonSplit(IEnumerable<string> args)
         => args
-        .Select((it) => it.Split(';', ':', ','))
+        .Select((it) => it.Split(';', ','))
         .SelectMany((it) => it)
         .Where((it) => it.Length > 0)
         .Distinct();

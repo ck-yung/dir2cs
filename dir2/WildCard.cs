@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
 
@@ -104,10 +105,21 @@ static public class Wild
             init: Helper.Never,
             resolve: (parser, args) =>
             {
-                var checkFuncs = Helper.CommonSplit(args)
-                .Select((it) => ToWildMatch(it))
-                .ToArray();
-                parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
+                var aa = Helper.CommonSplit(args)
+                .GroupBy((it) => it.Equals(":link"))
+                .ToImmutableDictionary((grp) => grp.Key, (grp) => grp);
+                if (aa?.ContainsKey(true) ?? false)
+                {
+                    var a2 = (ParseInvoker<InfoFile, bool>)Helper.IsLinkFileOpt;
+                    a2.SetImplementation((it) => string.IsNullOrEmpty(it.LinkTarget));
+                }
+                if (aa?.ContainsKey(false) ?? false)
+                {
+                    var checkFuncs = Helper.CommonSplit(aa[false])
+                    .Select((it) => ToWildMatch(it))
+                    .ToArray();
+                    parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
+                }
             });
 
     static internal readonly IInovke<string, bool> ExclDirNameOpt =
