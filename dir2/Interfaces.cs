@@ -20,10 +20,3 @@ public class ImplicitBool
         return the.Flag;
     }
 }
-
-public enum IncludingOption
-{
-    All,
-    Only,
-    Excluded,
-}

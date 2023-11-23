@@ -35,7 +35,7 @@ static public partial class MyOptions
 
     static public readonly IInovke<string, InfoSum> PrintDirOpt =
         new ParseInvoker<string, InfoSum>(
-        name: "--dir", help: "both | off | only | only-link | tree | tree-excl-link",
+        name: "--dir", help: "both | off | only | only-link | tree",
         init: (path) =>
         {
             Helper.PrintDir(path);
@@ -100,13 +100,7 @@ static public partial class MyOptions
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
                     PrintDir = EnumPrint.DirTree;
                     parser.SetImplementation((arg) =>
-                    Helper.PrintDirTree(arg, linkOption: IncludingOption.All));
-                    break;
-                case "tree-excl-link":
-                    Helper.impPrintInfoTotal = InfoSum.DoNothing;
-                    PrintDir = EnumPrint.DirTree;
-                    parser.SetImplementation((arg) =>
-                    Helper.PrintDirTree(arg, linkOption: IncludingOption.Excluded));
+                    Helper.PrintDirTree(arg));
                     break;
                 default:
                     throw new ArgumentException(

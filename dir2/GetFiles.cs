@@ -162,26 +162,8 @@ static public partial class Helper
         }
     }
 
-    static public InfoSum PrintDirTree(string path, IncludingOption linkOption)
+    static public InfoSum PrintDirTree(string path)
     {
-        Func<string, bool> CheckLink = Always<string>.True; // default:All
-        switch (linkOption)
-        {
-            case IncludingOption.All:
-                break;
-            case IncludingOption.Excluded:
-                CheckLink = (dirThe) =>
-                {
-                    var info = ToInfoDir(dirThe);
-                    if (info.IsFake()) return false;
-                    return string.IsNullOrEmpty(info.LinkTarget);
-                };
-                break;
-            default:
-                throw new InvalidOperationException(
-                    $"Unknown  {nameof(linkOption)}:'{linkOption}' is found in {nameof(PrintDirTree)}!");
-        }
-
         void PrintSubTree(string prefix, string dirname)
         {
             var enumDir = SafeGetDirectoryEnumerator(dirname);
@@ -206,7 +188,7 @@ static public partial class Helper
             {
                 var currDir = GetNext();
                 if (string.IsNullOrEmpty(currDir)) break;
-                if (CheckLink(prevDir))
+                if (false == IsFakeDirOrLinked(prevDir))
                 {
                     var dirThe = Path.GetFileName(prevDir);
                     Console.WriteLine($"{prefix}+- {dirThe}");
@@ -215,7 +197,7 @@ static public partial class Helper
                 prevDir = currDir;
             }
 
-            if (!string.IsNullOrEmpty(prevDir) && CheckLink(prevDir))
+            if (!string.IsNullOrEmpty(prevDir) && !IsFakeDirOrLinked(prevDir))
             {
                 var dirThe = Path.GetFileName(prevDir);
                 Console.WriteLine($"{prefix}\\- {dirThe}");
