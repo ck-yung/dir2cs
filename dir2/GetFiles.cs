@@ -152,6 +152,7 @@ static public partial class Helper
         while (enumDir.MoveNext())
         {
             var currentDirname = SafeGetCurrent(enumDir);
+            if (IsFakeDirOrLinked(currentDirname)) continue;
             if (string.IsNullOrEmpty(currentDirname)) continue;
             var dirnameThe = io.GetFileName(currentDirname);
             if (string.IsNullOrEmpty(dirnameThe)) continue;
