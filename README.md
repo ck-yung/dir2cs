@@ -1,5 +1,5 @@
 # Dir2
-**v2.1.0**
+**v2.1.1**
 
 ## Syntax:
 ```
@@ -30,22 +30,39 @@ dir2 obj/*.dll --show mode,owner
 ```
 [Link to example](https://github.com/ck-yung/dir2cs/blob/main/Unix-LS)
 
+### Daily Samples
+
+| Command | Description |
+| ------- | ----------- |
+| ```dir2 -sH```               | To list hidden files in sub-dir excluding in link dir
+| ```dir2 -w 13day```          | To list files whose time-stamp is within 13 days ago  (including 13 days ago)
+| ```dir2 -W 4day```           | To list files whose time-stamp is before 4 days ago
+| ```dir2 -w 16day -W +6day``` | To list files whose time-stamp is within 16 days ago and before 10 days ago
+| ```dir2 -w 123m```           | To list files whose size is smaller than 123 Mb (including 123Mb)
+| ```dir2 -W 4g```             | To list files whose size is larger than 4 Gb
+| ```dir2 -x *.tmp,*.obj```    | To list excluding some files
+| ```dir2 -x :link```          | To list excluding link files
+| ```dir2 -X .vs,obj```        | To list excluding some dir
+| ```dir2 -x :link```          | To list excluding link dir
+| ```dir2 -s --sum ext```      | To list in sub-dir and grouping by file extension
 
 ## Options:
 
-| Shortcut | Description                  | Example         |
-| -------- | -----------                  | --------------- |
-| -?       | Short help                   |                 |
-| -s       | Show on all sub-dir          |                 |
-| -b       | Show filename only           |                 |
-| -o       | Sort                         | -o size,ext     |
-| -x       | Exclude some specified file  | -x \*.dll;\*.lib  |
-| -X       | Exclude some specified dir   | -X bin;obj;.vs  |
-| -w       | Specify selection condition  | -w 14day        |
-|          |                              | -w 100k         |
-| -W       | Specify selection condition  | -W 7day         |
-|          |                              | -W 50k          |
-| -k       | Keep specified dir name      |                 |
+| Command            | Shortcut | Description                  | Example
+| -------            | -------- | -----------                  | ---------------
+| --help             | -?       | Short help                   |
+| --sub all          | -s       | Show on all sub-dir          |
+| --sort *OPT*       | -o       | Sort                         | -o size,ext
+| --excl *OPT*       | -x       | Exclude some specified file  | -x \*.dll;\*.lib
+| --excl-dir *OPT*   | -X       | Exclude some specified dir   | -X bin;obj;.vs
+| --within *OPT*     | -w       | Specify selection condition  | -w 14day
+|                    |          |                              | -w 100k
+| --not-within *OPT* | -W       | Specify selection condition  | -W 7day
+|                    |          |                              | -W +3hour
+|                    |          |                              | -W 50k
+| --keep-dir         | -k       | Keep given dir name
+| |
+|                    | -b       | Show filename only
 
 ### --within -w
 Option '--within' (shortcut '-w') select files as follows.
@@ -81,20 +98,6 @@ Option '--not-within' (shortcut '-W' upper case) select files as follows.
 |         | -W +3hour | Show file if its last write-time is within 3 hours after '--within' option |
 |         | -W +6day | Show file if its last write-time is within 6 days after '--within' option |
 
-### To exclude some files by '--excl' (shortcut -x)
-```
-dir2 -x *.obj
-dir2 -x *.tmp -x *.user
-dir2 -x *.tmp,*.user
-```
-
-### To exclude some dir by '--excl-dir' (shortcut -X)
-```
-dir2 -X .vs
-dir2 -X .vs -X obj*
-dir2 -X .vs,obj*
-```
-
 ### Sum-up by File Extension, or, Dir Name
 
 | Option        | Description |
@@ -118,10 +121,9 @@ dir2 my_proj *.cs -bks | tar -cf ..\backup\today.tar --files-from -
 dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 ```
 
-Store files but excluding any file link or dir link.
+List files but excluding any file link or dir link.
 ```
-dir2 my_proj *.cs -bks -X :link -x :link | tar -cf ..\backup\today.tar --files-from -
-dir2 my_proj *.cs -bks -X :link -x :link | zip2 -cf ..\backup\today.zip -T -
+dir2 my_proj *.cs -bks -X :link -x :link
 ```
 
 # Complete Option List by -??
@@ -137,8 +139,11 @@ dir2 my_proj *.cs -bks -X :link -x :link | zip2 -cf ..\backup\today.zip -T -
 |          | --utf8           |
 | -w       | --within         | DATE or SIZE | ```-w 12m``` ```-w 3day```
 | -W       | --not-within     | DATE or SIZE | ```-W 10k``` ```-W 2hour```
-| -x       | --excl           | WILD[,WILD ..]      | ```-x \*.tmp,\*.temp```    |
-| -X       | --excl-dir       | WILD[,WILD ..]      | ```-X obj,bin```           |
+|          |                  |              | ```-w 14day -W +7day```
+| -x       | --excl           | WILD[,WILD ..]  | ```-x *.tmp,*.temp```    |
+|          |                  |                 | ```-x :link```
+| -X       | --excl-dir       | WILD[,WILD ..]  | ```-X obj,bin```           |
+|          |                  |                 | ```-X :link```
 |          | --regex          |
 | -c       | --case-sensitive |
 |          | --creation-date  |
