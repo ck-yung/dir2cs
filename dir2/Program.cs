@@ -294,7 +294,7 @@ public class Program
 
         path = io.GetFullPath(path);
         InfoSum sumThe = SubDirOpt.Invoke(path);
-        PrintInfoTotal(sumThe);
+        PrintInfoTotal(wilds, sumThe);
 
         return true;
     }

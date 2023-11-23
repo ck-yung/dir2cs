@@ -195,7 +195,7 @@ public class InfoSum
     }
 
     static internal readonly InfoSum Fake = new(string.Empty);
-    static internal readonly Action<InfoSum> DoNothing = Helper.DoNothing;
+    static internal readonly Action<string[], InfoSum> DoNothing = Helper.DoNothing;
 
     static public bool IsNothing(Action<InfoSum> check)
     {

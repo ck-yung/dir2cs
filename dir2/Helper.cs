@@ -28,6 +28,7 @@ static public partial class Helper
     }
 
     static public void DoNothing<T>(T _) { }
+    static public void DoNothing<T1,T2>(T1 _1, T2 _2) { }
 
     static public T itself<T>(T arg) => arg;
 
@@ -213,13 +214,25 @@ static public partial class Helper
 
     static internal Action DumpArgsAction { get; set; } = () => { };
 
-    static internal void PrintIntoTotalWithFlag(InfoSum sum, bool printEvenCountOne)
+    static internal void PrintIntoTotalWithFlag(string[] wilds,
+        InfoSum sum, bool printEvenCountOne)
     {
         switch (sum.Count)
         {
             case 0:
-                Write("No file is found");
-                DumpArgsAction();
+                if (Directory.Exists(sum.Name))
+                {
+                    Write("No file is found");
+                    if (wilds.Length > 0)
+                    {
+                        Write($" for '{wilds[0]}'");
+                    }
+                    DumpArgsAction();
+                }
+                else
+                {
+                    Write($"Dir '{sum.Name}' is not found");
+                }
                 WriteLine(".");
                 break;
             case 1:
@@ -236,12 +249,13 @@ static public partial class Helper
         }
     }
 
-    static internal Action<InfoSum> impPrintInfoTotal { get; set; }
-        = (arg) => PrintIntoTotalWithFlag(arg, printEvenCountOne: false);
+    static internal Action<string[], InfoSum> impPrintInfoTotal { get; set; }
+        = (wilds, arg) => PrintIntoTotalWithFlag(
+            wilds, arg, printEvenCountOne: false);
 
-    static internal void PrintInfoTotal(InfoSum arg)
+    static internal void PrintInfoTotal(string[] wilds, InfoSum arg)
     {
-        if (arg.IsNotFake()) impPrintInfoTotal(arg);
+        if (arg.IsNotFake()) impPrintInfoTotal(wilds, arg);
     }
 
     static internal string GetFirstDir(string path)
