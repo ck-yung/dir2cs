@@ -102,10 +102,9 @@ static public partial class Helper
          Brief path name  -b  => --total off --hide date,size,count,mode,owner,link
          Dir only         -d  => --dir only
          File only        -f  => --dir off
-        Envir 'dir2' will be parsed before config file is involved.
 
-        More information:
         https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md
+
         """;
 
     static public string GetSyntax()
@@ -142,9 +141,8 @@ static public partial class Helper
             textThe.Append($"  => {text2The,-12}");
             rtn.AppendLine(textThe.ToString());
         }
-        rtn.AppendLine($"Envir '{nameof(dir2)}' will be parsed before config file is involved.");
         rtn.AppendLine("""
-            More information:
+
             https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md
             """);
         return rtn.ToString();

@@ -269,7 +269,6 @@ static public partial class MyOptions
         (IParse) Show.CountFormat,
         (IParse) Helper.DateFormatOpt,
         (IParse) Helper.IsHiddenFileOpt,
-        (IParse) Helper.IsLinkFileOpt,
         Sort.ReverseOpt,
     };
 

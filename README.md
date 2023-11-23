@@ -163,18 +163,10 @@ dir2 my_proj *.cs -bks -X :link -x :link
 |          | --excl-none      | [Clear all ```--excl``` and ```--excl-dir```]
 | -o       | --sort           | ```off``` ```name,size,date,ext,count,last``` [up to 2 columns] | ```-o date```
 | -r       | --reverse        | ```off``` ```on```
-|          | --take           | INTEGER  SIZE  | ```--take 10``` ```--take 500m```
+|          | --take           | INTEGER  SIZE  | ```--take 10```
+|          |                  |                | ```--take 500m```
 |          | --total          | ```off``` ```only```
 |          | --sum            | ```ext``` ```dir``` ```+dir``` ```year```
-
-## Options is renamed
-| Old Option      | New Name, and, new short-cut |
-| ----------      | -------         |
-| --size-within   | --within -w     |
-| --date-within   | --within -w     |
-| --size-beyond   | --not-within -W |
-| --date-beyond   | --not-within -W |
-
 
 ## Daily Shortcut:
 
@@ -187,7 +179,7 @@ dir2 my_proj *.cs -bks -X :link -x :link
 | -b       | --total off            | List filename (with path) only |
 |          | --hide date,size,count,mode,owner,link |                |
 | -t       | --total only           | Display total line only        |
-| -H       | --excl-none --hidden only | Proper list hidden files    |
+| -H       | --excl-none --hidden only --excl :link --exc-dir :link | Proper list hidden files    |
 
 # Setup by Config File & Environment
  
