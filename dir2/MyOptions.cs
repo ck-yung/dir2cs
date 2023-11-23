@@ -296,7 +296,7 @@ static public partial class MyOptions
             ["-r"] = ("", new[] { "--reverse", "on" }),
             ["-t"] = ("", new[] { "--total", "only" }),
             ["-R"] = ("", new[] { "--dir", "tree" }),
-            ["-H"] = ("", new[] { "--excl-none", "--hidden", "only"}),
+            ["-H"] = ("", new[] { "--hidden", "only", "--excl-none", "--excl", ":link", "--excl-dir", ":link"}),
             ["-s"] = ("Scan all sub dir", new[] { "--sub", "all" }),
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),

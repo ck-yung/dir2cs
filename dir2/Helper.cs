@@ -94,8 +94,8 @@ static public partial class Helper
                  --within -w  SIZE | DATE
                               e.g. -w 100m -w 30day
              --not-within -W  SIZE | DATE
-                              e.g. -W 10k -w 3day
-                              e.g. -w +7day
+                              e.g. -W 10k -W 3day
+                              e.g. -w 14day -W +7day
          Frequently used shortcuts:
                           -R  => --dir tree
          Scan all sub dir -s  => --sub all
