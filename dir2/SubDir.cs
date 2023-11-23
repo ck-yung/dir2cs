@@ -46,8 +46,6 @@ static public partial class MyOptions
         .Invoke(Sum.Reduce);
     }
 
-    static internal Func<string, bool> IsFakeDirOrLinked
-    { get; private set; } = Helper.Never;
-
-
+    static public Func<string, bool> IsFakeDirOrLinked
+    { get; internal set; } = Helper.Never;
 }

@@ -125,8 +125,8 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 | -?       | --help           | 
 | -? cfg   | --help cfg       | 
 | -v       | --version        | 
-|          | --dir            | ```both``` ```off``` ```only``` ```only-link``` ```only-excl-link``` ```tree```  ```tree-excl-link```
-|          | --sub            | ```off``` ```all``` ```excl-link```
+|          | --dir            | ```both``` ```off``` ```only``` ```only-link``` ```tree```  ```tree-excl-link```
+|          | --sub            | ```off``` ```all```
 |          | --cfg-off        |
 |          | --utf8           |
 | -w       | --within         | DATE or SIZE | ```-w 12m``` ```-w 3day```

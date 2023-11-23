@@ -30,12 +30,12 @@ static public partial class MyOptions
     };
 
     static public EnumPrint PrintDir { get; private set; } = EnumPrint.FileAndDir;
-    static internal Func<InfoDir, bool> CheckDirLink { get; private set; }
+    static public Func<InfoDir, bool> CheckDirLink { get; internal set; }
         = Always<InfoDir>.True;
 
     static public readonly IInovke<string, InfoSum> PrintDirOpt =
         new ParseInvoker<string, InfoSum>(
-        name: "--dir", help: "both | off | only | only-link | only-excl-link | tree | tree-excl-link",
+        name: "--dir", help: "both | off | only | only-link | tree | tree-excl-link",
         init: (path) =>
         {
             Helper.PrintDir(path);
@@ -92,23 +92,6 @@ static public partial class MyOptions
                     CheckDirLink = (info) => true != string.IsNullOrEmpty(info.LinkTarget);
                     parser.SetImplementation((dirname) => Helper.PrintDir(dirname));
                     break;
-                case "only-excl-link":
-                    Helper.impPrintInfoTotal = InfoSum.DoNothing;
-                    Helper.impPrintDirCount = (cnt) =>
-                    {
-                        if (cnt == 0)
-                        {
-                            Helper.WriteLine("No dir is found.");
-                        }
-                        else if (cnt > 1)
-                        {
-                            Helper.WriteLine($"{cnt} dir are found.");
-                        }
-                    };
-                    PrintDir = EnumPrint.OnlyDir;
-                    CheckDirLink = (info) => true == string.IsNullOrEmpty(info.LinkTarget);
-                    parser.SetImplementation((dirname) => Helper.PrintDir(dirname));
-                    break;
                 case "off":
                     PrintDir = EnumPrint.OnlyFile;
                     parser.SetImplementation(Helper.GetFiles);
@@ -134,7 +117,7 @@ static public partial class MyOptions
 
     static public readonly IInovke<string, InfoSum> SubDirOpt =
         new ParseInvoker<string, InfoSum>(name: "--sub",
-            help: "off | all | excl-link",
+            help: "off | all",
             init: (path) => PrintDirOpt.Invoke(path),
             resolve: (parser, args) =>
             {
@@ -152,16 +135,6 @@ static public partial class MyOptions
                         parser.SetImplementation((path) => PrintDirOpt.Invoke(path));
                         break;
                     case "all":
-                        IsFakeDirOrLinked = Helper.Never; ;
-                        parser.SetImplementation((path) => impSubDir(path));
-                        break;
-                    case "excl-link":
-                        IsFakeDirOrLinked = (path) =>
-                        {
-                            var info = Helper.ToInfoDir(path);
-                            if (info.IsFake()) return true;
-                            return false == string.IsNullOrEmpty(info.LinkTarget);
-                        };
                         parser.SetImplementation((path) => impSubDir(path));
                         break;
                     default:

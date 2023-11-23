@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
 
@@ -127,10 +126,26 @@ static public class Wild
             init: Helper.Never,
             resolve: (parser, args) =>
             {
-                var checkFuncs = Helper.CommonSplit(args)
-                .Select((it) => ToWildMatch(it))
-                .ToArray();
-                parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
+                var aa = Helper.CommonSplit(args)
+                .GroupBy((it) => it.Equals(":link"))
+                .ToImmutableDictionary((grp) => grp.Key, (grp) => grp);
+                if (aa?.ContainsKey(true) ?? false)
+                {
+                    MyOptions.IsFakeDirOrLinked = (path) =>
+                    {
+                        var info = Helper.ToInfoDir(path);
+                        if (info.IsFake()) return true;
+                        return false == string.IsNullOrEmpty(info.LinkTarget);
+                    };
+                    CheckDirLink = (info) => true == string.IsNullOrEmpty(info.LinkTarget);
+                }
+                if (aa?.ContainsKey(false) ?? false)
+                {
+                    var checkFuncs = Helper.CommonSplit(aa[false])
+                    .Select((it) => ToWildMatch(it))
+                    .ToArray();
+                    parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
+                }
             });
 
     static internal readonly string ExclNone = "--excl-none";
