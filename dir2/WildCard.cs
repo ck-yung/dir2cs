@@ -137,6 +137,11 @@ static public class Wild
                         if (info.IsFake()) return true;
                         return false == string.IsNullOrEmpty(info.LinkTarget);
                     };
+                    MyOptions.IsFakeInfoDirOrLinked = (info) =>
+                    {
+                        if (info.IsFake()) return true;
+                        return false == string.IsNullOrEmpty(info.LinkTarget);
+                    };
                     CheckDirLink = (info) => true == string.IsNullOrEmpty(info.LinkTarget);
                 }
                 if (aa?.ContainsKey(false) ?? false)

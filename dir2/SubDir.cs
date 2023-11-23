@@ -5,8 +5,7 @@ static public partial class MyOptions
     {
         if (PrintDir == EnumPrint.OnlyDir)
         {
-            var cntDir = Helper.GetAllDirs(path)
-            .Select((it) => Helper.ToInfoDir(it))
+            var cntDir = Helper.GetAllDirs(Helper.ToInfoDir(path))
             .Where((it) => true!=it.IsFake())
             .Where((it) => CheckDirLink(it))
             .Where((it) => (false ==
@@ -47,5 +46,8 @@ static public partial class MyOptions
     }
 
     static public Func<string, bool> IsFakeDirOrLinked
+    { get; internal set; } = Helper.Never;
+
+    static public Func<InfoDir, bool> IsFakeInfoDirOrLinked
     { get; internal set; } = Helper.Never;
 }

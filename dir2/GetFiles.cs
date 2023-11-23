@@ -134,31 +134,26 @@ static public partial class Helper
         }
     }
 
-    static public IEnumerable<string> GetAllDirs(string path)
+    static public IEnumerable<InfoDir> GetAllDirs(InfoDir path)
     {
-        var dirThe = io.GetFileName(path);
-        if (Wild.ExclDirNameOpt.Invoke(dirThe))
+        if (Wild.ExclDirNameOpt.Invoke(path.Name))
         {
             yield break;
         }
-
-        var enumDir = SafeGetDirectoryEnumerator(path);
-
+        var enumDir = SafeGetDirectoryEnumerator(path.FullName);
         if (enumDir != EmptyEnumStrings)
         {
             yield return path;
         }
-
         while (enumDir.MoveNext())
         {
             var currentDirname = SafeGetCurrent(enumDir);
-            if (IsFakeDirOrLinked(currentDirname)) continue;
-            if (string.IsNullOrEmpty(currentDirname)) continue;
-            var dirnameThe = io.GetFileName(currentDirname);
-            if (string.IsNullOrEmpty(dirnameThe)) continue;
-            foreach (var pathThe in GetAllDirs(currentDirname))
+            var infoThe = Helper.ToInfoDir(currentDirname);
+            if (IsFakeInfoDirOrLinked(infoThe)) continue;
+            if (string.IsNullOrEmpty(infoThe.Name)) continue;
+            foreach (var infoNext in GetAllDirs(infoThe))
             {
-                yield return pathThe;
+                yield return infoNext;
             }
         }
     }
