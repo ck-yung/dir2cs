@@ -250,6 +250,7 @@ static public partial class Helper
                         {
                             Write($" for '{wilds[0]}'");
                         }
+                        Write($" on '{path}'");
                         DumpArgsAction(path, wilds);
                     }
                     else

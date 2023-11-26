@@ -192,11 +192,15 @@ public class Program
             return (bb.Count(), aa.ContainsKey(false)) switch
             {
                 (1, false) => ScanSubDir(path: bb.Keys.First(),
-                wilds: bb.Values.First().ToArray(),
+                wilds: bb.Values.First()
+                .Where((it) => false == string.IsNullOrEmpty(it))
+                .ToArray(),
                 mark: "mark-30"),
 
                 (1, true) => ScanSubDir(path: bb.Keys.First(),
-                wilds: bb.Values.First().Concat(aa[false]).ToArray(),
+                wilds: bb.Values.First().Concat(aa[false])
+                .Where((it) => false == string.IsNullOrEmpty(it))
+                .ToArray(),
                 mark: "mark-40"),
 
                 _ => ListInfo(args, mark: "mark-50")
