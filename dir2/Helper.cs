@@ -29,6 +29,7 @@ static public partial class Helper
 
     static public void DoNothing<T>(T _) { }
     static public void DoNothing<T1,T2>(T1 _1, T2 _2) { }
+    static public void DoNothing<T1, T2, T3>(T1 _1, T2 _2, T3 _3) { }
 
     static public T itself<T>(T arg) => arg;
 
@@ -211,28 +212,52 @@ static public partial class Helper
         impPrintDirCount(count);
     }
 
-    static internal Action DumpArgsAction { get; set; } = () => { };
+    static internal Action<string, string[]> DumpArgsAction { get; set; }
+        = (path, wilds) =>
+        {
+            Program.MyDebugWrite("");
+            Program.MyDebugWrite($"path='{path}'");
+            Program.MyDebugWrite($"#wilds={wilds.Length}");
+            foreach (var wild in wilds)
+            {
+                Program.MyDebugWrite($"  '{wild}'");
+            }
+        };
 
-    static internal void PrintIntoTotalWithFlag(string[] wilds,
+    static internal void PrintIntoTotalWithFlag(string path, string[] wilds,
         InfoSum sum, bool printEvenCountOne)
     {
         switch (sum.Count)
         {
             case 0:
-                if (Directory.Exists(sum.Name))
+                if (string.IsNullOrEmpty(path))
                 {
-                    Write("No file is found");
-                    if (wilds.Length > 0)
+                    if ((wilds.Length > 0) && !string.IsNullOrEmpty(wilds[0]))
                     {
-                        Write($" for '{wilds[0]}'");
+                        Write($"No file is found for '{wilds[0]}'");
                     }
-                    DumpArgsAction();
+                    else
+                    {
+                        DumpArgsAction(path, wilds);
+                    }
                 }
                 else
                 {
-                    Write($"Dir '{sum.Name}' is not found");
+                    if (Directory.Exists(path))
+                    {
+                        Write("No file is found");
+                        if ((wilds.Length > 0) && !string.IsNullOrEmpty(wilds[0]))
+                        {
+                            Write($" for '{wilds[0]}'");
+                        }
+                        DumpArgsAction(path, wilds);
+                    }
+                    else
+                    {
+                        Write($"Dir '{path}' is not found");
+                    }
+                    WriteLine(".");
                 }
-                WriteLine(".");
                 break;
             case 1:
                 if (printEvenCountOne)
@@ -248,13 +273,13 @@ static public partial class Helper
         }
     }
 
-    static internal Action<string[], InfoSum> impPrintInfoTotal { get; set; }
-        = (wilds, arg) => PrintIntoTotalWithFlag(
-            wilds, arg, printEvenCountOne: false);
+    static internal Action<string, string[], InfoSum> impPrintInfoTotal { get; set; }
+        = (path, wilds, arg) => PrintIntoTotalWithFlag(
+            path, wilds, arg, printEvenCountOne: false);
 
-    static internal void PrintInfoTotal(string[] wilds, InfoSum arg)
+    static internal void PrintInfoTotal(string path, string[] wilds, InfoSum arg)
     {
-        if (arg.IsNotFake()) impPrintInfoTotal(wilds, arg);
+        if (arg.IsNotFake()) impPrintInfoTotal(path, wilds, arg);
     }
 
     static internal string GetFirstDir(string path)

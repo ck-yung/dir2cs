@@ -47,7 +47,7 @@ public class Program
         , DebugOpt
     };
 
-    static Action<string> MyDebugWrite { get; set; }
+    static public Action<string> MyDebugWrite { get; set; }
         = (msg) => System.Diagnostics.Debug.WriteLine(msg);
 
     static bool RunMain(string[] mainArgs)
@@ -294,7 +294,7 @@ public class Program
 
         path = io.GetFullPath(path);
         InfoSum sumThe = SubDirOpt.Invoke(path);
-        PrintInfoTotal(wilds, sumThe);
+        PrintInfoTotal(path, wilds, sumThe);
 
         return true;
     }

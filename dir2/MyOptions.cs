@@ -173,8 +173,8 @@ static public partial class MyOptions
                     if (PrintDir != EnumPrint.OnlyDir)
                     {
                         Helper.impPrintInfoTotal =
-                            (wilds, arg) => Helper.PrintIntoTotalWithFlag(
-                                wilds, arg, printEvenCountOne: true);
+                            (path, wilds, arg) => Helper.PrintIntoTotalWithFlag(
+                                path, wilds, arg, printEvenCountOne: true);
                     }
                     break;
                 default:
