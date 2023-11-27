@@ -68,6 +68,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="runtimes\libdir2-arm.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="runtimes\libdir2-arm64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
