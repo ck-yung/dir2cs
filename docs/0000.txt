@@ -28,3 +28,10 @@ SIZE>numb.txt
 EXCL>excl.txt
 EXCL-WILD>excl.txt
 WIDTH>numb.txt
+
+var regFormat2 = new Regex(
+  @"^(?<Name>\w{4,5})(\s=\s|\s=|=\s|=)""(?<Format>\w.*)""$",
+  RegexOptions.IgnoreCase);
+
+var dateFmtThe = System.Net.WebUtility.UrlDecode(
+  check.Groups["Format"].Value);

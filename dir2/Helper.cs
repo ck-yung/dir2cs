@@ -1,7 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Globalization;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
@@ -297,6 +296,9 @@ static public partial class Helper
             {
                 'k' => 1024,
                 'm' => 1024 * 1024,
+                'K' => 1024,
+                'M' => 1024 * 1024,
+                'G' => 1024 * 1024 * 1024,
                 _ => 1024 * 1024 * 1024,// g
             };
         }
@@ -306,7 +308,7 @@ static public partial class Helper
             return true;
         }
 
-        if (Regex.Match(arg, @"^\d+[kmg]$").Success)
+        if (Regex.Match(arg, @"^\d+[kmgKMG]$").Success)
         {
             if (long.TryParse(arg.AsSpan(0, arg.Length - 1),
                 out result))
@@ -564,6 +566,9 @@ static public partial class Helper
             "yyyy-MM-dd hh:mmtt",
             "yyyyMMdd HH:mm:ss",
             "yyyyMMdd HH:mm",
+            "HH:mm:ss",
+            "HH:mm",
+            "hh:mmtt",
         });
 
     static public bool TryParseDateTime(string arg, out DateTime result)
@@ -572,10 +577,14 @@ static public partial class Helper
         var pattern3 = new Dictionary<string, DateParse>()
         {
             ["minute"] = new DateParse(@"^(?<minute>\d+)min$", (it) => TimeSpan.FromMinutes(it)),
+            ["minutes"] = new DateParse(@"^(?<minutes>\d+)minutes$", (it) => TimeSpan.FromMinutes(it)),
             ["hour"] = new DateParse(@"^(?<hour>\d+)hour$", (it) => TimeSpan.FromHours(it)),
+            ["hours"] = new DateParse(@"^(?<hours>\d+)hours$", (it) => TimeSpan.FromHours(it)),
             ["hr"] = new DateParse(@"^(?<hr>\d+)hr$", (it) => TimeSpan.FromHours(it)),
             ["day"] = new DateParse(@"^(?<day>\d+)day$", (it) => TimeSpan.FromDays(it)),
-            ["year"] = new DateParse(@"^(?<year>\d+)year$", (it) => TimeSpan.FromDays(365*it)),
+            ["days"] = new DateParse(@"^(?<days>\d+)days$", (it) => TimeSpan.FromDays(it)),
+            ["year"] = new DateParse(@"^(?<year>\d+)year$", (it) => TimeSpan.FromDays(365 * it)),
+            ["years"] = new DateParse(@"^(?<years>\d+)years$", (it) => TimeSpan.FromDays(365 * it)),
         };
 
         foreach (var (keyThe, parseThe) in pattern3)
