@@ -628,7 +628,9 @@ static public partial class Helper
             RegexOptions.IgnoreCase),
             new Regex(@"^(?<valueFound>\d{1,})(?<unitFound>[kmgt])$",
             RegexOptions.IgnoreCase),
-            new Regex(@"^(?<valueFound>\d{1,})|(?<valueFound>\d{1,})b$",
+            new Regex(@"^(?<valueFound>\d{1,})b$",
+            RegexOptions.IgnoreCase),
+            new Regex(@"^(?<valueFound>\d{1,})$",
             RegexOptions.IgnoreCase),
         };
         foreach (var regThe in regs)
