@@ -601,11 +601,19 @@ static public partial class Helper
 
     static public string ToExtraShortKiloUnit(long arg)
     {
-        var units = new char[] { 'T', 'G', 'M', 'K', ' ' };
+        var units = new (char UnitThe, float MaxThe)[]
+        {
+            ('T', 10_000.0F),
+            ('G', 10_000.0F),
+            ('M', 800.0F),
+            ('K', 640.0F),
+            (' ', 520.0F),
+        };
         string toKilo(float arg2, int index)
         {
-            if (arg2 < 520.0F) return $"{arg2,4:F0}{units[index - 1]} ";
-            if (index == 1) return $"{arg2,4:F0}{units[0]} ";
+            if (arg2 < units[index - 1].MaxThe)
+                return $"{arg2,4:F0}{units[index - 1].UnitThe} ";
+            if (index == 1) return $"{arg2,4:F0}{units[0].UnitThe} ";
             return toKilo((arg2 + 512) / 1024.0F, index - 1);
         }
         return toKilo(arg, units.Length);
