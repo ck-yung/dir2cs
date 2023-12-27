@@ -501,21 +501,8 @@ static public partial class Helper
                         };
                         break;
                     default:
-                        var regFmtLen = new Regex(
-                            @"^(?<Format>[A-z]{1,1})\+(?<Length>(\d{1,2}))$",
-                            RegexOptions.IgnoreCase);
-                        var check2 = regFmtLen.Match(formatThe);
-                        if (check2.Success)
-                        {
-                            var fmtThe = check2.Groups["Format"].Value;
-                            var padLen = int.Parse(check2.Groups["Length"].Value);
-                            rtn = (value) => value.ToString(fmtThe).PadRight(padLen) + "\t";
-                        }
-                        else
-                        {
-                            var fmtThe = System.Net.WebUtility.UrlDecode(formatThe);
-                            rtn = (value) => value.ToString(fmtThe);
-                        }
+                        var fmtThe = System.Net.WebUtility.UrlDecode(formatThe);
+                        rtn = (value) => value.ToString(fmtThe);
                         break;
                 };
                 _ = rtn(DateTime.MinValue); // verify if the lambda is valid
