@@ -288,40 +288,7 @@ static public partial class Helper
             .Take(2).FirstOrDefault();
         return string.IsNullOrEmpty(rtn) ? "." : rtn;
     }
-    static public bool TryParseKiloNumber(string arg, out long result)
-    {
-        long unitValue(char unitThe)
-        {
-            return unitThe switch
-            {
-                'k' => 1024,
-                'm' => 1024 * 1024,
-                'K' => 1024,
-                'M' => 1024 * 1024,
-                'G' => 1024 * 1024 * 1024,
-                _ => 1024 * 1024 * 1024,// g
-            };
-        }
 
-        if (long.TryParse(arg, out result))
-        {
-            return true;
-        }
-
-        if (Regex.Match(arg, @"^\d+[kmgKMG]$").Success)
-        {
-            if (long.TryParse(arg.AsSpan(0, arg.Length - 1),
-                out result))
-            {
-                if (result > 0)
-                {
-                    result *= unitValue(arg[^1]);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
     static internal string GetLastDir(string path)
     {
         return path
@@ -642,5 +609,41 @@ static public partial class Helper
             return toKilo((arg2 + 512) / 1024.0F, index - 1);
         }
         return toKilo(arg, units.Length);
+    }
+
+    static public bool TryParseKiloNumber(string arg, out long rtn)
+    {
+        rtn = 0;
+        var toLong = new Dictionary<string, Func<string, long>>
+        {
+            ["k"] = (it) => long.Parse(it) * 1024,
+            ["m"] = (it) => long.Parse(it) * 1024 * 1024,
+            ["g"] = (it) => long.Parse(it) * 1024 * 1024 * 1024,
+            ["t"] = (it) => long.Parse(it) * 1024 * 1024 * 1024 * 1024,
+            [""] = (it) => long.Parse(it),
+        };
+        var regs = new Regex[]
+        {
+            new Regex(@"^(?<valueFound>\d{1,})(?<unitFound>[kmgt])b$",
+            RegexOptions.IgnoreCase),
+            new Regex(@"^(?<valueFound>\d{1,})(?<unitFound>[kmgt])$",
+            RegexOptions.IgnoreCase),
+            new Regex(@"^(?<valueFound>\d{1,})|(?<valueFound>\d{1,})b$",
+            RegexOptions.IgnoreCase),
+        };
+        foreach (var regThe in regs)
+        {
+            var rslt = regThe.Match(arg);
+            if (true != rslt.Success) continue;
+            var valueFound = rslt.Groups["valueFound"].Value;
+            var unitFound = rslt.Groups["unitFound"].Value;
+            if (toLong.TryGetValue(unitFound.ToLower(), out var parseThe))
+            {
+                rtn = parseThe(valueFound);
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 }

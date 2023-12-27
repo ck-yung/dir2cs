@@ -231,14 +231,11 @@ static public class Wild
                     ["size"] = new string[]
                     {
                         "123",
-                        "23k",
-                        "34m",
-                        "45g",
-                        "6t",
-                        "23K",
-                        "34M",
-                        "45G",
-                        "6T",
+                        "123b",
+                        "34k",
+                        "45Kb",
+                        "67m",
+                        "23Gb",
                     },
                     ["date"] = new string[]
                     {
