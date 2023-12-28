@@ -144,17 +144,22 @@ public class Program
             .ToImmutableDictionary((grp) => grp.Key, (grp) => grp.ToArray());
         if (dd.ContainsKey(true) && dd[true].Length == 1)
         {
-            var d2 = ScanTheDir( dd[true].First().path);
+            (var path2, var wild2) = ScanTheDir(dd[true].First().path);
             if (dd.ContainsKey(false))
             {
-                return ScanSubDir(path: d2,
-                    wilds: dd[false].Select((it) => it.path).ToArray(),
-                    mark: "mark-10");
+                var wild3 = dd[false].Select((it) => it.path).ToList();
+                if (false==string.IsNullOrEmpty(wild2))
+                {
+                    wild3.Add(wild2);
+                }
+                return ScanSubDir(path: path2,
+                    wilds: wild3.ToArray(),
+                    mark: "mark-11");
             }
             else
             {
-                return ScanSubDir(path: d2,
-                    wilds: Array.Empty<string>(),
+                return ScanSubDir(path: path2,
+                    wilds: new[] {wild2},
                     mark: "mark-20");
             }
         }
@@ -176,23 +181,29 @@ public class Program
                 .GroupBy((it) => it.DirName)
                 .ToImmutableDictionary((grp) => grp.Key,
                 (grp) => grp.Select((it) => it.FileName).ToList());
-            var b2 = ScanTheDir(bb.Keys.First());
+            var b9 = bb.Keys.First();
+            if (string.IsNullOrEmpty(b9))
+                b9 = Path.DirectorySeparatorChar.ToString();
+            (var path4, var _) = ScanTheDir(Path.Combine(b9, "_ignore_"));
+            var bb2 = bb.Values.First()
+                .Where((it) => false == string.IsNullOrEmpty(it))
+                .ToList();
             return (bb.Count(), aa.ContainsKey(false)) switch
             {
-                (1, false) => ScanSubDir(path: b2,
+                (1, false) => ScanSubDir(path: path4,
                 wilds: bb.Values.First()
                 .Where((it) => false == string.IsNullOrEmpty(it))
                 .ToArray(),
                 mark: "mark-30"),
 
-                (1, true) => ScanSubDir(path: b2,
+                (1, true) => ScanSubDir(path: path4,
                 wilds: bb.Values.First().Concat(aa[false])
                 .Where((it) => false == string.IsNullOrEmpty(it))
                 .ToArray(),
                 mark: "mark-40"),
 
                 _ => ListInfo(args, mark: "mark-50")
-            }; ;
+            };
         }
 
         var cc = args
@@ -243,7 +254,7 @@ public class Program
 
     static bool ListInfo(string[] args, string mark)
     {
-        MyDebugWrite($"*** {nameof(ListInfo)}>Tip='{mark}'>'{string.Join("|",args)}'");
+        MyDebugWrite($"** {nameof(ListInfo)}>Tip='{mark}'>'{string.Join("|",args)}'");
         foreach (var arg in args)
         {
             if (File.Exists(arg))
@@ -270,7 +281,15 @@ public class Program
 
     static bool ScanSubDir(string path, string[] wilds, string mark)
     {
-        MyDebugWrite($"*** {nameof(ScanSubDir)}>Tip='{mark}'>path={path}");
+        if (wilds.Length==0)
+        {
+            MyDebugWrite($"** {nameof(ScanSubDir)}>Tip='{mark}'>path={path}");
+        }
+        else
+        {
+            MyDebugWrite(
+                $"** {nameof(ScanSubDir)}>Tip='{mark}'>path={path}>#wild={wilds.Length},'{wilds[0]}'");
+        }
 
         if ((true!=Directory.Exists(path)) && (wilds.Length==0))
         {
@@ -346,7 +365,7 @@ public class Program
         return arg;
     }
 
-    static string ScanTheDir(string dirname)
+    static (string path, string wild) ScanTheDir(string dirname)
     {
         var ee = dirname.Split(Path.DirectorySeparatorChar).ToList();
         var e2 = string.Empty;
@@ -361,7 +380,32 @@ public class Program
         }
 
         // TODO: what if ee[0] is "" or "c:", "documents", .. ..
-        var d3 = ee[0] + Path.DirectorySeparatorChar;
+        var d3 = ee[0];
+        if (string.IsNullOrEmpty(d3))
+        {
+            d3 = Path.DirectorySeparatorChar.ToString();
+        }
+        else
+        {
+            if (false == Directory.Exists(d3))
+            {
+                var ff = Directory.GetDirectories(".", searchPattern: d3);
+                switch (ff.Length)
+                {
+                    case 0:
+                        throw new ArgumentException(
+                                $"No dir matching  '{d3}'");
+                    case 1:
+                        d3 = ff[0];
+                        break;
+                    default:
+                        throw new ArgumentException(
+                            $"Too many dir matching '{d3}'");
+                }
+            }
+            d3 += Path.DirectorySeparatorChar;
+        }
+
         for (int ndx = 1; ndx < ee.Count; ndx++)
         {
             if (ee[ndx] == ".") continue;
@@ -376,7 +420,7 @@ public class Program
                 case 0:
                     if ((ndx+1) == ee.Count)
                     {
-                        return Path.Combine(d3, ee[ndx]);
+                        return (path: d3, wild: ee[ndx]);
                     }
                     else
                     {
@@ -391,10 +435,6 @@ public class Program
                         $"Too many dir matching '{ee[ndx]}' on '{d3}'");
             }
         }
-        if (string.IsNullOrEmpty(e2))
-        {
-            return EnsureDirSep(d3);
-        }
-        return Path.Combine(d3, e2);
+        return (path: d3, wild: e2);
     }
 }
