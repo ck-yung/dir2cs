@@ -4,16 +4,21 @@
 
 | Command | Description |
 | ------- | ----------- |
+| ```dir2 -f``` | List files only |
 | ```dir2 -s``` | Scan all directories |
 | ```dir2 -sX bin,obj``` | Scan but excluding some directories |
 | ```dir2 -sx *.tmp,*.temp``` | Scan but excluding some files |
 | ```dir2 -sb``` | Scan for file name only |
 | | |
-| ```dir2 -sw 7day -W 1day``` | Scan for file within 7 days but not yesterday |
-| ```dir2 -sw 7day -W 24hour``` | |
-| ```dir2 -sw 7day -W +6day``` | |
+| ```dir2 -sw 7days -W 1day``` | Scan for file within 7 days but not yesterday |
+| ```dir2 -sw 7days -W 23hours``` | |
+| ```dir2 -sw 7days -W +6days``` | |
 | | |
-| ```dir2 -sw 10m -W 5g``` | Scan for file size between 10Mb and 5Gb |
+| ```dir2 -sw 10Mb -W 5Gb``` | Scan for file size between 10Mb and 5Gb |
+| ```dir2 -sw 10m -W 5g``` | |
+| | |
+| ```dir2 -so size --sum ext``` | Scan for file extension and sort by size |
+| ```dir2 -so last --sum dir``` | Scan for dir and sort by Last Updated Date |
 
 ## Sample Configuration File
 

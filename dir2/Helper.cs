@@ -325,7 +325,7 @@ static public partial class Helper
                         };
                         break;
                     case "short":
-                        const string keyJust = "just";
+                        // length of key is 4 or 5
                         const string keyToday = "today";
                         const string keyYsDay = "ysday";
                         const string keyWeek = "week";
@@ -355,18 +355,12 @@ static public partial class Helper
 
                         if (File.Exists(cfgFilename))
                         {
-                            var padLength = 8;
-                            var isTabEnd = false;
                             var cultureThe = CultureInfo.InvariantCulture;
-
-                            var regPadTab = new Regex(
-                                @"^pad=(?<Length>\d{1,2})(?<Tab>(|,tab))$",
-                                RegexOptions.IgnoreCase);
-                            var regFormat = new Regex(
-                                @"^(?<Name>\w{4,5})(\s=\s|\s=|=\s|=)(?<Format>\w.*)$",
-                                RegexOptions.IgnoreCase);
                             var regCulture = new Regex(
                                 @"^culture=(?<Culture>\w.*)$",
+                                RegexOptions.IgnoreCase);
+                            var regFormat = new Regex(
+                                @"^(?<Name>\w{4,5})(\s=\s|\s=|=\s|=)(?<Format>.*)$",
                                 RegexOptions.IgnoreCase);
 
                             var buf2 = new byte[2048];
@@ -381,34 +375,7 @@ static public partial class Helper
                             .Where((it) => it.Length > 0)
                             )
                             {
-                                var check = regPadTab.Match(line);
-                                if (check.Success)
-                                {
-                                    var lenText = check.Groups["Length"].Value;
-                                    if (int.TryParse(lenText, out int lenThe))
-                                    {
-                                        if (lenThe > 3 && lenThe < 41)
-                                        {
-                                            padLength = lenThe;
-                                        }
-                                        else
-                                        {
-                                            Console.Error.WriteLine(
-                                                $"Loading '{cfgFilename}',  '{line}' is invalid");
-                                            continue;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Console.Error.WriteLine(
-                                            $"Loading '{cfgFilename}',  '{line}' is invalid");
-                                        continue;
-                                    }
-                                    isTabEnd = !string.IsNullOrEmpty(check.Groups["Tab"].Value);
-                                    continue;
-                                } // regPadTab.Match().Success
-
-                                check = regCulture.Match(line);
+                                var check = regCulture.Match(line);
                                 if (check.Success)
                                 {
                                     var cultureFound = check.Groups["Culture"].Value;
@@ -429,44 +396,29 @@ static public partial class Helper
                                 check = regFormat.Match(line);
                                 if (!check.Success) continue;
                                 var nameThe = check.Groups["Name"].Value.ToLower();
-                                var dateFmtThe = check.Groups["Format"].Value;
+                                var dateFmtThe = check.Groups["Format"].Value?.Trim();
                                 if (string.IsNullOrEmpty(dateFmtThe)) continue;
-                                if (nameThe == keyJust)
+                                var dateFmtThe2 = System.Net.WebUtility.UrlDecode(dateFmtThe);
+                                if (formatMap.ContainsKey(nameThe))
                                 {
-                                    if (isTabEnd)
+
+                                    Func<DateTime, string> decodingFormatThe =
+                                    (it) => it.ToString(dateFmtThe2, cultureThe);
+                                    try
                                     {
-                                        fnJust = () => dateFmtThe.PadRight(padLength) + "\t";
+                                        _ = decodingFormatThe(DateTime.MinValue);
+                                        formatMap[nameThe] = decodingFormatThe;
                                     }
-                                    else
+                                    catch (Exception ee2)
                                     {
-                                        fnJust = () => dateFmtThe.PadRight(padLength);
-                                    }
-                                }
-                                else if (formatMap.ContainsKey(nameThe))
-                                {
-                                    if (isTabEnd)
-                                    {
-                                        formatMap[nameThe] = (it) =>
-                                        it.ToString(dateFmtThe, cultureThe).PadRight(padLength) + "\t";
-                                    }
-                                    else
-                                    {
-                                        formatMap[nameThe] = (it) =>
-                                        it.ToString(dateFmtThe, cultureThe).PadRight(padLength);
+                                        Console.Error.WriteLine(
+                                            $"Loading '{cfgFilename}', key='{nameThe}', format='{dateFmtThe}'");
+                                        Console.Error.WriteLine($"\t{ee2.GetType()}: {ee2.Message}");
                                     }
                                 }
-                            }
-                            // verify formats ..
-                            foreach ((string key, var fnFmt) in formatMap)
-                            {
-                                try
+                                else if (string.Compare(nameThe, "Just", ignoreCase: true) == 0)
                                 {
-                                    fnFmt(DateTime.MinValue);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.Error.WriteLine($"Loading '{cfgFilename}', key='{key}'");
-                                    Console.Error.WriteLine($"{ex.GetType()}: {ex.Message}");
+                                    fnJust = () => dateFmtThe2;
                                 }
                             }
                         }
@@ -480,6 +432,19 @@ static public partial class Helper
                         var fnWeek = formatMap[keyWeek];
                         var fnYear = formatMap[keyYear];
                         var fnElse = formatMap[keyElse];
+                        Func<DateTime, bool> checkDayOfWeek = (timeCheck) =>
+                        {
+                            return (now - timeCheck) < TimeSpan.FromDays(6)
+                                && timeCheck.DayOfWeek < now.DayOfWeek;
+                        };
+                        var envirDir2 = Environment.GetEnvironmentVariable(nameof(dir2));
+                        if (envirDir2?.Contains("--debug:CheckDayOfWeekOff") ?? false)
+                        {
+                            checkDayOfWeek = (timeCheck) =>
+                            {
+                                return (now - timeCheck) < TimeSpan.FromDays(6);
+                            };
+                        }
                         rtn = (timeThe) =>
                         {
                             if (timeThe > withinTwoMinutes) return fnJust();
@@ -490,11 +455,7 @@ static public partial class Helper
 
                             if ((now.Year == timeThe.Year) && (now >= timeThe))
                             {
-                                if ((now - timeThe) < TimeSpan.FromDays(6)
-                                && timeThe.DayOfWeek < now.DayOfWeek)
-                                {
-                                    return fnWeek(timeThe);
-                                }
+                                if (checkDayOfWeek(timeThe)) return fnWeek(timeThe);
                                 return fnYear(timeThe);
                             }
                             return fnElse(timeThe);

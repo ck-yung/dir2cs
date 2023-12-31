@@ -96,6 +96,7 @@ static class Config
         {
             var aa = envirOld.Split("--")
                 .Select((it) => it.Trim())
+                .Select((it) => it.Trim(';'))
                 .Where((it) => it.Length > 0)
                 .Select((it) => "--" + it)
                 .GroupBy((it) => it.Equals(Program.CfgOffOpt))

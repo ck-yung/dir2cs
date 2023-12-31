@@ -27,7 +27,7 @@
     <PackageReleaseNotes>dir-ls command tool across platform.</PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Copyright>Copyright (c) 2021,2023 Yung, Chun Kau</Copyright>
+    <Copyright>Copyright (c) 2021,2024 Yung, Chun Kau</Copyright>
     <PackageLicense>GPL-3.0 License</PackageLicense>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/ck-yung/dir2cs</PackageProjectUrl>
