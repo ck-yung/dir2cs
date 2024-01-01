@@ -14,6 +14,9 @@ or
 ```
 dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb
 ```
+```
+## Complete Help Topics
+[Link](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
 
 ### On-line help
 
@@ -59,9 +62,6 @@ dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 [Link to "unix-ls" example](https://github.com/ck-yung/dir2cs/blob/main/Unix-LS)
 ```
 dir2 obj/*.dll --show mode,owner
-```
-## Complete Help Topics
-[Link](https://github.com/ck-yung/dir2cs/blob/main/HELP.md)
 
 Yung, Chun Kau
 
