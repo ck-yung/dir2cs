@@ -14,9 +14,11 @@ or
 ```
 dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb
 ```
-```
-## Complete Help Topics
-[Link](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
+
+## Help Topcis
+
+[Link to Complete Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
+
 
 ### On-line help
 
