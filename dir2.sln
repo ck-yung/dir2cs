@@ -11,9 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A9B2CD0D-D
 		cnfg.txt = cnfg.txt
 		docs\date-format.md = docs\date-format.md
 		docs\dir2.date-short.opt.md = docs\dir2.date-short.opt.md
-		envr.txt = envr.txt
 		FAQ.md = FAQ.md
 		docs\HELP.md = docs\HELP.md
+		info-envir.md = info-envir.md
+		info-config-file.md = info-config-file.md
+		info-options.md = info-options.md
+		info-sum.md = info-sum.md
+		info-within.md = info-within.md
 		README.md = README.md
 		Unix-LS = Unix-LS
 	EndProjectSection

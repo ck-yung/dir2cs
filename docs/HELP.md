@@ -1,55 +1,31 @@
-# On-line Help of DIR2
+﻿# Informatoin of ```dir2```
 
-## Daily Examples
+## Daily Shortcut:
 
-| Command | Description |
-| ------- | ----------- |
-| ```dir2 -f``` | List files only |
-| ```dir2 -s``` | Scan all directories |
-| ```dir2 -sX bin,obj``` | Scan but excluding some directories |
-| ```dir2 -sx *.tmp,*.temp``` | Scan but excluding some files |
-| ```dir2 -sb``` | Scan for file name only |
-| | |
-| ```dir2 -sw 7days -W 1day``` | Scan for file within 7 days but not yesterday |
-| ```dir2 -sw 7days -W 23hours``` | |
-| ```dir2 -sw 7days -W +6days``` | |
-| | |
-| ```dir2 -sw 10Mb -W 5Gb``` | Scan for file size between 10Mb and 5Gb |
-| ```dir2 -sw 10m -W 5g``` | |
-| | |
-| ```dir2 -so size --sum ext``` | Scan for file extension and sort by size |
-| ```dir2 -so last --sum dir``` | Scan for dir and sort by Last Updated Date |
+| Shortcut | Stand for              | Description                    |
+| -------- | ---------              | -----------                    |
+| -s       | --sub all              | Recursively sub-directory      |
+| -f       | --dir off              | List file only                 |
+| -d       | --dir only             | List dir name only             |
+| -R       | --dir tree             | List dir tree                  |
+| -b       | --total off            | List filename (with path) only |
+|          | --hide date,size,count,mode,owner,link |                |
+| -t       | --total only           | Display total line only        |
+| -H       | --excl-none --hidden only --excl :link --exc-dir :link | Proper list hidden files    |
 
-## Sample Configuration File
+## Other Topics
 
-```
---utf8
---date-format short
---size-format +short
---excl .*
---excl-dir .*
-```
+* [Complete option list](https://github.com/ck-yung/dir2cs/blob/main/info-options.md)
 
-## Configuration File
-* Options will be loaded from ```%USERPROFILE%\.local\dir2.opt``` or ```~/.local/dir2.opt``` before parsing command line.
-* Run command ```dir2 -? cfg``` to find your personal configuration file.
-* Short-cut of option is **NOT** valid in the configuration file.
-* The configuration file contains the following options only.
+* [Config File ```dir2.opt```](https://github.com/ck-yung/dir2cs/blob/main/info-config-file.md)
 
-| Option | Description |
-| --- | ---- |
-| --sort | Ordering |
-| --show | Column selection |
-| --hide | Column selection |
-| --utf8 | Text Encoding |
-| --regex | Regular Expression |
-| --case-sensitive | |
-| --date-format | |
-| --size-format | |
-| --count-format | |
-| --hidden | Hidden file selection |
-| --reverse | Ordering |
-| --excl | Excluding files |
-| --excl-dir | Excluding directories |
+* [Envir Variable ```dir2```](https://github.com/ck-yung/dir2cs/blob/main/info-envir.md)
 
-**End**
+* [Options ```within``` and ```not-within```](https://github.com/ck-yung/dir2cs/blob/main/info-within.md)
+
+* [Options ```sum```](https://github.com/ck-yung/dir2cs/blob/main/info-sum.md)
+
+* [顯示中文日期](https://github.com/ck-yung/dir2cs/blob/main/dir2.date-short.opt.md)
+
+* [FAQ: Why closing marks are required?](https://github.com/ck-yung/dir2cs/blob/main/FAQ.md)
+

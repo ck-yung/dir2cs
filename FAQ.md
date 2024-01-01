@@ -1,6 +1,8 @@
+# Why closing marks are required?
+
 ## Difference bewteen ```*.txt``` and ```"*.txt"```
 
-Shell of Linux/MacOSX provides glob feature. Therefore, if you issue
+Shell of Linux/MacOSX provides a ```glob``` feature. Therefore, if you issue
 
 ```dir2 -s *.txt```
 
