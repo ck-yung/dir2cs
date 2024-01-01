@@ -15,17 +15,17 @@
 
 ## Other Topics
 
-* [Complete option list](https://github.com/ck-yung/dir2cs/blob/main/info-options.md)
+* [Complete option list](https://github.com/ck-yung/dir2cs/blob/main/docs/info-options.md)
 
-* [Config File ```dir2.opt```](https://github.com/ck-yung/dir2cs/blob/main/info-config-file.md)
+* [Config File ```dir2.opt```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-config-file.md)
 
-* [Envir Variable ```dir2```](https://github.com/ck-yung/dir2cs/blob/main/info-envir.md)
+* [Envir Variable ```dir2```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-envir.md)
 
-* [Options ```within``` and ```not-within```](https://github.com/ck-yung/dir2cs/blob/main/info-within.md)
+* [Options ```within``` and ```not-within```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md)
 
-* [Options ```sum```](https://github.com/ck-yung/dir2cs/blob/main/info-sum.md)
+* [Options ```sum```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md)
 
-* [顯示中文日期](https://github.com/ck-yung/dir2cs/blob/main/dir2.date-short.opt.md)
+* [顯示中文日期](https://github.com/ck-yung/dir2cs/blob/main/docs/dir2.date-short.opt.md)
 
-* [FAQ: Why closing marks are required?](https://github.com/ck-yung/dir2cs/blob/main/FAQ.md)
+* [FAQ: Why closing marks are required?](https://github.com/ck-yung/dir2cs/blob/main/docs/FAQ.md)
 

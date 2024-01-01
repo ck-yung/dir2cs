@@ -2,7 +2,7 @@
 
 ## Skip config file
 
-Config file ```dir2.opt``` will be skipped if ```--cfg-off``` is found in Envir ```dir2``` or Command-Lin Options.
+Config file ```dir2.opt``` will be skipped if ```--cfg-off``` is found in Envir ```dir2``` or Command-Line Options.
  
 | OS  | Example |
 | --  | ------- |
