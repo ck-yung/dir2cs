@@ -1,10 +1,13 @@
-
+﻿
 # Date time format
 
 * The example date/time is ```2019-06-12T15:47:10+08:00```
 * A literal string (fixed-text) must be enclosed by double quotation mark by ```%22```.
 * A tailing space must be enclosed as ```%20```.
 * A horizontal tab character must be enclosed as ```%09```.
+* [Custom configuartion to ```--date-format short```](https://github.com/ck-yung/dir2cs/blob/main/docs/date-short-cfg.md)
+* [顯示中文日期](https://github.com/ck-yung/dir2cs/blob/main/docs/date-in-chinese.md)
+
 ## Format specifier
 
 | Format | Description | Example |

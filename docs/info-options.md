@@ -3,14 +3,14 @@
 | Shortcut | Option           | Available Value         | Example |
 | -------- | ------           | ---------------         | ------- |
 | -?       | --help           | 
-| -? cfg   | --help cfg       | 
+| -? cfg   | [--help cfg](https://github.com/ck-yung/dir2cs/blob/main/docs/info-config-file.md) | 
 | -v       | --version        | 
 |          | --dir            | ```both``` ```off``` ```only``` ```only-link``` ```tree```
 |          | --sub            | ```off``` ```all```
 |          | --cfg-off        |
 |          | --utf8           |
-| -w       | --within         | DATE or SIZE | ```-w 12m``` ```-w 3day```
-| -W       | --not-within     | DATE or SIZE | ```-W 10k``` ```-W 2hour```
+| -w       | [--within](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md) | DATE or SIZE | ```-w 12m``` ```-w 3day```
+| -W       | [--not-within](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md) | DATE or SIZE | ```-W 10k``` ```-W 2hour```
 |          |                  |              | ```-w 14day -W +7day```
 | -x       | --excl           | WILD[,WILD ..]  | ```-x *.tmp,*.temp```    |
 |          |                  | ```:link```     |
@@ -22,10 +22,9 @@
 | -k       | --keep-dir       |
 |          | --no-ext         | ```incl``` ```excl``` ```only```
 |          | --hidden         | ```incl``` ```excl``` ```only```
-|          | --size-format    | INTEGER  ```commna``` ```short``` ```+short```  | ```--size-format 12,comma```
+|          | [--size-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-size-format.md) | INTEGER  ```commna``` ```short``` ```+short```  | ```--size-format 12,comma```
 |          |                  |                         | ```--size-format short```
-|          | --count-format   | INTEGER  ```commna``` ```short```  | ```--count-format 6,comma```
-|          | --date-format    | ```short``` ```unix``` FORMAT | ```--date-format yyyy-MMM-ddTHH:mm:ss```
+|          | [--date-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md) | ```short``` ```unix``` FORMAT | ```--date-format yyyy-MMM-ddTHH:mm:ss```
 |          |                  |                               | ```--date-format yy-MM-dd%20HH:mm ```
 |          | --creation-date  |
 |          | --total          | ```off``` ```only```
@@ -38,4 +37,6 @@
 |          | --take           | INTEGER  SIZE  | ```--take 10```
 |          |                  |                | ```--take 500Mb```
 |          | --total          | ```off``` ```only```
-|          | --sum            | ```ext``` ```dir``` ```+dir``` ```year```
+|          | [--sum](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md) | ```ext``` ```dir``` ```+dir``` ```year```
+
+ [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)

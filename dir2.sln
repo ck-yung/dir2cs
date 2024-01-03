@@ -14,11 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A9B2CD0D-D
 		docs\info-config-file.md = docs\info-config-file.md
 		docs\info-date-format.md = docs\info-date-format.md
 		docs\info-envir.md = docs\info-envir.md
+		docs\info-options.md = docs\info-options.md
 		docs\info-size-format.md = docs\info-size-format.md
 		docs\info-sum.md = docs\info-sum.md
 		docs\info-unix-ls.md = docs\info-unix-ls.md
 		docs\info-within.md = docs\info-within.md
-		README.md = README.md
 	EndProjectSection
 EndProject
 Global
