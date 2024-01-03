@@ -17,7 +17,9 @@ static public partial class Helper
         Helper.WriteLine = WriteLine;
     }
 
+#pragma warning disable CS8981 // The type name only contains lower-cased ascii char.
     static public partial class io
+#pragma warning restore CS8981 // The type name only contains lower-cased ascii char.
     {
         static public string InitPath { get; private set; } = "?";
         static public string RealInitPath { get; private set; } = string.Empty;

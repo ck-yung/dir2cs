@@ -537,34 +537,52 @@ static public partial class Helper
 
     static public string ToKiloUnit(long arg)
     {
-        var units = new char[] { 'T', 'G', 'M', 'K', ' ' };
-        string toKilo(float arg2, int index)
+        if (arg <= 9_999)
         {
-            if (arg2 < 10_000.0F) return $"{arg2,4:F0}{units[index - 1]} ";
-            if (index == 1) return $"{arg2,4:F0}{units[0]} ";
-            return toKilo((arg2 + 512) / 1024.0F, index - 1);
+            return arg.ToString().PadLeft(4) + "  ";
         }
-        return toKilo(arg, units.Length);
+        if (arg <= 10_239_487) // 9999.499K
+        {
+            arg = Convert.ToInt64(arg / 1024.0);
+            return arg.ToString().PadLeft(4) + "K ";
+        }
+        if (arg <= 10_485_235_711) // 9999.499999M
+        {
+            arg = Convert.ToInt64(arg / 1024.0 / 1024.0);
+            return arg.ToString().PadLeft(4) + "M ";
+        }
+        if (arg <= 10_736_344_498_175) // 9998.999999999G
+        {
+            arg = Convert.ToInt64(arg / 1024.0 / 1024.0 / 1024.0);
+            return arg.ToString().PadLeft(4) + "G ";
+        }
+        arg = Convert.ToInt64(arg / 1024.0 / 1024.0 / 1024.0 / 1024.0);
+        return arg.ToString().PadLeft(4) + "T ";
     }
 
     static public string ToExtraShortKiloUnit(long arg)
     {
-        var units = new (char UnitThe, float MaxThe)[]
+        if (arg <= 519)
         {
-            ('T', 10_000.0F),
-            ('G', 10_000.0F),
-            ('M', 800.0F),
-            ('K', 640.0F),
-            (' ', 520.0F),
-        };
-        string toKilo(float arg2, int index)
-        {
-            if (arg2 < units[index - 1].MaxThe)
-                return $"{arg2,4:F0}{units[index - 1].UnitThe} ";
-            if (index == 1) return $"{arg2,4:F0}{units[0].UnitThe} ";
-            return toKilo((arg2 + 512) / 1024.0F, index - 1);
+            return arg.ToString().PadLeft(4) + "  ";
         }
-        return toKilo(arg, units.Length);
+        if (arg <= 655_872) // 640K
+        {
+            arg = Convert.ToInt64(arg / 1024.0);
+            return arg.ToString().PadLeft(4) + "K ";
+        }
+        if (arg <= 839_385_089) // 800M
+        {
+            arg = Convert.ToInt64(arg / 1024.0 / 1024.0);
+            return arg.ToString().PadLeft(4) + "M ";
+        }
+        if (arg <= 10_736_344_498_175) // 9998.999999999G
+        {
+            arg = Convert.ToInt64(arg / 1024.0 / 1024.0 / 1024.0);
+            return arg.ToString().PadLeft(4) + "G ";
+        }
+        arg = Convert.ToInt64(arg / 1024.0 / 1024.0 / 1024.0 / 1024.0);
+        return arg.ToString().PadLeft(4) + "T ";
     }
 
     static public bool TryParseKiloNumber(string arg, out long rtn)
