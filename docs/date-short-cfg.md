@@ -4,7 +4,7 @@
 
 | Type      | Description      | Format          | Example        |
 | ----      | -----------      | ------          | -------        |
-| Culture   | Language         | Fixed text      | en-US, zh-TW   |
+| Culture   | Language         | ```"en-US"```   |                |
 | Just now  | Within 2 minutes | ```"Just"```    | ```Just```     |
 | Today     | Within today     | ```hh:mmtt```   | ```02:46PM```  |
 | Yesterday | Within yesterday | ```"Yd" hhtt``` | ```Yd 03PM```  |
