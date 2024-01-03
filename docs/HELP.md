@@ -21,11 +21,18 @@
 
 * [Envir Variable ```dir2```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-envir.md)
 
-* [Options ```within``` and ```not-within```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md)
+* [Options ```--within``` and ```--not-within```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md)
 
-* [Options ```sum```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md)
+* [Option ```--date-format```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md)
 
-* [顯示中文日期](https://github.com/ck-yung/dir2cs/blob/main/docs/dir2.date-short.opt.md)
+* [Options ```--size-format``` and ```--count-format```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-size-format.md)
+
+* [Option ```--sum```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md)
+
+* [Custom configuartion to ```--date-format short```](https://github.com/ck-yung/dir2cs/blob/main/docs/date-short-cfg.md)
+ 
+* [顯示中文日期](https://github.com/ck-yung/dir2cs/blob/main/docs/date-in-chinese.md)
 
 * [FAQ: Why closing marks are required?](https://github.com/ck-yung/dir2cs/blob/main/docs/FAQ.md)
 
+* ["unix ls" syntax](https://github.com/ck-yung/dir2cs/blob/main/docs/info-unix-ls.md)

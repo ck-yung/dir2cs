@@ -1,7 +1,0 @@
-﻿[*.cs]
-
-# Default severity for analyzer diagnostics with category 'Style'
-dotnet_analyzer_diagnostic.category-Style.severity = silent
-
-# CS8981: The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
-dotnet_diagnostic.CS8981.severity = silent

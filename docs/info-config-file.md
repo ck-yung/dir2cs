@@ -32,3 +32,5 @@
 | --reverse | Ordering |
 | --excl | Excluding files |
 | --excl-dir | Excluding directories |
+
+[Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)

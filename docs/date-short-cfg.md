@@ -1,0 +1,56 @@
+# Custom configuartion to ```--date-format short```
+
+## Default configuartion
+
+| Type      | Description      | Format          | Example        |
+| ----      | -----------      | ------          | -------        |
+| Just now  | Within 2 minutes | ```"Just"```    | ```Just```     |
+| Today     | Within today     | ```hh:mmtt```   | ```02:46PM```  |
+| Yesterday | Within yesterday | ```"Yd" hhtt``` | ```Yd 03PM```  |
+| This week | Within 6 days    | ```ddd hhtt```  | ```Mon 04PM``` |
+| This year | Within the year  | ```MMM dd```    | ```Dec 29```   |
+| else      | Else             | ```yyyy MMM```  | ```2023 Dec``` |
+
+
+## Configuration file of ```~\.local\dir2.date-short.opt```
+
+| Type      | Format              | Example               |
+| ----      | -----------         | ------                |
+| Just now  | ```Just=FIX-TEXT``` | ```Just=Just```       |
+| Today     | ```Today=FORMAT```  | ```Today=hh:mmtt```   |
+| Yesterday | ```YsDay=FORMAT```  | ```YsDay="Yd" hhtt``` |
+| This week | ```Week=FORMAT```   | ```Week=ddd hhtt```   |
+| This year | ```Year=FORMAT```   | ```Year=MMM dd```     |
+| else      | ```Else=FORMAT```   | ```Else=yyyy MMM```   |
+
+
+## Remark to ```FORMAT``` text
+
+* A literal string (fixed-text) must be enclosed by double quotation mark by ```%22```.
+* A tailing space must be enclosed as ```%20```.
+* A horizontal tab character must be enclosed as ```%09```.
+
+## Date time format text
+
+| Format | Description | Example |
+| ------ | ----------- | ------- |
+| ```d``` | The day of the month, from 1 to 31. | 2019-06-12 -> ```12``` |
+| ```dd``` | The day of the month, from 01 to 31. | 2019-06-12 -> ```12``` |
+| ```ddd``` | The abbreviated name of the day of the week. | 2019-06-12 -> ```Wed``` |
+| ```dddd``` | The full name of the day of the week. | 2019-06-12 -> ```Wednesday``` |
+| ```h``` | The hour, using a 12-hour clock from 1 to 12. | 2019-06-12T15:47:10 -> ```3``` |
+| ```hh``` | The hour, using a 12-hour clock from 01 to 12. | 2019-06-12T15:47:10 -> ```03``` |
+| ```HH``` | The hour, using a 24-hour clock from 01 to 23. | 2019-06-12T15:47:10 -> ```15``` |
+| ```mm``` | The minute, from 00 to 59. | 2019-06-12T15:47:10 -> ```47``` |
+| ```M``` | The month, from 1 to 12. | 2019-06-12T15:47:10 -> ```6``` |
+| ```MM``` | The month, from 01 to 12. | 2019-06-12T15:47:10 -> ```06``` |
+| ```MMM``` | The abbreviated name of the month. | 2019-06-12T15:47:10 -> ```Jun``` |
+| ```MMMM``` | The full name of the month. | 2019-06-12T15:47:10 -> ```June``` |
+| ```ss``` | The second, from 00 to 59. | 2019-06-12T15:47:10 -> ```10``` |
+| ```t``` | The first character of the AM/PM designator. | 2019-06-12T15:47:10 -> ```P``` |
+| ```tt``` | The AM/PM designator. | 2019-06-12T15:47:10 -> ```PM``` |
+| ```yy``` | The year, from 00 to 99. | 2019-06-12T15:47:10 -> ```19``` |
+| ```yyyy``` | The year as a four-digit number. | 2019-06-12T15:47:10 -> ```2019``` |
+| ```zz``` | Hours offset from UTC, with a leading zero for a single-digit value. | 2019-06-12T15:47:10+08:00 -> ```+08``` |
+
+[Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)

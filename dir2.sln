@@ -7,19 +7,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dir2", "dir2\dir2.csproj", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A9B2CD0D-DD34-4EFD-8332-E7E3FDC22A13}"
 	ProjectSection(SolutionItems) = preProject
-		0000.txt = 0000.txt
-		cnfg.txt = cnfg.txt
-		docs\date-format.md = docs\date-format.md
-		docs\dir2.date-short.opt.md = docs\dir2.date-short.opt.md
-		FAQ.md = FAQ.md
+		docs\date-in-chinese.md = docs\date-in-chinese.md
+		docs\date-short-cfg.md = docs\date-short-cfg.md
+		docs\FAQ.md = docs\FAQ.md
 		docs\HELP.md = docs\HELP.md
-		info-envir.md = info-envir.md
-		info-config-file.md = info-config-file.md
-		info-options.md = info-options.md
-		info-sum.md = info-sum.md
-		info-within.md = info-within.md
+		docs\info-config-file.md = docs\info-config-file.md
+		docs\info-date-format.md = docs\info-date-format.md
+		docs\info-envir.md = docs\info-envir.md
+		docs\info-size-format.md = docs\info-size-format.md
+		docs\info-sum.md = docs\info-sum.md
+		docs\info-unix-ls.md = docs\info-unix-ls.md
+		docs\info-within.md = docs\info-within.md
 		README.md = README.md
-		Unix-LS = Unix-LS
 	EndProjectSection
 EndProject
 Global

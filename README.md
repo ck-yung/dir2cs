@@ -60,11 +60,6 @@ dir2 my_proj *.cs -bks | tar -cf ..\backup\today.tar --files-from -
 dir2 my_proj *.cs -bks | zip2 -cf ..\backup\today.zip -T -
 ```
 
-### Example as Unix ls:
-[Link to "unix-ls" example](https://github.com/ck-yung/dir2cs/blob/main/Unix-LS)
-```
-dir2 obj/*.dll --show mode,owner
-
 Yung, Chun Kau
 
 <yung.chun.kau@gmail.com>

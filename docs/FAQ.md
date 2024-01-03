@@ -17,4 +17,4 @@ Therefore, below command finds more files,
 
 ```dir2 -s "*.txt"```
 
-**End**
+[Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
