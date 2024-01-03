@@ -4,6 +4,7 @@
 
 | Type      | Description      | Format          | Example        |
 | ----      | -----------      | ------          | -------        |
+| Culture   | Language         | Fixed text      | en-US, zh-TW   |
 | Just now  | Within 2 minutes | ```"Just"```    | ```Just```     |
 | Today     | Within today     | ```hh:mmtt```   | ```02:46PM```  |
 | Yesterday | Within yesterday | ```"Yd" hhtt``` | ```Yd 03PM```  |
@@ -16,6 +17,7 @@
 
 | Type      | Format              | Example               |
 | ----      | -----------         | ------                |
+| Culture   | Fixed text          | ```Culture=en-US```   |
 | Just now  | ```Just=FIX-TEXT``` | ```Just=Just```       |
 | Today     | ```Today=FORMAT```  | ```Today=hh:mmtt```   |
 | Yesterday | ```YsDay=FORMAT```  | ```YsDay="Yd" hhtt``` |
