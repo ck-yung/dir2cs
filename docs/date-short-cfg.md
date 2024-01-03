@@ -2,8 +2,8 @@
 
 ## Default configuartion
 
-| Type      | Description      | Format          | Example        |
-| ----      | -----------      | ------          | -------        |
+| Type      | Description      | Default Format  | Example        |
+| ----      | -----------      | --------------  | -------        |
 | Culture   | Language         | ```"en-US"```   |                |
 | Just now  | Within 2 minutes | ```"Just"```    | ```Just```     |
 | Today     | Within today     | ```hh:mmtt```   | ```02:46PM```  |
@@ -17,8 +17,8 @@
 
 | Type      | Format              | Example               |
 | ----      | -----------         | ------                |
-| Culture   | Fixed text          | ```Culture=en-US```   |
-| Just now  | ```Just=FIX-TEXT``` | ```Just=Just```       |
+| Culture   | ```Culture=TEXT```  | ```Culture=en-US```   |
+| Just now  | ```Just=TEXT```     | ```Just=Just```       |
 | Today     | ```Today=FORMAT```  | ```Today=hh:mmtt```   |
 | Yesterday | ```YsDay=FORMAT```  | ```YsDay="Yd" hhtt``` |
 | This week | ```Week=FORMAT```   | ```Week=ddd hhtt```   |
