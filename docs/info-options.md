@@ -5,7 +5,7 @@
 | -?       | --help           | 
 | -? cfg   | [--help cfg](https://github.com/ck-yung/dir2cs/blob/main/docs/info-config-file.md) | 
 | -v       | --version        | 
-|          | --dir            | ```both``` ```off``` ```only``` ```only-link``` ```tree```
+|          | --dir            | ```both``` ```off``` ```only``` [```only-link```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-dir.md) ```tree```
 |          | --sub            | ```off``` ```all```
 |          | --cfg-off        |
 |          | --utf8           |
@@ -13,9 +13,9 @@
 | -W       | [--not-within](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md) | DATE or SIZE | ```-W 10k``` ```-W 2hour```
 |          |                  |              | ```-w 14day -W +7day```
 | -x       | --excl           | WILD[,WILD ..]  | ```-x *.tmp,*.temp```    |
-|          |                  | ```:link```     |
+|          |                  | [```:link```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-file.md) |
 | -X       | --excl-dir       | WILD[,WILD ..]  | ```-X obj,bin```           |
-|          |                  | ```:link```     |
+|          |                  | [```:link```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-dir.md) |
 |          | --regex          |
 | -c       | --case-sensitive |
 |          | --creation-date  |
@@ -30,7 +30,7 @@
 |          | --total          | ```off``` ```only```
 |          | --hide           | ```date,size,cout,mode,owner,link```
 |          | --show           | ```date,size,cout,mode,owner,link,link-size,link-date```
-|          | --link           | ```incl``` ```only```
+|          | --link           | ```incl``` [```only```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-file.md)
 |          | --excl-none      | [Clear all ```--excl``` and ```--excl-dir```]
 | -o       | --sort           | ```off``` ```name,size,date,ext,count,last``` [up to 2 columns] | ```-o date```
 | -r       | --reverse        | ```off``` ```on```

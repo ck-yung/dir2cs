@@ -30,6 +30,10 @@
 * [Option ```--sum```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md)
 
 * [Custom configuartion to ```--date-format short```](https://github.com/ck-yung/dir2cs/blob/main/docs/date-short-cfg.md)
+
+* [About file link](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-file.md)
+
+* [About dir link](https://github.com/ck-yung/dir2cs/blob/main/docs/info-dir-file.md)
  
 * [顯示中文日期](https://github.com/ck-yung/dir2cs/blob/main/docs/date-in-chinese.md)
 
