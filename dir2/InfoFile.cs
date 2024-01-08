@@ -102,6 +102,9 @@ public record InfoBase(string Name
             return "? ";
         }
     }
+
+    public bool IsLinked { get => false == String.IsNullOrEmpty(LinkTarget); }
+    public bool IsNotLinked { get => String.IsNullOrEmpty(LinkTarget); }
 }
 
 public record InfoDir(string Name
@@ -126,10 +129,8 @@ public record InfoDir(string Name
         , UnixFileMode: UnixFileMode.None
         , LinkTarget: string.Empty);
 
-    public bool IsFake()
-    {
-        return Object.ReferenceEquals(Fake, this);
-    }
+    public bool IsFake { get => Object.ReferenceEquals(Fake, this); }
+    public bool IsNotFake { get => false == Object.ReferenceEquals(Fake, this); }
 }
 
 public record InfoFile(string Name
@@ -154,10 +155,8 @@ public record InfoFile(string Name
         , UnixFileMode: UnixFileMode.None
         , LinkTarget: string.Empty);
 
-    public bool IsNotFake()
-    {
-        return !Object.ReferenceEquals(Fake, this);
-    }
+    public bool IsFake { get => Object.ReferenceEquals(Fake, this); }
+    public bool IsNotFake { get => false == Object.ReferenceEquals(Fake, this); }
 }
 
 public class InfoSum
@@ -203,10 +202,8 @@ public class InfoSum
         return Object.ReferenceEquals(check, DoNothing);
     }
 
-    public bool IsNotFake()
-    {
-        return !Object.ReferenceEquals(Fake, this);
-    }
+    public bool IsFake { get => Object.ReferenceEquals(Fake, this); }
+    public bool IsNotFake { get => false == Object.ReferenceEquals(Fake, this); }
 
     public InfoSum AddWith(InfoFile other)
     {
@@ -245,6 +242,11 @@ static public partial class Helper
     {
         try
         {
+            if (String.IsNullOrEmpty(dir))
+            {
+                return InfoDir.Fake;
+            }
+
             var rtn = new DirectoryInfo(dir);
             var a2 = rtn.UnixFileMode;
             if (a2.HasFlag(UnixFileMode.GroupExecute))
@@ -272,6 +274,10 @@ static public partial class Helper
     {
         try
         {
+            if (String.IsNullOrEmpty(file))
+            {
+                return InfoFile.Fake;
+            }
             var rtn = new FileInfo(file);
             var info2 = Show.GetInfoLink(rtn);
             return new InfoFile(Name: rtn.Name
@@ -337,7 +343,7 @@ static public partial class Helper
                         parser.SetImplementation(Always<InfoFile>.True);
                         break;
                     case "only":
-                        parser.SetImplementation((it) => false == string.IsNullOrEmpty(it.LinkTarget));
+                        parser.SetImplementation((it) => it.IsLinked);
                         break;
                     default:
                         throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");

@@ -103,7 +103,7 @@ static internal class Show
                     case "link-size":
                         GetViewSize = (info) =>
                         {
-                            if (string.IsNullOrEmpty(info.LinkTarget))
+                            if (String.IsNullOrEmpty(info.LinkTarget))
                             {
                                 return info.Length;
                             }

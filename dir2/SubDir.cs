@@ -6,7 +6,7 @@ static public partial class MyOptions
         if (PrintDir == EnumPrint.OnlyDir)
         {
             var cntDir = Helper.GetAllDirs(Helper.ToInfoDir(path))
-            .Where((it) => true!=it.IsFake())
+            .Where((it) => true!=it.IsFake)
             .Where((it) => CheckDirLink(it))
             .Where((it) => (false ==
             string.IsNullOrEmpty(Helper.io.GetRelativeName(it.FullName))))
@@ -32,7 +32,7 @@ static public partial class MyOptions
         }
         return Helper.GetAllFiles(path)
         .Select((it) => Helper.ToInfoFile(it))
-        .Where((it) => it.IsNotFake())
+        .Where((it) => it.IsNotFake)
         .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
         .Where((it) => (false == Wild.ExclFileNameOpt.Invoke(it.Name)))
         .Where((it) => Wild.IsMatchWithinSize(it.Length))

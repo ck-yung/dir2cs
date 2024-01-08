@@ -110,7 +110,7 @@ static public class Wild
                 if (aa?.ContainsKey(true) ?? false)
                 {
                     var a2 = (ParseInvoker<InfoFile, bool>)Helper.IsLinkFileOpt;
-                    a2.SetImplementation((it) => string.IsNullOrEmpty(it.LinkTarget));
+                    a2.SetImplementation((it) => it.IsNotLinked);
                 }
                 if (aa?.ContainsKey(false) ?? false)
                 {
@@ -131,18 +131,18 @@ static public class Wild
                 .ToImmutableDictionary((grp) => grp.Key, (grp) => grp);
                 if (aa?.ContainsKey(true) ?? false)
                 {
-                    MyOptions.IsFakeDirOrLinked = (path) =>
+                    MyOptions.IsFakeDirOrLinked = (path) => // TODO: Should be REMOVED
                     {
                         var info = Helper.ToInfoDir(path);
-                        if (info.IsFake()) return true;
-                        return false == string.IsNullOrEmpty(info.LinkTarget);
+                        if (info.IsFake) return true;
+                        return info.IsLinked;
                     };
                     MyOptions.IsFakeInfoDirOrLinked = (info) =>
                     {
-                        if (info.IsFake()) return true;
-                        return false == string.IsNullOrEmpty(info.LinkTarget);
+                        if (info.IsFake) return true;
+                        return info.IsLinked;
                     };
-                    CheckDirLink = (info) => true == string.IsNullOrEmpty(info.LinkTarget);
+                    CheckDirLink = (info) => info.IsNotLinked;
                 }
                 if (aa?.ContainsKey(false) ?? false)
                 {

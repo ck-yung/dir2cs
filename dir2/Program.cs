@@ -7,10 +7,10 @@ public class Program
 {
     static public void Main(string[] args)
     {
-		try
-		{
-			RunMain(args);
-		}
+        try
+        {
+            RunMain(args);
+        }
         catch (ArgumentException aee)
         {
             if (GetExeEnvr().Contains(DumpExceptionOpt))

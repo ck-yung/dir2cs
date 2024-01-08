@@ -155,7 +155,7 @@ static public partial class Helper
         {
             var cntDir = ImpGetDirs(path)
             .Select((it) => ToInfoDir(it))
-            .Where((it) => false==it.IsFake())
+            .Where((it) => false==it.IsFake)
             .Where((it) => CheckDirLink(it))
             .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
             .Where((it) => (false == Wild.ExclDirNameOpt.Invoke(it.Name)))
@@ -184,7 +184,7 @@ static public partial class Helper
     {
         return ImpGetFiles(path)
             .Select((it) => ToInfoFile(it))
-            .Where((it) => it.IsNotFake())
+            .Where((it) => it.IsNotFake)
             .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
             .Where((it) => (false == Wild.ExclFileNameOpt.Invoke(it.Name)))
             .Where((it) => Wild.IsMatchWithinSize(it.Length))
@@ -279,7 +279,7 @@ static public partial class Helper
 
     static internal void PrintInfoTotal(string path, string[] wilds, InfoSum arg)
     {
-        if (arg.IsNotFake()) impPrintInfoTotal(path, wilds, arg);
+        if (arg.IsNotFake) impPrintInfoTotal(path, wilds, arg);
     }
 
     static internal string GetFirstDir(string path)

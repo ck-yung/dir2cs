@@ -89,7 +89,7 @@ static public partial class MyOptions
                         }
                     };
                     PrintDir = EnumPrint.OnlyDir;
-                    CheckDirLink = (info) => true != string.IsNullOrEmpty(info.LinkTarget);
+                    CheckDirLink = (info) => info.IsLinked;
                     parser.SetImplementation((dirname) => Helper.PrintDir(dirname));
                     break;
                 case "off":
