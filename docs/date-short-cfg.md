@@ -28,7 +28,7 @@
 
 ## Remark to ```FORMAT``` text
 
-* A literal string (fixed-text) must be enclosed by double quotation mark by ```%22```.
+* A literal string (fixed-text) must be enclosed by double quotation mark or ```%22```.
 * A tailing space must be enclosed as ```%20```.
 * A horizontal tab character must be enclosed as ```%09```.
 

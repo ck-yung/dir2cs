@@ -29,7 +29,9 @@
 | ```tt``` | The AM/PM designator. | ```PM``` |
 | ```yy``` | The year, from 00 to 99. | ```19``` |
 | ```yyyy``` | The year as a four-digit number. | ```2019``` |
+| ```z``` | Hours offset from UTC. | ```+8``` |
 | ```zz``` | Hours offset from UTC, with a leading zero for a single-digit value. | ```+08``` |
+| ```zzz``` | Hour:Minute offset from UTC. | ```+08:00``` |
 
 ## Standard pattern / Single char format
 
