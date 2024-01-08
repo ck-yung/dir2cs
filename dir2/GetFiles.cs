@@ -61,27 +61,27 @@ static public partial class Helper
     }
 
     #region Call Enumerator Function Safely
-    static internal readonly IEnumerator<string> EmptyEnumStrings
+    public static readonly IEnumerator<string> EmptyEnumStrings
         = Enumerable.Empty<string>().GetEnumerator();
-    static IEnumerator<string> SafeGetFileEnumerator(string dirname)
+    public static IEnumerator<string> SafeGetFileEnumerator(string dirname)
     {
         try { return Directory.EnumerateFiles(dirname).GetEnumerator(); }
         catch { return EmptyEnumStrings; }
     }
 
-    static IEnumerator<string> SafeGetDirectoryEnumerator(string dirname)
+    public static IEnumerator<string> SafeGetDirectoryEnumerator(string dirname)
     {
         try { return Directory.EnumerateDirectories(dirname).GetEnumerator(); }
         catch { return EmptyEnumStrings; }
     }
 
-    static bool SafeMoveNext(IEnumerator<string> it)
+    public static bool SafeMoveNext(IEnumerator<string> it)
     {
         try { return it.MoveNext(); }
         catch { return false; }
     }
 
-    static string SafeGetCurrent(IEnumerator<string> it)
+    public static string SafeGetCurrent(IEnumerator<string> it)
     {
         try { return it.Current; }
         catch { return string.Empty; }
@@ -128,7 +128,7 @@ static public partial class Helper
             var dirnameThe = io.GetFileName(currentDirname);
             if (string.IsNullOrEmpty(dirnameThe)) continue;
             if (Wild.ExclDirNameOpt.Invoke(dirnameThe)) continue;
-            if (IsFakeDirOrLinked(currentDirname)) continue;
+            if (IsFakeDirOrLinked(currentDirname)) continue; // TODO: Should be REPLACED
             foreach (var pathThe in GetAllFiles(currentDirname))
             {
                 yield return pathThe;
@@ -136,74 +136,56 @@ static public partial class Helper
         }
     }
 
-    static public IEnumerable<InfoDir> GetAllDirs(InfoDir path)
+    static public IEnumerable<InfoDir> GetAllDirs(InfoDir dir)
     {
-        if (Wild.ExclDirNameOpt.Invoke(path.Name))
+        foreach (var dirNext2 in dir.GetDirectories()
+            .Where((it) => CheckDirLink(it)))
         {
-            yield break;
-        }
-        var enumDir = SafeGetDirectoryEnumerator(path.FullName);
-        if (enumDir != EmptyEnumStrings)
-        {
-            yield return path;
-        }
-        while (enumDir.MoveNext())
-        {
-            var currentDirname = SafeGetCurrent(enumDir);
-            var infoThe = Helper.ToInfoDir(currentDirname);
-            if (IsFakeInfoDirOrLinked(infoThe)) continue;
-            if (string.IsNullOrEmpty(infoThe.Name)) continue;
-            foreach (var infoNext in GetAllDirs(infoThe))
+            yield return dirNext2;
+            foreach (var dirNext3 in GetAllDirs(dirNext2))
             {
-                yield return infoNext;
+                yield return dirNext3;
             }
-        }
+        };
     }
 
     static public InfoSum PrintDirTree(string path)
     {
-        void PrintSubTree(string prefix, string dirname)
+        void PrintSubTree(string prefix, InfoDir dir)
         {
-            var enumDir = SafeGetDirectoryEnumerator(dirname);
+            var enumDir = dir.GetDirectories()
+                .Where((it) => CheckDirLink(it))
+                .GetEnumerator();
 
-            string GetNext()
+            if (false == enumDir.MoveNext()) return;
+            var prevDir = enumDir.Current;
+
+            while (enumDir.MoveNext())
             {
-                while (SafeMoveNext(enumDir))
-                {
-                    var currDir = SafeGetCurrent(enumDir);
-                    var dirThe = Path.GetFileName(currDir);
-                    if (false == Wild.ExclDirNameOpt.Invoke(dirThe))
-                    {
-                        return currDir;
-                    }
-                }
-                return string.Empty;
-            }
-
-            var prevDir = GetNext();
-
-            while (true)
-            {
-                var currDir = GetNext();
-                if (string.IsNullOrEmpty(currDir)) break;
-                if (false == IsFakeDirOrLinked(prevDir))
-                {
-                    var dirThe = Path.GetFileName(prevDir);
-                    Console.WriteLine($"{prefix}+- {dirThe}");
-                    PrintSubTree($"{prefix}|  ", prevDir);
-                }
+                var currDir = enumDir.Current;
+                if (currDir.IsFake) break;
+                Console.WriteLine($"{prefix}+- {prevDir.Name}");
+                PrintSubTree($"{prefix}|  ", prevDir);
                 prevDir = currDir;
             }
 
-            if (!string.IsNullOrEmpty(prevDir) && !IsFakeDirOrLinked(prevDir))
+            if (prevDir.IsNotFake)
             {
-                var dirThe = Path.GetFileName(prevDir);
-                Console.WriteLine($"{prefix}\\- {dirThe}");
+                Console.WriteLine($"{prefix}\\- {prevDir.Name}");
                 PrintSubTree($"{prefix}   ", prevDir);
             }
         }
-        Console.WriteLine(path);
-        PrintSubTree("", path);
+
+        var infoThe = ToInfoDir(path);
+        if (infoThe.IsFake)
+        {
+            Console.WriteLine($"Dir '{path}' is NOT found!");
+        }
+        else
+        {
+            Console.WriteLine(path);
+            PrintSubTree("", infoThe);
+        }
         return InfoSum.Fake;
     }
 }

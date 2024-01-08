@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 using static dir2.MyOptions;
+using static dir2.Helper;
 
 namespace dir2;
 
@@ -131,6 +132,26 @@ public record InfoDir(string Name
 
     public bool IsFake { get => Object.ReferenceEquals(Fake, this); }
     public bool IsNotFake { get => false == Object.ReferenceEquals(Fake, this); }
+
+    /// <summary>
+    /// Get sub-directories on the directory
+    /// </summary>
+    /// <returns>Non-empty name and NotFake InfoDir</returns>
+    public IEnumerable<InfoDir> GetDirectories()
+    {
+        var itr = SafeGetDirectoryEnumerator(FullName);
+        while (SafeMoveNext(itr))
+        {
+            var thisFullpath = SafeGetCurrent(itr);
+            if (String.IsNullOrEmpty(thisFullpath)) continue;
+
+            var nameThe = Path.GetFileName(thisFullpath);
+            if (Wild.ExclDirNameOpt.Invoke(nameThe)) continue;
+
+            var infoCurrent = Helper.ToInfoDir(thisFullpath);
+            if (infoCurrent.IsNotFake) yield return infoCurrent;
+        }
+    }
 }
 
 public record InfoFile(string Name

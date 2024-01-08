@@ -45,7 +45,7 @@ static public partial class MyOptions
         .Invoke(Sum.Reduce);
     }
 
-    static public Func<string, bool> IsFakeDirOrLinked
+    static public Func<string, bool> IsFakeDirOrLinked // TODO: Should be REMOVED
     { get; internal set; } = Helper.Never;
 
     static public Func<InfoDir, bool> IsFakeInfoDirOrLinked
