@@ -6,10 +6,6 @@ static public partial class MyOptions
         if (PrintDir == EnumPrint.OnlyDir)
         {
             var cntDir = Helper.GetAllDirs(Helper.ToInfoDir(path))
-            .Where((it) => true!=it.IsFake)
-            .Where((it) => CheckDirLink(it))
-            .Where((it) => (false ==
-            string.IsNullOrEmpty(Helper.io.GetRelativeName(it.FullName))))
             .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
             .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
             .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
@@ -30,7 +26,7 @@ static public partial class MyOptions
             Helper.PrintDirCount(cntDir);
             return InfoSum.Fake;
         }
-        return Helper.GetAllFiles(path)
+        return Helper.GetAllFiles(Helper.ToInfoDir(path))
         .Select((it) => Helper.ToInfoFile(it))
         .Where((it) => it.IsNotFake)
         .Where((it) => Wild.CheckIfFileNameMatched(it.Name))
@@ -44,10 +40,4 @@ static public partial class MyOptions
         .Where((it) => Helper.IsLinkFileOpt.Invoke(it))
         .Invoke(Sum.Reduce);
     }
-
-    static public Func<string, bool> IsFakeDirOrLinked // TODO: Should be REMOVED
-    { get; internal set; } = Helper.Never;
-
-    static public Func<InfoDir, bool> IsFakeInfoDirOrLinked
-    { get; internal set; } = Helper.Never;
 }

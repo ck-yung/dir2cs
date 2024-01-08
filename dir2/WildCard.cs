@@ -131,17 +131,6 @@ static public class Wild
                 .ToImmutableDictionary((grp) => grp.Key, (grp) => grp);
                 if (aa?.ContainsKey(true) ?? false)
                 {
-                    MyOptions.IsFakeDirOrLinked = (path) => // TODO: Should be REMOVED
-                    {
-                        var info = Helper.ToInfoDir(path);
-                        if (info.IsFake) return true;
-                        return info.IsLinked;
-                    };
-                    MyOptions.IsFakeInfoDirOrLinked = (info) =>
-                    {
-                        if (info.IsFake) return true;
-                        return info.IsLinked;
-                    };
                     CheckDirLink = (info) => info.IsNotLinked;
                 }
                 if (aa?.ContainsKey(false) ?? false)

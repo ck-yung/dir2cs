@@ -60,86 +60,26 @@ static public partial class Helper
         }
     }
 
-    #region Call Enumerator Function Safely
-    public static readonly IEnumerator<string> EmptyEnumStrings
-        = Enumerable.Empty<string>().GetEnumerator();
-    public static IEnumerator<string> SafeGetFileEnumerator(string dirname)
+    static public IEnumerable<string> GetAllFiles(InfoDir dir)
     {
-        try { return Directory.EnumerateFiles(dirname).GetEnumerator(); }
-        catch { return EmptyEnumStrings; }
-    }
-
-    public static IEnumerator<string> SafeGetDirectoryEnumerator(string dirname)
-    {
-        try { return Directory.EnumerateDirectories(dirname).GetEnumerator(); }
-        catch { return EmptyEnumStrings; }
-    }
-
-    public static bool SafeMoveNext(IEnumerator<string> it)
-    {
-        try { return it.MoveNext(); }
-        catch { return false; }
-    }
-
-    public static string SafeGetCurrent(IEnumerator<string> it)
-    {
-        try { return it.Current; }
-        catch { return string.Empty; }
-    }
-    #endregion
-
-    static public IEnumerable<string> ImpGetDirs(string path)
-    {
-        var enumFile = SafeGetDirectoryEnumerator(path);
-        while (SafeMoveNext(enumFile))
+        foreach (var filename in dir.GetFiles()
+            .Where((it) => false == String.IsNullOrEmpty(it)))
         {
-            var currentFilename = SafeGetCurrent(enumFile);
-            if (string.IsNullOrEmpty(currentFilename)) continue;
-            yield return currentFilename;
-        }
-    }
-
-    static public IEnumerable<string> ImpGetFiles(string path)
-    {
-        var enumFile = SafeGetFileEnumerator(path);
-        while (SafeMoveNext(enumFile))
-        {
-            var currentFilename = SafeGetCurrent(enumFile);
-            if (string.IsNullOrEmpty(currentFilename)) continue;
-            yield return currentFilename;
-        }
-    }
-
-    static public IEnumerable<string> GetAllFiles(string path)
-    {
-        var enumFile = SafeGetFileEnumerator(path);
-        while (SafeMoveNext(enumFile))
-        {
-            var currentFilename = SafeGetCurrent(enumFile);
-            if (string.IsNullOrEmpty(currentFilename)) continue;
-            yield return currentFilename;
+            yield return filename;
         }
 
-        var enumDir = SafeGetDirectoryEnumerator(path);
-        while (enumDir.MoveNext())
+        foreach (var dirNext in dir.GetDirectories())
         {
-            var currentDirname = SafeGetCurrent(enumDir);
-            if (string.IsNullOrEmpty(currentDirname)) continue;
-            var dirnameThe = io.GetFileName(currentDirname);
-            if (string.IsNullOrEmpty(dirnameThe)) continue;
-            if (Wild.ExclDirNameOpt.Invoke(dirnameThe)) continue;
-            if (IsFakeDirOrLinked(currentDirname)) continue; // TODO: Should be REPLACED
-            foreach (var pathThe in GetAllFiles(currentDirname))
+            foreach (var filename in GetAllFiles(dirNext))
             {
-                yield return pathThe;
+                yield return filename;
             }
         }
     }
 
     static public IEnumerable<InfoDir> GetAllDirs(InfoDir dir)
     {
-        foreach (var dirNext2 in dir.GetDirectories()
-            .Where((it) => CheckDirLink(it)))
+        foreach (var dirNext2 in dir.GetDirectories())
         {
             yield return dirNext2;
             foreach (var dirNext3 in GetAllDirs(dirNext2))
@@ -154,7 +94,6 @@ static public partial class Helper
         void PrintSubTree(string prefix, InfoDir dir)
         {
             var enumDir = dir.GetDirectories()
-                .Where((it) => CheckDirLink(it))
                 .GetEnumerator();
 
             if (false == enumDir.MoveNext()) return;

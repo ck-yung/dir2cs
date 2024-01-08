@@ -11,7 +11,7 @@
 | -b       | --total off            | List filename (with path) only |
 |          | --hide date,size,count,mode,owner,link |                |
 | -t       | --total only           | Display total line only        |
-| -H       | --excl-none --hidden only --excl :link --exc-dir :link | Proper list hidden files    |
+| -H       | --excl-none --hidden only --excl :link --exc-dir :link | Properly list hidden files    |
 
 ## Other Topics
 
@@ -39,4 +39,6 @@
 
 * [FAQ: Why closing marks are required?](https://github.com/ck-yung/dir2cs/blob/main/docs/FAQ.md)
 
-* ["unix ls" syntax](https://github.com/ck-yung/dir2cs/blob/main/docs/info-unix-ls.md)
+* [Unix ```ls``` syntax](https://github.com/ck-yung/dir2cs/blob/main/docs/info-unix-ls.md)
+
+* Back to [README.md](https://github.com/ck-yung/dir2cs/blob/main/README.md)

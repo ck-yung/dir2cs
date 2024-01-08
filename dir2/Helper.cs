@@ -150,39 +150,35 @@ static public partial class Helper
 
     static internal Func<string, string> DirPrefixText { get; set; } = (msg) => msg;
 
-    static internal Func<string, InfoSum> PrintDir { get; set; }
-        = (path) =>
+    static internal Func<InfoDir, InfoSum> PrintDir { get; set; } = (dir) =>
+    {
+        var cntDir = dir.GetDirectories()
+        .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
+        .Where((it) => (false == Wild.ExclDirNameOpt.Invoke(it.Name)))
+        .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
+        .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
+        .Invoke(Sort.Dirs)
+        .Invoke(Sort.ReverseDir)
+        .Invoke(Sort.TakeDir)
+        .Select((it) =>
         {
-            var cntDir = ImpGetDirs(path)
-            .Select((it) => ToInfoDir(it))
-            .Where((it) => false==it.IsFake)
-            .Where((it) => CheckDirLink(it))
-            .Where((it) => Wild.CheckIfDirNameMatched(it.Name))
-            .Where((it) => (false == Wild.ExclDirNameOpt.Invoke(it.Name)))
-            .Where((it) => Wild.IsMatchWithinDate(Show.GetDate(it)))
-            .Where((it) => Wild.IsMatchNotWithinDate(Show.GetDate(it)))
-            .Invoke(Sort.Dirs)
-            .Invoke(Sort.ReverseDir)
-            .Invoke(Sort.TakeDir)
-            .Select((it) =>
-            {
-                ItemWrite(Show.Attributes(it));
-                ItemWrite(Show.Owner(it));
-                ItemWrite(DirPrefixText("DIR "));
-                ItemWrite(Show.Date($"{DateFormatOpt.Invoke(Show.GetDate(it))} "));
-                ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));
-                ItemWrite(Show.Link.Invoke(it));
-                ItemWriteLine(string.Empty);
-                return it;
-            })
-            .Count();
+            ItemWrite(Show.Attributes(it));
+            ItemWrite(Show.Owner(it));
+            ItemWrite(DirPrefixText("DIR "));
+            ItemWrite(Show.Date($"{DateFormatOpt.Invoke(Show.GetDate(it))} "));
+            ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));
+            ItemWrite(Show.Link.Invoke(it));
+            ItemWriteLine(string.Empty);
+            return it;
+        })
+        .Count();
         PrintDirCount(cntDir);
         return InfoSum.Fake;
     };
 
-    static internal InfoSum GetFiles(string path)
+    static internal InfoSum GetFiles(InfoDir dir)
     {
-        return ImpGetFiles(path)
+        return dir.GetFiles()
             .Select((it) => ToInfoFile(it))
             .Where((it) => it.IsNotFake)
             .Where((it) => Wild.CheckIfFileNameMatched(it.Name))

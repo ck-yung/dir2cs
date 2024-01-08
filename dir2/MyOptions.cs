@@ -33,16 +33,21 @@ static public partial class MyOptions
     static public Func<InfoDir, bool> CheckDirLink { get; internal set; }
         = Always<InfoDir>.True;
 
+    static InfoSum DefaultPrintDir(string path)
+    {
+        var infoDir = Helper.ToInfoDir(path);
+        Helper.PrintDir(infoDir);
+        return Helper.GetFiles(infoDir);
+    }
+
     static public readonly IInovke<string, InfoSum> PrintDirOpt =
         new ParseInvoker<string, InfoSum>(
         name: "--dir", help: "both | off | only | only-link | tree",
-        init: (path) =>
+        init: (path) => DefaultPrintDir(path),
+        resolve: (parser, args) =>
         {
-            Helper.PrintDir(path);
-            return Helper.GetFiles(path);
-        }, resolve: (parser, args) =>
-        {
-            var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
+            var aa = args.Where((it) => it.Length > 0)
+            .Distinct().Take(2).ToArray();
             if (aa.Length > 1)
             {
                 throw new ArgumentException(
@@ -53,11 +58,7 @@ static public partial class MyOptions
             {
                 case "both":
                     PrintDir = EnumPrint.FileAndDir;
-                    parser.SetImplementation((path) =>
-                    {
-                        Helper.PrintDir(path);
-                        return Helper.GetFiles(path);
-                    });
+                    parser.SetImplementation((path) => DefaultPrintDir(path));
                     break;
                 case "only":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
@@ -73,7 +74,8 @@ static public partial class MyOptions
                         }
                     };
                     PrintDir = EnumPrint.OnlyDir;
-                    parser.SetImplementation((dirname) => Helper.PrintDir(dirname));
+                    parser.SetImplementation(
+                        (path) => Helper.PrintDir(Helper.ToInfoDir(path)));
                     break;
                 case "only-link":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
@@ -90,11 +92,13 @@ static public partial class MyOptions
                     };
                     PrintDir = EnumPrint.OnlyDir;
                     CheckDirLink = (info) => info.IsLinked;
-                    parser.SetImplementation((dirname) => Helper.PrintDir(dirname));
+                    parser.SetImplementation(
+                        (path) => Helper.PrintDir(Helper.ToInfoDir(path)));
                     break;
                 case "off":
                     PrintDir = EnumPrint.OnlyFile;
-                    parser.SetImplementation(Helper.GetFiles);
+                    parser.SetImplementation(
+                        (path) => Helper.GetFiles(Helper.ToInfoDir(path)));
                     break;
                 case "tree":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;

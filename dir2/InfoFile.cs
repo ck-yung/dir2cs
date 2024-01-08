@@ -133,6 +133,35 @@ public record InfoDir(string Name
     public bool IsFake { get => Object.ReferenceEquals(Fake, this); }
     public bool IsNotFake { get => false == Object.ReferenceEquals(Fake, this); }
 
+
+    #region Call Enumerator Function Safely
+    static readonly IEnumerator<string> EmptyEnumStrings
+        = Enumerable.Empty<string>().GetEnumerator();
+    static IEnumerator<string> SafeGetFileEnumerator(string dirname)
+    {
+        try { return Directory.EnumerateFiles(dirname).GetEnumerator(); }
+        catch { return EmptyEnumStrings; }
+    }
+
+    static IEnumerator<string> SafeGetDirectoryEnumerator(string dirname)
+    {
+        try { return Directory.EnumerateDirectories(dirname).GetEnumerator(); }
+        catch { return EmptyEnumStrings; }
+    }
+
+    static bool SafeMoveNext(IEnumerator<string> it)
+    {
+        try { return it.MoveNext(); }
+        catch { return false; }
+    }
+
+    static string SafeGetCurrent(IEnumerator<string> it)
+    {
+        try { return it.Current; }
+        catch { return string.Empty; }
+    }
+    #endregion
+
     /// <summary>
     /// Get sub-directories on the directory
     /// </summary>
@@ -149,7 +178,20 @@ public record InfoDir(string Name
             if (Wild.ExclDirNameOpt.Invoke(nameThe)) continue;
 
             var infoCurrent = Helper.ToInfoDir(thisFullpath);
-            if (infoCurrent.IsNotFake) yield return infoCurrent;
+            if (infoCurrent.IsFake) continue;
+            if (false == CheckDirLink(infoCurrent)) continue;
+            yield return infoCurrent;
+        }
+    }
+
+    public IEnumerable<string> GetFiles()
+    {
+        var itr = SafeGetFileEnumerator(FullName);
+        while (SafeMoveNext(itr))
+        {
+            var current = SafeGetCurrent(itr);
+            if (String.IsNullOrEmpty(current)) continue;
+            yield return current;
         }
     }
 }
