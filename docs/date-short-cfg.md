@@ -12,6 +12,10 @@
 | This year | Within the year  | ```MMM dd```    | ```Dec 29```   |
 | else      | Else             | ```yyyy MMM```  | ```2023 Dec``` |
 
+* The formats of "Today AM" and "Today PM" are referred to "Today".
+
+* The formats of "Yesterday AM" and "Yesterday PM" are referred to "Yeserday".
+
 
 ## Configuration file of ```~\.local\dir2.date-short.opt```
 
@@ -25,6 +29,26 @@
 | This year | ```Year=FORMAT```   | ```Year=MMM dd```     |
 | else      | ```Else=FORMAT```   | ```Else=yyyy MMM```   |
 
+## Today AM/PM
+* The formats of "Today AM" and "Today PM" can be different if
+one of the followings is found in the ```opt``` file.
+| Type | Format | Example |
+| ---- | ------ | ------- |
+| Init | ```TodayAmPm:Flag``` | ```TodayAMPM:Yes```  |
+|      |                      | ```TodayAMPM:True``` |
+| AM   | ```TodayAM=FORMAT``` | ```TodayAM=h:mm"a"``` |
+| PM   | ```TodayPM=FORMAT``` | ```TodayPM=h:mm"p"``` |
+
+
+## Yeserday AM/PM
+* The formats of "Yeserday AM" and "Today PM" can be different if
+one of the followings is found in the ```opt``` file.
+| Type | Format | Example |
+| ---- | ------ | ------- |
+| Init | ```YsdayAmPm:Flag``` | ```YsdayAMPM:Yes```  |
+|      |                      | ```YsdayAMPM:True``` |
+| AM   | ```YsdayAM=FORMAT``` | ```YsdayAM="Yesdy AM"``` |
+| PM   | ```YsdayPM=FORMAT``` | ```YsdayPM="Yesdy PM"``` |
 
 ## Remark to ```FORMAT``` text
 
