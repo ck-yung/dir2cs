@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using System.Globalization;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
@@ -39,41 +38,46 @@ static public partial class Helper
                     case "short":
                         #region
                         // 'keyXXX' must be lower case
-                        // length of key is 4 ~ 8
+                        const string keyTodayHours = "todayhours";
+                        const string keyYsDayHours = "ysdayhours";
                         const string keyToday = "today";
                         const string keyYsDay = "ysday";
-                        const string keyTodayAM = "todayam";
-                        const string keyYsDayAM = "ysdayam";
-                        const string keyTodayPM = "todaypm";
-                        const string keyYsDayPM = "ysdaypm";
                         const string keyWeek = "week";
                         const string keyYear = "year";
                         const string keyElse = "else";
-                        // length of key is 8 ~ 11
-                        const string keyTodayAmPm = "todayampm";
-                        const string keyYsDayAmPm = "ysdayampm";
+                        const string keyToday00 = "today00~01";
+                        const string keyToday06 = "today01~06";
+                        const string keyToday12 = "today06~12";
+                        const string keyToday18 = "today12~18";
+                        const string keyToday24 = "today18~24";
+                        const string keyYsDay00 = "ysday00~01";
+                        const string keyYsDay06 = "ysday01~06";
+                        const string keyYsDay12 = "ysday06~12";
+                        const string keyYsDay18 = "ysday12~18";
+                        const string keyYsDay24 = "ysday18~24";
                         #endregion
+
+                        Func<DateTime, string> defaultTodayFormat = (it) =>
+                            it.ToString("hh:mmtt", CultureInfo.InvariantCulture).PadRight(8);
+                        Func<DateTime, string> defaultYsdayFormat = (it) =>
+                            it.ToString("\"Yd\"hhtt", CultureInfo.InvariantCulture).PadRight(8);
 
                         Func<string> fnJust = () => "Just".PadRight(8);
                         var formatMap = new Dictionary<string, Func<DateTime, string>>()
                         {
-                            [keyToday] = (it) =>
-                            it.ToString("hh:mmtt", CultureInfo.InvariantCulture).PadRight(8),
+                            [keyToday] = defaultTodayFormat,
+                            [keyToday00] = defaultTodayFormat,
+                            [keyToday06] = defaultTodayFormat,
+                            [keyToday12] = defaultTodayFormat,
+                            [keyToday18] = defaultTodayFormat,
+                            [keyToday24] = defaultTodayFormat,
 
-                            [keyYsDay] = (it) =>
-                            it.ToString("\"Yd\" hhtt", CultureInfo.InvariantCulture).PadRight(8),
-
-                            [keyTodayAM] = (it) =>
-                            it.ToString("hh:mmtt", CultureInfo.InvariantCulture).PadRight(8),
-
-                            [keyYsDayAM] = (it) =>
-                            it.ToString("\"Yd\" hhtt", CultureInfo.InvariantCulture).PadRight(8),
-
-                            [keyTodayPM] = (it) =>
-                            it.ToString("hh:mmtt", CultureInfo.InvariantCulture).PadRight(8),
-
-                            [keyYsDayPM] = (it) =>
-                            it.ToString("\"Yd\" hhtt", CultureInfo.InvariantCulture).PadRight(8),
+                            [keyYsDay] = defaultYsdayFormat,
+                            [keyYsDay00] = defaultYsdayFormat,
+                            [keyYsDay06] = defaultYsdayFormat,
+                            [keyYsDay12] = defaultYsdayFormat,
+                            [keyYsDay18] = defaultYsdayFormat,
+                            [keyYsDay24] = defaultYsdayFormat,
 
                             [keyWeek] = (it) =>
                             it.ToString("ddd hhtt", CultureInfo.InvariantCulture).PadRight(8),
@@ -84,10 +88,11 @@ static public partial class Helper
                             [keyElse] = (it) =>
                             it.ToString("yyyy MMM", CultureInfo.InvariantCulture).PadRight(8),
                         };
+
                         var ampmFlags = new Dictionary<string, bool>()
                         {
-                            [keyTodayAmPm] = false,
-                            [keyYsDayAmPm] = false,
+                            [keyTodayHours] = false,
+                            [keyYsDayHours] = false,
                         };
 
                         var cfgFilename = Config.GetFilename()[..^4]
@@ -133,11 +138,11 @@ static public partial class Helper
                                 RegexOptions.IgnoreCase);
 
                             var regFormat = new Regex(
-                                @"^(?<Name>\w{4,11})(\s=\s|\s=|=\s|=)(?<Format>.*)$",
+                                @"^(?<Name>[a-zA-Z0-9~]{4,21})(\s=\s|\s=|=\s|=)(?<Format>.*)$",
                                 RegexOptions.IgnoreCase);
 
                             var regAmPmFormat = new Regex(
-                                @"^(?<Name>\w{8,11})(\s:\s|\s:|:\s|:)(?<Format>.*)$",
+                                @"^(?<Name>\w{4,21})(\s:\s|\s:|:\s|:)(?<Format>.*)$",
                                 RegexOptions.IgnoreCase);
 
                             var buf2 = new byte[1024];
@@ -296,36 +301,54 @@ static public partial class Helper
                         var now = DateTime.Now;
                         var withinTwoMinutes = now.AddMinutes(-2);
                         var todayMidnight = new DateTime(now.Year, now.Month, now.Day);
-                        var todayNoon = todayMidnight.AddHours(12);
+                        var today00 = todayMidnight.AddHours(1);
+                        var today06 = todayMidnight.AddHours(6);
+                        var today12 = todayMidnight.AddHours(12);
+                        var today18 = todayMidnight.AddHours(18);
                         var yesterday = todayMidnight.AddDays(-1);
-                        var yesterdayNoon = todayMidnight.AddDays(-1);
+                        var yesterday00 = today00.AddDays(-1);
+                        var yesterday06 = today06.AddDays(-1);
+                        var yesterday12 = today12.AddDays(-1);
+                        var yesterday18 = today18.AddDays(-1);
                         #region the formats ..
                         var fnToday = formatMap[keyToday];
                         var fnYsDay = formatMap[keyYsDay];
-                        var fnTodayAM = formatMap[keyTodayAM];
-                        var fnYsDayAM = formatMap[keyYsDayAM];
-                        var fnTodayPM = formatMap[keyTodayPM];
-                        var fnYsDayPM = formatMap[keyYsDayPM];
+                        var fnToday00 = formatMap[keyToday00];
+                        var fnToday06 = formatMap[keyToday06];
+                        var fnToday12 = formatMap[keyToday12];
+                        var fnToday18 = formatMap[keyToday18];
+                        var fnToday24 = formatMap[keyToday24];
+                        var fnYsday00 = formatMap[keyYsDay00];
+                        var fnYsday06 = formatMap[keyYsDay06];
+                        var fnYsday12 = formatMap[keyYsDay12];
+                        var fnYsday18 = formatMap[keyYsDay18];
+                        var fnYsday24 = formatMap[keyYsDay24];
                         var fnWeek = formatMap[keyWeek];
                         var fnYear = formatMap[keyYear];
                         var fnElse = formatMap[keyElse];
                         #endregion
 
-                        if (ampmFlags[keyTodayAmPm])
+                        if (ampmFlags[keyTodayHours])
                         {
                             fnToday = (date) =>
                             {
-                                if (date < todayNoon) return fnTodayAM(date);
-                                return fnTodayPM(date);
+                                if (date < today00) return fnToday00(date);
+                                if (date < today06) return fnToday06(date);
+                                if (date < today12) return fnToday12(date);
+                                if (date < today18) return fnToday18(date);
+                                return fnToday24(date);
                             };
                         }
 
-                        if (ampmFlags[keyYsDayAmPm])
+                        if (ampmFlags[keyYsDayHours])
                         {
                             fnYsDay = (date) =>
                             {
-                                if (date < yesterdayNoon) return fnYsDayAM(date);
-                                return fnYsDayPM(date);
+                                if (date < yesterday00) return fnYsday00(date);
+                                if (date < yesterday06) return fnYsday06(date);
+                                if (date < yesterday12) return fnYsday12(date);
+                                if (date < yesterday18) return fnYsday18(date);
+                                return fnYsday24(date);
                             };
                         }
 

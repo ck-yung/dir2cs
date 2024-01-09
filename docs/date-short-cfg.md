@@ -2,7 +2,7 @@
 
 ## Default configuartion
 
-| Type      | Description      | Default Format  | Example        |
+| Type      | Description      | Default Format  | Demo        |
 | ----      | -----------      | --------------  | -------        |
 | Culture   | Language         | ```"en-US"```   |                |
 | Just now  | Within 2 minutes | ```"Just"```    | ```Just```     |
@@ -19,36 +19,16 @@
 
 ## Configuration file of ```~\.local\dir2.date-short.opt```
 
-| Type      | Format              | Example               |
-| ----      | -----------         | ------                |
-| Culture   | ```Culture=TEXT```  | ```Culture=en-US```   |
-| Just now  | ```Just=TEXT```     | ```Just=Just```       |
-| Today     | ```Today=FORMAT```  | ```Today=hh:mmtt```   |
-| Yesterday | ```YsDay=FORMAT```  | ```YsDay="Yd" hhtt``` |
-| This week | ```Week=FORMAT```   | ```Week=ddd hhtt```   |
-| This year | ```Year=FORMAT```   | ```Year=MMM dd```     |
-| else      | ```Else=FORMAT```   | ```Else=yyyy MMM```   |
-
-## Today AM/PM
-* The formats of "Today AM" and "Today PM" can be different if
-one of the followings is found in the ```opt``` file.
-| Type | Format | Example |
-| ---- | ------ | ------- |
-| Init | ```TodayAmPm:Flag``` | ```TodayAMPM:Yes```  |
-|      |                      | ```TodayAMPM:True``` |
-| AM   | ```TodayAM=FORMAT``` | ```TodayAM=h:mm"a"``` |
-| PM   | ```TodayPM=FORMAT``` | ```TodayPM=h:mm"p"``` |
-
-
-## Yeserday AM/PM
-* The formats of "Yeserday AM" and "Today PM" can be different if
-one of the followings is found in the ```opt``` file.
-| Type | Format | Example |
-| ---- | ------ | ------- |
-| Init | ```YsdayAmPm:Flag``` | ```YsdayAMPM:Yes```  |
-|      |                      | ```YsdayAMPM:True``` |
-| AM   | ```YsdayAM=FORMAT``` | ```YsdayAM="Yesdy AM"``` |
-| PM   | ```YsdayPM=FORMAT``` | ```YsdayPM="Yesdy PM"``` |
+| Type      | Format              | Example               | Demo |
+| ----      | -----------         | ------                | ---- |
+| Culture   | ```Culture=TEXT```  | ```Culture=en-US```   | |
+| Just now  | ```Just=TEXT```     | ```Just=Just```       | ```Just```     |
+|           |                     | ```Just=Now```        | ```Now```      |
+| Today     | ```Today=FORMAT```  | ```Today=hh:mmtt```   | ```03:47PM```  |
+| Yesterday | ```YsDay=FORMAT```  | ```YsDay="Yd" hhtt``` | ```Yd 03PM```  |
+| This week | ```Week=FORMAT```   | ```Week=ddd hhtt```   | ```Wed 03PM``` |
+| This year | ```Year=FORMAT```   | ```Year=MMM dd```     | ```Jun 12```   |
+| else      | ```Else=FORMAT```   | ```Else=yyyy MMM```   | ```2019 Jun``` |
 
 ## Remark to ```FORMAT``` text
 
@@ -78,5 +58,28 @@ one of the followings is found in the ```opt``` file.
 | ```yy``` | The year, from 00 to 99. | 2019-06-12T15:47:10 -> ```19``` |
 | ```yyyy``` | The year as a four-digit number. | 2019-06-12T15:47:10 -> ```2019``` |
 | ```zz``` | Hours offset from UTC, with a leading zero for a single-digit value. | 2019-06-12T15:47:10+08:00 -> ```+08``` |
+
+## Detailed hour description of TODAY and YESERDAY.
+
+* Other than 'AM/PM' description, you can find a hour break-down in ```Today``` and ```Yeserday```.
+
+
+| Type | Format | Example Format | Example |
+| ---- | ------ | -------------- | ------- |
+| Flag | ```TodayHours:FLAG``` | ```TodayHours:Yes```  | |
+|      |                       | ```TodayHours:True``` | |
+| Today 00:00 ~ 00:59 | ```Today00~01=FORMAT``` | ```Today00~01=%22This%20Midnight%22%20%09``` | ```This Midnight``` |
+| Today 01:00 ~ 05:59 | ```Today01~06=FORMAT``` | ```Today01~06=%22This%20Early%22%20h09``` | ```This Early 8``` |
+| Today 06:00 ~ 12:59 | ```Today06~12=FORMAT``` | ```Today06~12=%22This%20Morning%22%20h%09``` | ```This Morning 11``` |
+| Today 12:00 ~ 17:59 | ```Today12~18=FORMAT``` | ```Today12~18=%22This%20Afternoon%22%20h%09``` | ```This Afternoon 3``` |
+| Today 18:00 ~ 23:59 | ```Today18~24=FORMAT``` | ```Today00~01=%22This%20Night%22%20h%09``` | ```This Night 11``` |
+| Yeserday 00:00 ~ 00:59 | ```Ysday00~01=FORMAT``` | ```Ysday00~01=%22Yeserday%20Midnight%22%20%09``` | ```Yeserday Midnight``` |
+| Yeserday 01:00 ~ 05:59 | ```Ysday01~06=FORMAT``` | ```Ysday01~06=%22Yeserday%20Early%22%20h09``` | ```Yeserday Early 8``` |
+| Yeserday 06:00 ~ 12:59 | ```Ysday06~12=FORMAT``` | ```Ysday06~12=%22Yeserday%20Morning%22%20h%09``` | ```Yeserday Morning 11``` |
+| Yeserday 12:00 ~ 17:59 | ```Ysday12~18=FORMAT``` | ```Ysday12~18=%22Yeserday%20Afternoon%22%20h%09``` | ```Yeserday Afternoon 3``` |
+| Yeserday 18:00 ~ 23:59 | ```Ysday18~24=FORMAT``` | ```Ysday00~01=%22Yeserday%20Night%22%20h%09``` | ```Yeserday Night 11``` |
+
+
+
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
