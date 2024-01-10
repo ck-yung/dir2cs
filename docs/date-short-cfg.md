@@ -4,7 +4,7 @@
 
 | Type      | Description      | Default Format  | Demo        |
 | ----      | -----------      | --------------  | -------        |
-| Culture   | Language         | ```"en-US"```   |                |
+| Culture   | Language         | ```"en-US"```   | ```zh-TW```    |
 | Just now  | Within 2 minutes | ```"Just"```    | ```Just```     |
 | Today     | Within today     | ```hh:mmtt```   | ```02:46PM```  |
 | Yesterday | Within yesterday | ```"Yd" hhtt``` | ```Yd 03PM```  |
@@ -61,25 +61,24 @@
 
 ## Detailed hour description of TODAY and YESERDAY.
 
+* The feautre will be releaesd in version 2.1.2 (2024 Feb).
 * Other than 'AM/PM' description, you can find a hour break-down in ```Today``` and ```Yeserday```.
 
 
-| Type | Format | Example Format | Example |
-| ---- | ------ | -------------- | ------- |
-| Flag | ```TodayHours:FLAG``` | ```TodayHours:Yes```  | |
-|      |                       | ```TodayHours:True``` | |
-| Today 00:00 ~ 00:59 | ```Today00~01=FORMAT``` | ```Today00~01=%22This%20Midnight%22%20%09``` | ```This Midnight``` |
-| Today 01:00 ~ 05:59 | ```Today01~06=FORMAT``` | ```Today01~06=%22This%20Early%22%20h09``` | ```This Early 8``` |
-| Today 06:00 ~ 12:59 | ```Today06~12=FORMAT``` | ```Today06~12=%22This%20Morning%22%20h%09``` | ```This Morning 11``` |
-| Today 12:00 ~ 17:59 | ```Today12~18=FORMAT``` | ```Today12~18=%22This%20Afternoon%22%20h%09``` | ```This Afternoon 3``` |
-| Today 18:00 ~ 23:59 | ```Today18~24=FORMAT``` | ```Today00~01=%22This%20Night%22%20h%09``` | ```This Night 11``` |
-| Yeserday 00:00 ~ 00:59 | ```Ysday00~01=FORMAT``` | ```Ysday00~01=%22Yeserday%20Midnight%22%20%09``` | ```Yeserday Midnight``` |
-| Yeserday 01:00 ~ 05:59 | ```Ysday01~06=FORMAT``` | ```Ysday01~06=%22Yeserday%20Early%22%20h09``` | ```Yeserday Early 8``` |
-| Yeserday 06:00 ~ 12:59 | ```Ysday06~12=FORMAT``` | ```Ysday06~12=%22Yeserday%20Morning%22%20h%09``` | ```Yeserday Morning 11``` |
-| Yeserday 12:00 ~ 17:59 | ```Ysday12~18=FORMAT``` | ```Ysday12~18=%22Yeserday%20Afternoon%22%20h%09``` | ```Yeserday Afternoon 3``` |
-| Yeserday 18:00 ~ 23:59 | ```Ysday18~24=FORMAT``` | ```Ysday00~01=%22Yeserday%20Night%22%20h%09``` | ```Yeserday Night 11``` |
-
-
+| Type | Format | Default Format | Example Format | Example |
+| ---- | ------ | -------------- | -------------- | ------- |
+| Flag | ```TodayHours:FLAG``` | | ```TodayHours:Yes```  | |
+|      |                       | | ```TodayHours:True``` | |
+| Today 00:00 ~ 00:59 | ```Today00~01=FORMAT``` | ```hh:mmtt```| ```Today00~01=%22This%20Midnight%22%20%09``` | ```This Midnight``` |
+| Today 01:00 ~ 05:59 | ```Today01~06=FORMAT``` | ```hh:mmtt```| ```Today01~06=%22This%20Early%22%20h09``` | ```This Early 8``` |
+| Today 06:00 ~ 12:59 | ```Today06~12=FORMAT``` | ```hh:mmtt```| ```Today06~12=%22This%20Morning%22%20h%09``` | ```This Morning 11``` |
+| Today 12:00 ~ 17:59 | ```Today12~18=FORMAT``` | ```hh:mmtt```| ```Today12~18=%22This%20Afternoon%22%20h%09``` | ```This Afternoon 3``` |
+| Today 18:00 ~ 23:59 | ```Today18~24=FORMAT``` | ```hh:mmtt```| ```Today00~01=%22This%20Night%22%20h%09``` | ```This Night 11``` |
+| Yeserday 00:00 ~ 00:59 | ```Ysday00~01=FORMAT``` | ```"Yd" hhtt```| ```Ysday00~01=%22Yeserday%20Midnight%22%20%09``` | ```Yeserday Midnight``` |
+| Yeserday 01:00 ~ 05:59 | ```Ysday01~06=FORMAT``` | ```"Yd" hhtt```| ```Ysday01~06=%22Yeserday%20Early%22%20h09``` | ```Yeserday Early 8``` |
+| Yeserday 06:00 ~ 12:59 | ```Ysday06~12=FORMAT``` | ```"Yd" hhtt```| ```Ysday06~12=%22Yeserday%20Morning%22%20h%09``` | ```Yeserday Morning 11``` |
+| Yeserday 12:00 ~ 17:59 | ```Ysday12~18=FORMAT``` | ```"Yd" hhtt```| ```Ysday12~18=%22Yeserday%20Afternoon%22%20h%09``` | ```Yeserday Afternoon 3``` |
+| Yeserday 18:00 ~ 23:59 | ```Ysday18~24=FORMAT``` | ```"Yd" hhtt```| ```Ysday00~01=%22Yeserday%20Night%22%20h%09``` | ```Yeserday Night 11``` |
 
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
