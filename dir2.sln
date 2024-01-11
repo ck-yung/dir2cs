@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A9B2CD0D-D
 		docs\info-link-dir.md = docs\info-link-dir.md
 		docs\info-link-file.md = docs\info-link-file.md
 		docs\info-options.md = docs\info-options.md
+		docs\info-short-help.md = docs\info-short-help.md
 		docs\info-size-format.md = docs\info-size-format.md
 		docs\info-sum.md = docs\info-sum.md
 		docs\info-unix-ls.md = docs\info-unix-ls.md

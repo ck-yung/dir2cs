@@ -316,4 +316,23 @@ static internal class Show
                     throw new ArgumentException($"Bad values is found to {parser.Name}");
                 }
             });
+
+    static public readonly IInovke<bool, string> ReportTime =
+        new ParseInvoker<bool, string>("--report-time", help: "FORMAT",
+            init: (_) => "", resolve: (parser, args) =>
+            {
+                var argThe = System.Net.WebUtility.UrlDecode(
+                    Helper.GetUnique(args, parser));
+                try
+                {
+                    var a2 = DateTimeOffset.Now.ToString(argThe);
+                    parser.SetImplementation((_) =>
+                    {
+                        return " ["+ DateTimeOffset.Now.ToString(argThe) + "]";
+                    });
+                }
+                catch
+                {
+                }
+            });
 }

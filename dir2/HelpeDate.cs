@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
 
-
 namespace dir2;
 
 static public partial class Helper

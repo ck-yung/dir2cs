@@ -241,15 +241,17 @@ static public partial class Helper
                     {
                         Write($"Dir '{path}' is not found");
                     }
-                    WriteLine(".");
+                    Write(".");
                 }
+                WriteLine(Show.ReportTime.Invoke(true));
                 break;
             case 1:
                 if (printEvenCountOne)
                 {
                     Write("One file is found: ");
                     Write(Show.Size(Show.LengthFormatOpt.Invoke(sum.Length)));
-                    WriteLine(Show.Date(DateFormatOpt.Invoke(sum.StartTime)));
+                    Write(Show.Date(DateFormatOpt.Invoke(sum.StartTime)));
+                    WriteLine(Show.ReportTime.Invoke(true));
                 }
                 break;
             default:

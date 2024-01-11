@@ -175,12 +175,6 @@ static public partial class MyOptions
             }
         });
 
-    static public readonly IParse TotalTime = new SimpleParser(name: "--total-time-format",
-        help: "FORMAT", resolve: (parser, args) =>
-        {
-
-        });
-
     static public IEnumerable<string> ExpandFromShortCut(IEnumerable<string> args)
     {
         IEnumerable<string> ExpandCombiningShortCut()
@@ -254,6 +248,7 @@ static public partial class MyOptions
         Sort.ReverseOpt,
         Sort.TakeOpt,
         TotalOpt,
+        (IParse) Show.ReportTime,
     };
 
     static public readonly IParse[] ConfigParsers = new IParse[]
@@ -269,6 +264,7 @@ static public partial class MyOptions
         (IParse) Helper.DateFormatOpt,
         (IParse) Helper.IsHiddenFileOpt,
         Sort.ReverseOpt,
+        (IParse) Show.ReportTime,
     };
 
     static public readonly IParse[] ExclFileDirParsers = Parsers

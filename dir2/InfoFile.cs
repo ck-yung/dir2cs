@@ -1,7 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text;
 using static dir2.MyOptions;
-using static dir2.Helper;
 
 namespace dir2;
 
@@ -225,6 +224,19 @@ public record InfoFile(string Name
 public class InfoSum
 {
     public string Name { get; private set; }
+
+    bool isBase { get; set; } = false;
+    string GetName()
+    {
+        if (isBase)
+        {
+            var rptTime = Show.ReportTime.Invoke(true);
+            if (string.IsNullOrEmpty(rptTime)) return Name;
+            return Name + " " + rptTime;
+        }
+        return Name;
+    }
+
     public int Count { get; private set; } = 0;
     public long Length { get; private set; } = 0L;
     public DateTime StartTime { get; private set; } = DateTime.MaxValue;
@@ -254,6 +266,7 @@ public class InfoSum
                 Name = a2;
             }
         }
+        isBase = IsBase;
     }
 
     static internal readonly InfoSum Fake = new(string.Empty);
@@ -295,7 +308,7 @@ public class InfoSum
         write(Show.Date($"- "));
         write(Show.Date($"{Helper.DateFormatOpt.Invoke(EndTime)} "));
         write(Show.Count(Show.CountFormat.Invoke(Count)));
-        writeLine(Name);
+        writeLine(GetName());
     }
 }
 

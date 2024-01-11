@@ -35,8 +35,12 @@
 | -o       | --sort           | ```off``` ```name,size,date,ext,count,last``` [up to 2 columns] | ```-o date```
 | -r       | --reverse        | ```off``` ```on```
 |          | --take           | COUNT  SIZE  | ```--take 10```
-|          |                  |                | ```--take 500Mb```
+|          |                  |              | ```--take 500Mb```
 |          | --total          | ```off``` ```only```
 |          | [--sum](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md) | ```ext``` ```dir``` ```+dir``` ```year```
+|          | --report-time    | DATE-TIME-FORMAT       | ```--report-time %22TimeZone%20%22zz```
+|          |                  |              | ```--report-time %22Done%20at%20%22yyyy-MMM-dd%20HH:mm%20zz```
+
+* Option ```--report-time``` will be implemented at ```v2.1.2``` (2024 Feb).
 
  [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
