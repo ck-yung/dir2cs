@@ -40,6 +40,9 @@ static public partial class MyOptions
         return Helper.GetFiles(infoDir);
     }
 
+    static internal Action<int> PrintDirCount { get; private set; } =
+        (count) => PrintDirCountWithCheck(count);
+
     static public readonly IInovke<string, InfoSum> PrintDirOpt =
         new ParseInvoker<string, InfoSum>(
         name: "--dir", help: "both | off | only | only-link | tree",
@@ -62,34 +65,16 @@ static public partial class MyOptions
                     break;
                 case "only":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
-                    Helper.impPrintDirCount = (cnt) =>
-                    {
-                        if (cnt==0)
-                        {
-                            Helper.WriteLine("No dir is found.");
-                        }
-                        else if (cnt>1)
-                        {
-                            Helper.WriteLine($"{cnt} dir are found.");
-                        }
-                    };
+                    PrintDirCount = (
+                        count) => PrintDirCountWithCheck(count);
                     PrintDir = EnumPrint.OnlyDir;
                     parser.SetImplementation(
                         (path) => Helper.PrintDir(Helper.ToInfoDir(path)));
                     break;
                 case "only-link":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
-                    Helper.impPrintDirCount = (cnt) =>
-                    {
-                        if (cnt == 0)
-                        {
-                            Helper.WriteLine("No dir is found.");
-                        }
-                        else if (cnt > 1)
-                        {
-                            Helper.WriteLine($"{cnt} dir are found.");
-                        }
-                    };
+                    PrintDirCount = (
+                        count) => PrintDirCountWithCheck(count);
                     PrintDir = EnumPrint.OnlyDir;
                     CheckDirLink = (info) => info.IsLinked;
                     parser.SetImplementation(
@@ -142,8 +127,30 @@ static public partial class MyOptions
                 }
             });
 
+    static void PrintDirCountWithCheck(int count, bool addNewLine = true,
+        bool skipLessTwo = true)
+    {
+        switch (count, skipLessTwo)
+        {
+            case (<2, true):
+                break;
+            case (1, _):
+                Helper.WriteLine("One dir is found.");
+                if (addNewLine) Helper.WriteLine("");
+                break;
+            case (0, _):
+                Helper.WriteLine("No dir is found.");
+                if (addNewLine) Helper.WriteLine("");
+                break;
+            default:
+                Helper.WriteLine($"{count} dirs are found.");
+                if (addNewLine) Helper.WriteLine("");
+                break;
+        }
+    }
+
     static public readonly IParse TotalOpt = new SimpleParser(name: "--total",
-        help: "off | only", resolve: (parser, args) =>
+        help: "off | only | always", resolve: (parser, args) =>
         {
             var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
             if (aa.Length > 1)
@@ -152,27 +159,14 @@ static public partial class MyOptions
             {
                 case "off":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
-                    Helper.impPrintDirCount = Helper.DoNothing;
+                    PrintDirCount = Helper.DoNothing;
                     break;
                 case "only":
                     Helper.ItemWrite = Helper.DoNothing;
                     Helper.ItemWriteLine = Helper.DoNothing;
 
-                    Helper.impPrintDirCount = (cntDir) =>
-                    {
-                        switch (cntDir)
-                        {
-                            case 0:
-                                Helper.WriteLine("No dir is found.");
-                                break;
-                            case 1:
-                                Helper.WriteLine("One dir is found.");
-                                break;
-                            default:
-                                Helper.WriteLine($"{cntDir} dirs are found.");
-                                break;
-                        }
-                    };
+                    PrintDirCount = (cntDir) => PrintDirCountWithCheck(
+                        cntDir, addNewLine: false, skipLessTwo: false);
 
                     if (PrintDir != EnumPrint.OnlyDir)
                     {
@@ -181,6 +175,16 @@ static public partial class MyOptions
                                 path, wilds, arg, printEvenCountOne: true);
                     }
                     break;
+
+                case "always":
+                    PrintDirCount = (cntDir) => PrintDirCountWithCheck(
+                        cntDir, skipLessTwo: false);
+
+                    Helper.impPrintInfoTotal =
+                        (path, wilds, arg) => Helper.PrintIntoTotalWithFlag(
+                           path, wilds, arg, printEvenCountOne: true);
+                    break;
+
                 default:
                     throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
             }

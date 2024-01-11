@@ -23,7 +23,7 @@ static public partial class MyOptions
                 return it;
             })
             .Count();
-            Helper.PrintDirCount(cntDir);
+            PrintDirCount(cntDir);
             return InfoSum.Fake;
         }
         return Helper.GetAllFiles(Helper.ToInfoDir(path))

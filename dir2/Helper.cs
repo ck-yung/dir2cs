@@ -196,17 +196,6 @@ static public partial class Helper
     static internal Action<string> ItemWrite { get; set; } = Write;
     static internal Action<string> ItemWriteLine { get; set; } = WriteLine;
 
-    static internal Action<int> impPrintDirCount { get; set; } = (cntDir) =>
-    {
-        if (cntDir > 1) WriteLine($"{cntDir} dir are found.");
-        if (cntDir > 0) WriteLine("");
-    };
-
-    static internal void PrintDirCount(int count)
-    {
-        impPrintDirCount(count);
-    }
-
     static internal Action<string, string[]> DumpArgsAction { get; set; }
         = (path, wilds) =>
         {
