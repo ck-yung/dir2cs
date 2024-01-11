@@ -9,7 +9,7 @@ namespace dir2;
 
 static public partial class Helper
 {
-    record DateParse(string pattern, Func<int, TimeSpan> toTimeSpan);
+    record DateParse(string Pattern, Func<int, TimeSpan> ToTimeSpan);
 
     static public string DefaultDateTimeFormatString
     { get; } = "yyyy-MM-dd HH:mm";
@@ -20,11 +20,8 @@ static public partial class Helper
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {
-                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-                if (aa.Length > 1)
-                    throw new ArgumentException($"Too many values to {parser.Name}");
-                var formatThe = aa[0];
                 Func<DateTime, string> rtn = (_) => string.Empty;
+                var formatThe = Helper.GetUnique(args, parser);
                 switch (formatThe)
                 {
                     case "unix":
@@ -424,11 +421,11 @@ static public partial class Helper
 
         foreach (var (keyThe, parseThe) in pattern3)
         {
-            foreach (Match match in Regex.Matches(arg, parseThe.pattern,
+            foreach (Match match in Regex.Matches(arg, parseThe.Pattern,
                 RegexOptions.IgnoreCase))
             {
                 var numThe = int.Parse(match.Groups[keyThe].ToString());
-                result = DateTime.Now.Subtract(parseThe.toTimeSpan(numThe));
+                result = DateTime.Now.Subtract(parseThe.ToTimeSpan(numThe));
                 return true;
             }
         }
@@ -454,5 +451,4 @@ static public partial class Helper
 
         return false;
     }
-
 }

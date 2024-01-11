@@ -39,15 +39,7 @@ static public class Sum
         help: "ext | dir | +dir | year",
         resolve: (parser, args) =>
         {
-            var aa = args
-            .Where((it) => it.Length > 0)
-            .Distinct()
-            .Take(2)
-            .ToArray();
-
-            if (aa.Length>1)
-                throw new ArgumentException(
-                    $"Too many values to {parser.Name}");
+            var argThe = Helper.GetUnique(args, parser);
 
             Func<IEnumerable<InfoSum>, InfoSum> reduceTotal =
             (seq) => seq
@@ -63,7 +55,7 @@ static public class Sum
                 seed: new InfoSum(IsBase:true),
                 func: (acc, it) => acc.AddWith(it));
 
-            switch (aa[0])
+            switch (argThe)
             {
                 case "dir":
                     Helper.PrintDir = (_) => InfoSum.Fake;
@@ -120,7 +112,7 @@ static public class Sum
                         .Invoke(reduceTotal);
                     break;
                 default:
-                    throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
+                    throw new ArgumentException($"Bad value '{argThe}' to {parser.Name}");
             }
         });
 }

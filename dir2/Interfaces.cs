@@ -1,3 +1,5 @@
+using static dir2.MyOptions;
+
 namespace dir2;
 public interface IParse
 {
@@ -18,5 +20,62 @@ public class ImplicitBool
     static public implicit operator bool(ImplicitBool the)
     {
         return the.Flag;
+    }
+}
+
+public partial class Helper
+{
+    public const string ExtraHelp = "+?";
+
+    public static string GetUnique(IEnumerable<string> args, IParse opt)
+    {
+        var rtn = args
+            .Where((it) => it.Length > 0)
+            .Distinct()
+            .Take(2)
+            .ToArray();
+
+        if (rtn.Length == 0)
+        {
+            throw new ArgumentException($"Missing value to '{opt.Name}'");
+        }
+
+        if (rtn.Length > 1)
+        {
+            throw new ArgumentException($"Too many values ({rtn[0]};{rtn[1]}) to '{opt.Name}'");
+        }
+
+        if (rtn[0] == ExtraHelp)
+        {
+            throw new ArgumentException($"Syntax: {opt.Name} {opt.Help}");
+        }
+
+        return rtn[0];
+    }
+
+    public static string[] GetUniqueTexts(IEnumerable<string> args, int max, IParse opt)
+    {
+        var rtn = Helper.CommonSplit(args)
+            .Where((it) => it.Length > 0)
+            .Distinct()
+            .Take(max+1)
+            .ToArray();
+
+        if (rtn.Length == 0)
+        {
+            throw new ArgumentException($"Missing value to '{opt.Name}'");
+        }
+
+        if (rtn.Length > max)
+        {
+            throw new ArgumentException($"Too many values to '{opt.Name}'");
+        }
+
+        if (rtn.Any((it) => it == ExtraHelp))
+        {
+            throw new ArgumentException($"Syntax: {opt.Name} {opt.Help}");
+        }
+
+        return rtn;
     }
 }

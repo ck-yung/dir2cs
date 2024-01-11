@@ -222,10 +222,8 @@ static public class Sort
     static internal readonly IParse ReverseOpt = new SimpleParser(
         "--reverse", help: "off | on", resolve: (parser, args) =>
         {
-            var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-            if (aa.Length > 1)
-                throw new ArgumentException($"Too many values to {parser.Name}");
-            switch (aa[0])
+            var argThe = Helper.GetUnique(args, parser);
+            switch (argThe)
             {
                 case "off":
                     ReverseInfo = Helper.itself;
@@ -238,7 +236,7 @@ static public class Sort
                     ReverseSum = (seq) => seq.Reverse();
                     break;
                 default:
-                    throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
+                    throw new ArgumentException($"'{argThe}' is bad value to {parser.Name}");
             }
         });
 
@@ -249,12 +247,31 @@ static public class Sort
     static public Func<IEnumerable<InfoSum>, IEnumerable<InfoSum>> TakeSum
     { get; private set; } = Helper.itself;
     static internal readonly IParse TakeOpt = new SimpleParser("--take",
-        help: "NUMBER | SIZE   where SIZE ends with k, m or g", resolve: (parser, args) =>
+        help: "COUNT | SIZE   where SIZE ends with k, m or g", resolve: (parser, args) =>
         {
-            var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-            if (aa.Length > 1)
-                throw new ArgumentException($"Too many values to {parser.Name}");
-            if (int.TryParse(aa[0], out int takeCount))
+            var argThe = Helper.GetUnique(args, parser);
+
+            if (0 == string.Compare("count", argThe, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("""
+                    Total file count within option '--take' if '--sum' is given.
+                    For example,
+                       dir2 -so count --sum +dir --take 1
+                    list empty directories only.
+                    """);
+            }
+
+            if (0 == string.Compare("size", argThe, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("""
+                    Total file size within option '--take' if '--sum' is given.
+                    For example,
+                       dir2 --take 2Mb
+                    Please refer to 'dir2 --within size' for more info.
+                    """);
+            }
+
+            if (int.TryParse(argThe, out int takeCount))
             {
                 if (Sum.IsFuncChanged)
                 {
@@ -278,7 +295,7 @@ static public class Sort
                     }
                 }
             }
-            else if (Helper.TryParseKiloNumber(aa[0], out long maxSize))
+            else if (Helper.TryParseKiloNumber(argThe, out long maxSize))
             {
                 long sumSize = 0L;
                 if (Sum.IsFuncChanged)
@@ -302,7 +319,7 @@ static public class Sort
             }
             else
             {
-                throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
+                throw new ArgumentException($"'{argThe}' is bad value to {parser.Name}");
             }
         });
 }

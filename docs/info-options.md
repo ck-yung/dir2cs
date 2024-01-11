@@ -34,7 +34,7 @@
 |          | --excl-none      | [Clear all ```--excl``` and ```--excl-dir```]
 | -o       | --sort           | ```off``` ```name,size,date,ext,count,last``` [up to 2 columns] | ```-o date```
 | -r       | --reverse        | ```off``` ```on```
-|          | --take           | INTEGER  SIZE  | ```--take 10```
+|          | --take           | COUNT  SIZE  | ```--take 10```
 |          |                  |                | ```--take 500Mb```
 |          | --total          | ```off``` ```only```
 |          | [--sum](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md) | ```ext``` ```dir``` ```+dir``` ```year```

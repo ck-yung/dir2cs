@@ -374,10 +374,8 @@ static public partial class Helper
         new ParseInvoker<InfoFile, bool>("--hidden", help: "excl | incl | only",
             init: (it) => false == it.IsHidden(), resolve: (parser, args) =>
             {
-                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-                if (aa.Length > 1)
-                    throw new ArgumentException($"Too many values to {parser.Name}");
-                switch (aa[0])
+                var argThe = Helper.GetUnique(args, parser);
+                switch (argThe)
                 {
                     case "excl":
                         parser.SetImplementation((it) => false == it.IsHidden());
@@ -389,7 +387,7 @@ static public partial class Helper
                         parser.SetImplementation((it) => it.IsHidden());
                         break;
                     default:
-                        throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
+                        throw new ArgumentException($"'{argThe}' is bad value to {argThe}");
                 }
             });
 
@@ -397,10 +395,8 @@ static public partial class Helper
         new ParseInvoker<InfoFile, bool>("--link", help: "incl | only",
             init: Always<InfoFile>.True, resolve: (parser, args) =>
             {
-                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-                if (aa.Length > 1)
-                    throw new ArgumentException($"Too many values to {parser.Name}");
-                switch (aa[0])
+                var argThe = Helper.GetUnique(args, parser);
+                switch (argThe)
                 {
                     case "incl":
                         parser.SetImplementation(Always<InfoFile>.True);
@@ -409,7 +405,7 @@ static public partial class Helper
                         parser.SetImplementation((it) => it.IsLinked);
                         break;
                     default:
-                        throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
+                        throw new ArgumentException($"'{argThe}' is bad value to {parser.Name}");
                 }
             });
 }

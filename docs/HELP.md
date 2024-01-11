@@ -2,24 +2,29 @@
 
 ## Daily Shortcut:
 
-| Shortcut | Stand for              | Description                    |
-| -------- | ---------              | -----------                    |
-| -s       | --sub all              | Recursively sub-directory      |
-| -f       | --dir off              | List file only                 |
-| -d       | --dir only             | List dir name only             |
-| -R       | --dir tree             | List dir tree                  |
-| -b       | --total off            | List filename (with path) only |
-|          | --hide date,size,count,mode,owner,link |                |
-| -t       | --total only           | Display total line only        |
-| -H       | --excl-none --hidden only --excl :link --exc-dir :link | Properly list hidden files    |
+| Shortcut    | Stand for                    | Description                    |
+| --------    | ---------                    | -----------                    |
+| ```-s```    | ```--sub all```              | Recursively sub-directory      |
+| ```-f```    | ```--dir off```              | List file only                 |
+| ```-d```    | ```--dir only```             | List dir name only             |
+| ```-R```    | ```--dir tree```             | List dir tree                  |
+| ```-b```    | ```--total off```            | List filename (with path) only |
+|             | ```--hide date,size,count``` |                                |
+|             | ```--hide mode,owner,link``` |                                |
+| ```-t```    | ```--total only```           | Display total line only        |
+| ```-H```    | ```--excl-none```            | Properly list hidden files     |
+|             | ```--hidden only```          |      |
+|             | ```--excl :link --exc-dir :link``` | |
+| ```-o +?``` | ```--sort +?```              | Display [Short Help](https://github.com/ck-yung/dir2cs/blob/main/docs/info-short-help.md) of sorting |
+| ```-w size``` | ```--with-in size```       | Display [Quick Help](https://github.com/ck-yung/dir2cs/blob/main/docs/info-short-help.md) of ```within``` option |
 
 ## Other Topics
 
 * [Complete option list](https://github.com/ck-yung/dir2cs/blob/main/docs/info-options.md)
 
-* [Config File ```dir2.opt```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-config-file.md)
+* [Config file ```dir2.opt```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-config-file.md)
 
-* [Envir Variable ```dir2```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-envir.md)
+* [Envir variable ```dir2```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-envir.md)
 
 * [Options ```--within``` and ```--not-within```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md)
 
@@ -29,7 +34,7 @@
 
 * [Option ```--sum```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md)
 
-* [Custom configuartion to ```--date-format short```](https://github.com/ck-yung/dir2cs/blob/main/docs/date-short-cfg.md)
+* [Custom config to ```--date-format short```](https://github.com/ck-yung/dir2cs/blob/main/docs/date-short-cfg.md)
 
 * [About file link](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-file.md)
 

@@ -112,9 +112,14 @@ static public class Wild
                     var a2 = (ParseInvoker<InfoFile, bool>)Helper.IsLinkFileOpt;
                     a2.SetImplementation((it) => it.IsNotLinked);
                 }
-                if (aa?.ContainsKey(false) ?? false)
+                if (aa?.TryGetValue(false, out var aa2) ?? false)
                 {
-                    var checkFuncs = Helper.CommonSplit(aa[false])
+                    var aa3 = aa2.ToArray();
+                    if (aa3.Any((it) => it == Helper.ExtraHelp))
+                    {
+                        throw new ArgumentException($"Syntax: {parser.Name} {parser.Help}");
+                    }
+                    var checkFuncs = aa3
                     .Select((it) => ToWildMatch(it))
                     .ToArray();
                     parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
@@ -133,9 +138,16 @@ static public class Wild
                 {
                     CheckDirLink = (info) => info.IsNotLinked;
                 }
-                if (aa?.ContainsKey(false) ?? false)
+
+                if (aa?.TryGetValue(false, out var aa2) ?? false)
                 {
-                    var checkFuncs = Helper.CommonSplit(aa[false])
+                    var aa3 = aa2.ToArray();
+                    if (aa3.Any((it) => it == Helper.ExtraHelp))
+                    {
+                        throw new ArgumentException($"Syntax: {parser.Name} {parser.Help}");
+                    }
+
+                    var checkFuncs = aa3
                     .Select((it) => ToWildMatch(it))
                     .ToArray();
                     parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
@@ -228,18 +240,21 @@ static public class Wild
                     },
                     ["date"] = new string[]
                     {
-                        "2min",
-                        "3hr",
-                        "1minute",
-                        "2hour",
                         "3day",
-                        "4year",
-                        "2minutes",
-                        "3hours",
                         "4days",
-                        "5years",
-                        "2019-03-31",
+                        "5year",
+                        "6years",
+                        "2019-06-12",
                         "20140928",
+                    },
+                    ["time"] = new string[]
+                    {
+                        "2min",
+                        "3minute",
+                        "4minutes",
+                        "5hr",
+                        "6hour",
+                        "7hours",
                         "2019-06-12T07:46",
                         "2019-06-30T21:21:32",
                         "13:58:59",
@@ -250,16 +265,16 @@ static public class Wild
 
             string[] hintNotWithinDate = new string[]
             {
-                "+9min",
-                "+8hr",
-                "+1year",
+                "+2min",
+                "+3minute",
+                "+4minutes",
+                "+5hr",
+                "+6hour",
+                "+8hours",
+                "+9year",
                 "+2day",
-                "+3hour",
-                "+4minute",
-                "+2years",
                 "+3days",
-                "+4hours",
-                "+5minutes",
+                "+4years",
             };
 
             long valueThe;
@@ -290,10 +305,10 @@ static public class Wild
                 }
             }
 
-            if (hintSizeDate.ContainsKey(arg.ToLower()))
+            if (hintSizeDate.TryGetValue(arg.ToLower(), out var hints))
             {
                 Console.Error.WriteLine("Command line option could be");
-                foreach (var hintThe in hintSizeDate[arg.ToLower()])
+                foreach (var hintThe in hints)
                 {
                     Console.Error.WriteLine($"  {name} {hintThe}");
                 }
@@ -323,10 +338,10 @@ static public class Wild
     { get; private set; } = Always<DateTime>.True;
 
     static internal readonly IParse WithinOpt = new SimpleParser(name: "--within",
-            help: "SIZE | DATE",
+            help: "SIZE | DATE | TIME",
             resolve: (parser, args) =>
             {
-                var aa = args.Where((it) => it.Length > 0).Distinct()
+                var aa = Helper.GetUniqueTexts(args, 3, parser)
                 .Select((it) => (WithData.Parse(parser.Name, it, hasDateDelta:false), it))
                 .GroupBy((it) => it.Item1.Type)
                 .ToImmutableDictionary(
@@ -371,10 +386,10 @@ static public class Wild
     { get; private set; } = Always<DateTime>.True;
 
     static internal readonly IParse NotWithinOpt = new SimpleParser(name: "--not-within",
-            help: "SIZE | DATE",
+            help: "SIZE | DATE | TIME",
             resolve: (parser, args) =>
             {
-                var aa = args.Where((it) => it.Length > 0).Distinct()
+                var aa = Helper.GetUniqueTexts(args, 3, parser)
                 .Select((it) => (WithData.Parse(parser.Name, it, hasDateDelta: true), it))
                 .GroupBy((it) => it.Item1.Type)
                 .ToImmutableDictionary(
@@ -427,10 +442,8 @@ static public class Wild
         new ParseInvoker<InfoFile, bool>("--no-ext", help: "incl | excl | only",
             init: Always<InfoFile>.True, resolve: (parser, args) =>
             {
-                var aa = args.Where((it) => it.Length>0).Distinct().Take(2).ToArray();
-                if (aa.Length > 1)
-                    throw new ArgumentException($"Too many values to {parser.Name}");
-                switch (aa[0])
+                var argThe = Helper.GetUnique(args, parser);
+                switch (argThe)
                 {
                     case "incl":
                         parser.SetImplementation(Always<InfoFile>.True);
@@ -442,7 +455,7 @@ static public class Wild
                         parser.SetImplementation((it) => string.IsNullOrEmpty(it.Extension));
                         break;
                     default:
-                        throw new ArgumentException($"'{aa[0]}' is bad value to {parser.Name}");
+                        throw new ArgumentException($"'{argThe}' is bad value to {parser.Name}");
                 }
             });
 }

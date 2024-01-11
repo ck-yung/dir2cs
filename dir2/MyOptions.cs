@@ -49,15 +49,8 @@ static public partial class MyOptions
         init: (path) => DefaultPrintDir(path),
         resolve: (parser, args) =>
         {
-            var aa = args.Where((it) => it.Length > 0)
-            .Distinct().Take(2).ToArray();
-            if (aa.Length > 1)
-            {
-                throw new ArgumentException(
-                    "Valid option: " + parser.Help + Environment.NewLine +
-                    $"Too many values to {parser.Name}");
-            }
-            switch (aa[0])
+            var argThe = Helper.GetUnique(args, parser);
+            switch (argThe)
             {
                 case "both":
                     PrintDir = EnumPrint.FileAndDir;
@@ -94,7 +87,7 @@ static public partial class MyOptions
                 default:
                     throw new ArgumentException(
                         "Valid option: " + parser.Help + Environment.NewLine +
-                        $"Bad value '{aa[0]}' to {parser.Name}");
+                        $"Bad value '{argThe}' to {parser.Name}");
             }
         });
 
@@ -104,15 +97,8 @@ static public partial class MyOptions
             init: (path) => PrintDirOpt.Invoke(path),
             resolve: (parser, args) =>
             {
-                var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-                if (aa.Length > 1)
-                {
-                    throw new ArgumentException(
-                        "Valid option: " + parser.Help + Environment.NewLine +
-                        $"Too many values to {parser.Name}");
-                }
-
-                switch (aa[0])
+                var argThe = Helper.GetUnique(args, parser);
+                switch (argThe)
                 {
                     case "off":
                         parser.SetImplementation((path) => PrintDirOpt.Invoke(path));
@@ -123,7 +109,7 @@ static public partial class MyOptions
                     default:
                         throw new ArgumentException(
                             "Valid option: "+ parser.Help + Environment.NewLine +
-                            $"Bad value '{aa[0]}' to {parser.Name}");
+                            $"Bad value '{argThe}' to {parser.Name}");
                 }
             });
 
@@ -152,15 +138,14 @@ static public partial class MyOptions
     static public readonly IParse TotalOpt = new SimpleParser(name: "--total",
         help: "off | only | always", resolve: (parser, args) =>
         {
-            var aa = args.Where((it) => it.Length > 0).Distinct().Take(2).ToArray();
-            if (aa.Length > 1)
-                throw new ArgumentException($"Too many values to {parser.Name}");
-            switch (aa[0])
+            var argThe = Helper.GetUnique(args, parser);
+            switch (argThe)
             {
                 case "off":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
                     PrintDirCount = Helper.DoNothing;
                     break;
+
                 case "only":
                     Helper.ItemWrite = Helper.DoNothing;
                     Helper.ItemWriteLine = Helper.DoNothing;
@@ -186,8 +171,14 @@ static public partial class MyOptions
                     break;
 
                 default:
-                    throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
+                    throw new ArgumentException($"Bad value '{argThe}' to {parser.Name}");
             }
+        });
+
+    static public readonly IParse TotalTime = new SimpleParser(name: "--total-time-format",
+        help: "FORMAT", resolve: (parser, args) =>
+        {
+
         });
 
     static public IEnumerable<string> ExpandFromShortCut(IEnumerable<string> args)

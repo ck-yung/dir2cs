@@ -3,8 +3,9 @@
 ## ```--count-format```
 | Format | Example Format | Example Result |
 | ------ | -------------- | -------------- |
-| WIDTH | ```--size-format 5``` | ```5851``` |
-| ```comma,```WIDTH | ```--size-format comma,5``` | ```5,851``` |
+| ```short``` | ```--count-format short``` | ```5K``` |
+| WIDTH | ```--count-format 5``` | ```5851``` |
+| ```comma,```WIDTH | ```--count-format comma,5``` | ```5,851``` |
 
 
 ## ```--size-format```
