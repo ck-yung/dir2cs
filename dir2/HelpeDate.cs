@@ -450,7 +450,4 @@ static public partial class Helper
 
         return false;
     }
-
-    public static Func<DateTime, DateTime> ToLocalDateTime
-    { get; private set; } = (arg) => arg.ToLocalTime();
 }
