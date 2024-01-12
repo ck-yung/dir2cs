@@ -184,18 +184,18 @@ static public class Wild
         DeltaDate,
     };
 
-    record WithData(DataType Type, long Size, DateTime Date, TimeSpan DateDelta)
+    record WithData(DataType Type, long Size, DateTimeOffset Date, TimeSpan DateDelta)
     {
         public WithData(long size)
-            : this(DataType.Size, Size: size, Date: DateTime.MinValue
+            : this(DataType.Size, Size: size, Date: DateTimeOffset.MinValue
                   , DateDelta: TimeSpan.Zero)
         { }
 
-        public WithData(DateTime date)
+        public WithData(DateTimeOffset date)
             : this(DataType.DateTime, Size: 0, Date: date, DateDelta: TimeSpan.Zero)
         { }
         public WithData(TimeSpan dateDelta)
-            : this(DataType.DeltaDate, Size: 0, Date: DateTime.MinValue
+            : this(DataType.DeltaDate, Size: 0, Date: DateTimeOffset.MinValue
                   , DateDelta: dateDelta)
         { }
 
@@ -257,9 +257,12 @@ static public class Wild
                         "7hours",
                         "2019-06-12T07:46",
                         "2019-06-30T21:21:32",
-                        "13:58:59",
-                        "13:58",
-                        "11:58am",
+                        "03:47pm",
+                        "15:47",
+                        "15:47:31",
+                        "2019-06-12T07:46 +8",
+                        "2019-06-30T21:21:32 +08",
+                        "03:47pm +08:00",
                     },
                 }.ToImmutableDictionary();
 
@@ -288,7 +291,7 @@ static public class Wild
                 return new WithData(valueThe);
             }
 
-            if (Helper.TryParseDateTime(arg, out DateTime valueDate))
+            if (Helper.TryParseDateTime(arg, out var valueDate))
             {
                 return new WithData(valueDate);
             }
@@ -326,7 +329,7 @@ static public class Wild
         }
     }
 
-    static Func<TimeSpan, string, DateTime> AssignNotWithinDate { get; set; } = (_, deltaText) =>
+    static Func<TimeSpan, string, DateTimeOffset> AssignNotWithinDate { get; set; } = (_, deltaText) =>
     {
         throw new ArgumentException($"Option '--within' is required for '--not-wihtin {deltaText}' !");
     };
@@ -334,8 +337,8 @@ static public class Wild
     static internal Func<long, bool> IsMatchWithinSize
     { get; private set; } = Always<long>.True;
 
-    static internal Func<DateTime, bool> IsMatchWithinDate
-    { get; private set; } = Always<DateTime>.True;
+    static internal Func<DateTimeOffset, bool> IsMatchWithinDate
+    { get; private set; } = Always<DateTimeOffset>.True;
 
     static internal readonly IParse WithinOpt = new SimpleParser(name: "--within",
             help: "SIZE | DATE | TIME",
@@ -382,8 +385,8 @@ static public class Wild
     static internal Func<long, bool> IsMatchNotWithinSize
     { get; private set; } = Always<long>.True;
 
-    static internal Func<DateTime, bool> IsMatchNotWithinDate
-    { get; private set; } = Always<DateTime>.True;
+    static internal Func<DateTimeOffset, bool> IsMatchNotWithinDate
+    { get; private set; } = Always<DateTimeOffset>.True;
 
     static internal readonly IParse NotWithinOpt = new SimpleParser(name: "--not-within",
             help: "SIZE | DATE | TIME",

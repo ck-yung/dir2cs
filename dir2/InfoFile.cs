@@ -6,8 +6,8 @@ namespace dir2;
 
 public record InfoBase(string Name
     , string FullName
-    , DateTime CreationTime
-    , DateTime LastWriteTime
+    , DateTimeOffset CreationTime
+    , DateTimeOffset LastWriteTime
     , FileAttributes FileAttributes
     , UnixFileMode UnixFileMode
     , string LinkTarget
@@ -110,8 +110,8 @@ public record InfoBase(string Name
 public record InfoDir(string Name
     , string Extension
     , string FullName
-    , DateTime CreationTime
-    , DateTime LastWriteTime
+    , DateTimeOffset CreationTime
+    , DateTimeOffset LastWriteTime
     , FileAttributes FileAttributes
     , UnixFileMode UnixFileMode
     , string LinkTarget
@@ -124,7 +124,7 @@ public record InfoDir(string Name
 {
     static internal readonly InfoDir Fake = new (string.Empty
         , string.Empty, string.Empty
-        , DateTime.MinValue, DateTime.MinValue
+        , DateTimeOffset.MinValue, DateTimeOffset.MinValue
         , FileAttributes.Directory
         , UnixFileMode: UnixFileMode.None
         , LinkTarget: string.Empty);
@@ -200,8 +200,8 @@ public record InfoFile(string Name
     , string FullName
     , string DirectoryName
     , long Length
-    , DateTime CreationTime
-    , DateTime LastWriteTime
+    , DateTimeOffset CreationTime
+    , DateTimeOffset LastWriteTime
     , FileAttributes FileAttributes
     , UnixFileMode UnixFileMode
     , string LinkTarget
@@ -212,7 +212,7 @@ public record InfoFile(string Name
 {
     static internal readonly InfoFile Fake = new(string.Empty
         , string.Empty, string.Empty, string.Empty, 0
-        , DateTime.MinValue, DateTime.MinValue
+        , DateTimeOffset.MinValue, DateTimeOffset.MinValue
         , FileAttributes.Normal
         , UnixFileMode: UnixFileMode.None
         , LinkTarget: string.Empty);
@@ -239,8 +239,8 @@ public class InfoSum
 
     public int Count { get; private set; } = 0;
     public long Length { get; private set; } = 0L;
-    public DateTime StartTime { get; private set; } = DateTime.MaxValue;
-    public DateTime EndTime { get; private set; } = DateTime.MinValue;
+    public DateTimeOffset StartTime { get; private set; } = DateTimeOffset.MaxValue;
+    public DateTimeOffset EndTime { get; private set; } = DateTimeOffset.MinValue;
 
     public InfoSum(string Name)
     {
@@ -250,7 +250,9 @@ public class InfoSum
     public InfoSum(string Name, bool extra)
     {
         this.Name = Name;
-        StartTime = new DateTime(year: 1, month: 1, day: 1);
+        StartTime = new DateTimeOffset(
+            year: 1, month: 1, day: 1,
+            0, 0, 0, TimeSpan.Zero);
         EndTime= StartTime;
     }
 

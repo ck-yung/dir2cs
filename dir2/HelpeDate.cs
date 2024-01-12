@@ -10,25 +10,23 @@ static public partial class Helper
 {
     record DateParse(string Pattern, Func<int, TimeSpan> ToTimeSpan);
 
-    static public string DefaultDateTimeFormatString
-    { get; } = "yyyy-MM-dd HH:mm";
+    static public readonly string DefaultDateTimeFormatString
+        = "yyyy-MM-dd HH:mm";
 
-    static public readonly IInovke<DateTime, string> DateFormatOpt =
-        new ParseInvoker<DateTime, string>(name: "--date-format",
+    static public readonly IInovke<DateTimeOffset, string> DateFormatOpt =
+        new ParseInvoker<DateTimeOffset, string>(name: "--date-format",
             help: "DATE-FORMAT   e.g. short, unix, OR yy-MM-dd%20HH:mm:ss",
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {
-                Func<DateTime, string> rtn = (_) => string.Empty;
+                Func<DateTimeOffset, string> rtn = (_) => string.Empty;
                 var formatThe = Helper.GetUnique(args, parser);
                 switch (formatThe)
                 {
                     case "unix":
                         rtn = (value) =>
                         {
-                            var dto = new DateTimeOffset(value.ToUniversalTime());
-                            var unixTimestamp = dto.ToUnixTimeSeconds();
-                            return $"{unixTimestamp,11}";
+                            return $"{value,11}";
                         };
                         break;
                     case "short":
@@ -53,13 +51,13 @@ static public partial class Helper
                         const string keyYsDay24 = "ysday18~24";
                         #endregion
 
-                        Func<DateTime, string> defaultTodayFormat = (it) =>
+                        Func<DateTimeOffset, string> defaultTodayFormat = (it) =>
                             it.ToString("hh:mmtt", CultureInfo.InvariantCulture).PadRight(8);
-                        Func<DateTime, string> defaultYsdayFormat = (it) =>
+                        Func<DateTimeOffset, string> defaultYsdayFormat = (it) =>
                             it.ToString("\"Yd\"hhtt", CultureInfo.InvariantCulture).PadRight(8);
 
                         Func<string> fnJust = () => "Just".PadRight(8);
-                        var formatMap = new Dictionary<string, Func<DateTime, string>>()
+                        var formatMap = new Dictionary<string, Func<DateTimeOffset, string>>()
                         {
                             [keyToday] = defaultTodayFormat,
                             [keyToday00] = defaultTodayFormat,
@@ -227,11 +225,11 @@ static public partial class Helper
                                                 case 1:
                                                     var dateFmtThe2 = System.Net.WebUtility.UrlDecode(
                                                         matchings[0]);
-                                                    Func<DateTime, string> decodingFormatThe =
+                                                    Func<DateTimeOffset, string> decodingFormatThe =
                                                     (it) => it.ToString(dateFmtThe2, cultureThe);
                                                     try
                                                     {
-                                                        _ = decodingFormatThe(DateTime.MinValue);
+                                                        _ = decodingFormatThe(DateTimeOffset.MinValue);
                                                         formatMap[keyName] = decodingFormatThe;
                                                     }
                                                     catch (Exception ee2)
@@ -348,7 +346,7 @@ static public partial class Helper
                             };
                         }
 
-                        Func<DateTime, bool> checkDayOfWeek = (date) =>
+                        Func<DateTimeOffset, bool> checkDayOfWeek = (date) =>
                         {
                             return (now - date) < TimeSpan.FromDays(6)
                                 && date.DayOfWeek < now.DayOfWeek;
@@ -382,9 +380,12 @@ static public partial class Helper
                         rtn = (value) => value.ToString(fmtThe);
                         break;
                 };
-                _ = rtn(DateTime.MinValue); // verify if the lambda is valid
+                _ = rtn(DateTimeOffset.MinValue); // verify if the lambda is valid
                 parser.SetImplementation(rtn);
             });
+
+    static public readonly ImmutableArray<string> TimeZoneFormats =
+        ImmutableArray.Create(new string[] { "", " z", " zz"," zzz"});
 
     static public readonly ImmutableArray<string> DateTimeFormats =
         ImmutableArray.Create(new string[] {
@@ -402,9 +403,9 @@ static public partial class Helper
             "hh:mmtt",
         });
 
-    static public bool TryParseDateTime(string arg, out DateTime result)
+    static public bool TryParseDateTime(string arg, out DateTimeOffset result)
     {
-        result = DateTime.MinValue;
+        result = DateTimeOffset.MinValue;
         var pattern3 = new Dictionary<string, DateParse>()
         {
             ["minute"] = new DateParse(@"^(?<minute>\d+)min$", (it) => TimeSpan.FromMinutes(it)),
@@ -429,22 +430,25 @@ static public partial class Helper
             }
         }
 
-        if (DateTime.TryParseExact(arg, DefaultDateTimeFormatString,
+        if (DateTimeOffset.TryParseExact(arg, DefaultDateTimeFormatString,
                 CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out DateTime goodValue))
+                DateTimeStyles.None, out DateTimeOffset goodValue))
         {
             result = goodValue;
             return true;
         }
 
-        foreach (var fmtThe in DateTimeFormats)
+        foreach (var tzThe in TimeZoneFormats)
         {
-            if (DateTime.TryParseExact(arg, fmtThe,
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out DateTime goodValue2))
+            foreach (var fmtThe in DateTimeFormats)
             {
-                result = goodValue2;
-                return true;
+                if (DateTimeOffset.TryParseExact(arg, fmtThe + tzThe,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out DateTimeOffset goodValue2))
+                {
+                    result = goodValue2;
+                    return true;
+                }
             }
         }
 

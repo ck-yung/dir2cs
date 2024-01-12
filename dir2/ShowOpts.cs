@@ -154,7 +154,7 @@ static internal class Show
             }
         });
 
-    static public Func<InfoBase, DateTime> GetDate { get; private set; }
+    static public Func<InfoBase, DateTimeOffset> GetDate { get; private set; }
     = (it) => it.LastWriteTime;
 
     static public Func<FileInfo, long> GetViewSize { get; private set; }
