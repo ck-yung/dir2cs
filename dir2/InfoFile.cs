@@ -333,8 +333,8 @@ static public partial class Helper
             return new InfoDir(Name: rtn.Name
                 , Extension: rtn.Extension
                 , FullName: rtn.FullName
-                , CreationTime: info2.CreationTime
-                , LastWriteTime: info2.LastWriteTime
+                , CreationTime: ToLocalDateTime(info2.CreationTimeUtc)
+                , LastWriteTime: ToLocalDateTime(info2.LastWriteTimeUtc)
                 , FileAttributes: rtn.Attributes
                 , UnixFileMode: rtn.UnixFileMode
                 , LinkTarget: rtn.LinkTarget ?? string.Empty
@@ -361,8 +361,8 @@ static public partial class Helper
                 , FullName: rtn.FullName
                 , DirectoryName: rtn.DirectoryName ?? string.Empty
                 , Length: Show.GetViewSize(rtn)
-                , CreationTime: info2.CreationTime
-                , LastWriteTime: info2.LastWriteTime
+                , CreationTime: ToLocalDateTime(info2.CreationTimeUtc)
+                , LastWriteTime: ToLocalDateTime(info2.LastWriteTimeUtc)
                 , FileAttributes: rtn.Attributes
                 , UnixFileMode: rtn.UnixFileMode
                 , LinkTarget: rtn.LinkTarget ?? string.Empty

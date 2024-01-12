@@ -325,10 +325,10 @@ static internal class Show
                     Helper.GetUnique(args, parser));
                 try
                 {
-                    var a2 = DateTimeOffset.Now.ToString(argThe);
                     parser.SetImplementation((_) =>
                     {
-                        return " ["+ DateTimeOffset.Now.ToString(argThe) + "]";
+                        return " ["+ Helper.ToLocalDateTime(
+                            DateTime.UtcNow).ToString(argThe) + "]";
                     });
                 }
                 catch

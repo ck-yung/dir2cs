@@ -1,4 +1,4 @@
-# Short Help and Extra Help
+﻿# Short Help and Extra Help
 
 * The feautre will be releaesd in version 2.1.2 (2024 Feb).
 
@@ -7,7 +7,7 @@
 | Example Command | Example Output |
 | --------------- | -------------- |
 | ```dir2 --sub +?``` | ```Syntax: --sub  off all``` |
-| ```dir2 -w +?``` | ```Syntax: --within SIZE | DATE | TIME``` |
+| ```dir2 -w +?``` | ```Syntax: --within SIZE｜DATE｜TIME``` |
 
 ## Quick Help Example Command
 
