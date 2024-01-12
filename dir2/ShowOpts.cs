@@ -327,11 +327,8 @@ static internal class Show
                 {
                     parser.SetImplementation((_) =>
                     {
-                        return " " + Helper.ToLocalDateTime(
-                            DateTimeOffset.UtcNow).ToString(argThe) ;
-                        //var a2 = now.ToOffset(offset);
-                        //var a3 = a2.ToString(argThe);
-                        //return " " + a3;
+                        return " " + Helper.ToTimeZone.Invoke(
+                            DateTimeOffset.UtcNow).ToString(argThe);
                     });
                 }
                 catch

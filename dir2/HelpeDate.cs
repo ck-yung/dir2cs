@@ -292,9 +292,12 @@ static public partial class Helper
                             .Count();
                         }
 
-                        var now = DateTime.Now;
+                        var now = ToTimeZone.Invoke(DateTimeOffset.UtcNow);
                         var withinTwoMinutes = now.AddMinutes(-2);
-                        var todayMidnight = new DateTime(now.Year, now.Month, now.Day);
+                        // ** TODO >> Depend on 'DefaultTimeSpan' **
+                        var todayMidnight = new DateTimeOffset(
+                            now.Year, now.Month, now.Day,
+                            0, 0, 0, DefaultTimeSpan);
                         var today00 = todayMidnight.AddHours(1);
                         var today06 = todayMidnight.AddHours(6);
                         var today12 = todayMidnight.AddHours(12);
@@ -304,6 +307,7 @@ static public partial class Helper
                         var yesterday06 = today06.AddDays(-1);
                         var yesterday12 = today12.AddDays(-1);
                         var yesterday18 = today18.AddDays(-1);
+                        // ** TODO <<
                         #region the formats ..
                         var fnToday = formatMap[keyToday];
                         var fnYsDay = formatMap[keyYsDay];
@@ -454,4 +458,27 @@ static public partial class Helper
 
         return false;
     }
+
+    static public readonly IInovke<DateTimeOffset, DateTimeOffset> ToTimeZone =
+        new ParseInvoker<DateTimeOffset, DateTimeOffset>(name: "--time-zone",
+            help: "TIME-ZONE (--8:00 for '-08:00')",
+            init: (arg) => ToDefaultLocalDateTime(arg),
+            resolve: (parser, args) =>
+            {
+                var timezoneThe = Helper.GetUnique(args, parser);
+                if (timezoneThe.StartsWith("--"))
+                {
+                    timezoneThe = timezoneThe.Substring(1);
+                }
+
+                if (TimeSpan.TryParse(timezoneThe, out TimeSpan goodValue))
+                {
+                    DefaultTimeSpan = goodValue;
+                    parser.SetImplementation((arg) => arg.ToOffset(goodValue));
+                }
+                else
+                {
+                    throw new ArgumentException($"");
+                }
+            });
 }

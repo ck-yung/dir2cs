@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Immutable;
 
 namespace dir2;
@@ -227,6 +228,7 @@ static public partial class MyOptions
         (IParse) PrintDirOpt,
         (IParse) SubDirOpt,
         Show.EncodeConsoleOpt,
+        (IParse) Helper.ToTimeZone,
         Wild.CaseSensitiveOpt,
         Wild.RegexOpt,
         (IParse) Show.LengthFormatOpt,
@@ -256,6 +258,7 @@ static public partial class MyOptions
         Sort.Opt,
         Show.Opt,
         Show.HideOpt,
+        (IParse) Helper.ToTimeZone,
         Show.EncodeConsoleOpt,
         Wild.RegexOpt,
         Wild.CaseSensitiveOpt,
