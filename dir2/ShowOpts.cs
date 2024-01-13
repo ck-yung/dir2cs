@@ -327,7 +327,7 @@ static internal class Show
                 {
                     parser.SetImplementation((_) =>
                     {
-                        return " " + Helper.ToTimeZone.Invoke(
+                        return " " + Helper.FromUtcToReportTimeZone(
                             DateTimeOffset.UtcNow).ToString(argThe);
                     });
                 }

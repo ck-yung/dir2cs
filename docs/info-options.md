@@ -26,6 +26,7 @@
 |          |                  |                         | ```--size-format short```
 |          | [--date-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md) | ```short``` ```unix``` FORMAT | ```--date-format yyyy-MMM-ddTHH:mm:ss```
 |          |                  |                               | ```--date-format yy-MM-dd%20HH:mm ```
+|          |                  |                               | ```--date-format utc+8 ```
 |          | --creation-date  |
 |          | --total          | ```off``` ```only```
 |          | --hide           | ```date,size,cout,mode,owner,link```

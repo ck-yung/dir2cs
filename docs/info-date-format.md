@@ -55,4 +55,17 @@
 | ```y``` | Year | ```June 2019``` |
 | ```Y``` | Year | ```June 2019```|
 
+# Time zone format
+
+* The feature will be implemented at ```v2.1.2``` (2024 Feb).
+
+* Define "Standard Time" (STD) offsets from "UTC" in hours and minutes.
+
+| Format | STD Offset | Example |
+| ------ | ----------- | ------- |
+| ```--date-time timezone=```FORMAT | Asia/Hong Kong | ```--date-time UTC+8``` |
+| | Asia/Japan | ```--date-time UTC+9``` |
+| | US/Central | ```--date-time UTC-6``` |
+| | Australia/Yancowinna | ```--date-time UTC+09:30``` |
+
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)

@@ -13,21 +13,100 @@ static public partial class Helper
     static public readonly string DefaultDateTimeFormatString
         = "yyyy-MM-dd HH:mm";
 
+    [GeneratedRegex(
+        @"^utc(?<timespan>([+-]?0?[1-9]|1[0-2]):[0-5][0-9])$",
+        RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex Reg_hhmm();
+
+    [GeneratedRegex(
+        @"^utc(?<timespan>([+-]?\d{1,2}))$",
+        RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex Reg_hh();
+
     static public readonly IInovke<DateTimeOffset, string> DateFormatOpt =
         new ParseInvoker<DateTimeOffset, string>(name: "--date-format",
-            help: "DATE-FORMAT   e.g. short, unix, OR yy-MM-dd%20HH:mm:ss",
+            help: "DATE-FORMAT   e.g. short, unix, UTC+hh:mm, or, yy-MM-dd%20HH:mm:ss",
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {
+                var timespanFound = TimeSpan.Zero;
+                var regHhmm = Reg_hhmm();
+                var regHh = Reg_hh();
+                var timespanMin = TimeSpan.FromHours(-12);
+                var timespanMax = TimeSpan.FromHours(12);
+                bool IsTimeSpan(string format)
+                {
+                    var matchHours = regHhmm.Match(format);
+                    if (matchHours.Success)
+                    {
+                        timespanFound = TimeSpan.Parse(
+                            matchHours.Groups["timespan"].Value);
+                        if ((timespanFound < timespanMin) || (timespanFound > timespanMax))
+                        {
+                            throw new ArgumentException(
+                                $"'{format}' is found to '{parser.Name}' but the number must be between -12:00 and 12:00!");
+                        }
+                        return true;
+                    }
+                    matchHours = regHh.Match(format);
+                    if (matchHours.Success)
+                    {
+                        var hourThe = Int16.Parse(
+                            matchHours.Groups["timespan"].Value);
+                        if ((hourThe < -12) || (hourThe > 12))
+                        {
+                            throw new ArgumentException(
+                                $"'{format}' is found to '{parser.Name}' but the number must be between -12 and 12!");
+                        }
+                        timespanFound = TimeSpan.FromHours(hourThe);
+                        return true;
+                    }
+                    return false;
+                }
+
+                var formatThe = string.Empty;
                 Func<DateTimeOffset, string> rtn = (_) => string.Empty;
-                var formatThe = Helper.GetUnique(args, parser);
+                var founds = GetUniqueTexts(args, 2, parser);
+
+                if (founds.Length == 1)
+                {
+                    if (IsTimeSpan(founds[0]))
+                    {
+                        ReportTimeZone = " " + timespanFound.ToString("g");
+                        ReportTimeZone = ReportTimeZone.Substring(0, length: ReportTimeZone.Length - 3);
+                        FromUtcToReportTimeZone = (arg) => arg.ToOffset(timespanFound);
+                        return;
+                    }
+                    formatThe = founds[0];
+                }
+                else
+                {
+                    switch (IsTimeSpan(founds[0]), IsTimeSpan(founds[1]))
+                    {
+                        case (false, true):
+                            formatThe = founds[0];
+                            ReportTimeZone = " " + timespanFound.ToString("g");
+                            ReportTimeZone = ReportTimeZone.Substring(0, length: ReportTimeZone.Length - 3);
+                            FromUtcToReportTimeZone = (arg) =>
+                                arg.ToOffset(timespanFound);
+                            break;
+                        case (true, false):
+                            formatThe = founds[1];
+                            ReportTimeZone = " " + timespanFound.ToString("g");
+                            ReportTimeZone = ReportTimeZone.Substring(0, length: ReportTimeZone.Length - 3);
+                            FromUtcToReportTimeZone = (arg) =>
+                                arg.ToOffset(timespanFound);
+                            break;
+                        default:
+                            throw new ArgumentException(
+                                $"'{founds[0]}' and '{founds[1]}' might be same type to {parser.Name}");
+                    }
+                }
+
                 switch (formatThe)
                 {
                     case "unix":
-                        rtn = (value) =>
-                        {
-                            return $"{value,11}";
-                        };
+                        rtn = (value) => $"{value,11}";
                         break;
                     case "short":
                         #region
@@ -89,6 +168,7 @@ static public partial class Helper
                             [keyYsDayHours] = false,
                         };
 
+                        #region "Parsing short cfg file"
                         var cfgFilename = Config.GetFilename()[..^4]
                         + ".date-short.opt";
 
@@ -291,13 +371,13 @@ static public partial class Helper
                                 })
                             .Count();
                         }
+                        #endregion
 
-                        var now = ToTimeZone.Invoke(DateTimeOffset.UtcNow);
+                        var now = FromUtcToReportTimeZone(DateTimeOffset.UtcNow);
                         var withinTwoMinutes = now.AddMinutes(-2);
-                        // ** TODO >> Depend on 'DefaultTimeSpan' **
                         var todayMidnight = new DateTimeOffset(
                             now.Year, now.Month, now.Day,
-                            0, 0, 0, DefaultTimeSpan);
+                            0, 0, 0, timespanFound);
                         var today00 = todayMidnight.AddHours(1);
                         var today06 = todayMidnight.AddHours(6);
                         var today12 = todayMidnight.AddHours(12);
@@ -307,7 +387,7 @@ static public partial class Helper
                         var yesterday06 = today06.AddDays(-1);
                         var yesterday12 = today12.AddDays(-1);
                         var yesterday18 = today18.AddDays(-1);
-                        // ** TODO <<
+
                         #region the formats ..
                         var fnToday = formatMap[keyToday];
                         var fnYsDay = formatMap[keyYsDay];
@@ -389,10 +469,10 @@ static public partial class Helper
             });
 
     static public readonly ImmutableArray<string> TimeZoneFormats =
-        ImmutableArray.Create(new string[] { "", " z", " zz"," zzz"});
+        ["", " zz", " zzz", " z"];
 
     static public readonly ImmutableArray<string> DateTimeFormats =
-        ImmutableArray.Create(new string[] {
+        [
             "yyyy-MM-dd",
             "yyyyMMdd",
             "yyyy-MM-ddTHH:mm:ss",
@@ -405,7 +485,7 @@ static public partial class Helper
             "HH:mm:ss",
             "HH:mm",
             "hh:mmtt",
-        });
+        ];
 
     static public bool TryParseDateTime(string arg, out DateTimeOffset result)
     {
@@ -429,18 +509,20 @@ static public partial class Helper
                 RegexOptions.IgnoreCase))
             {
                 var numThe = int.Parse(match.Groups[keyThe].ToString());
-                result = DateTime.Now.Subtract(parseThe.ToTimeSpan(numThe));
+                result = DateTimeOffset.UtcNow.Subtract(parseThe.ToTimeSpan(numThe));
                 return true;
             }
         }
 
-        if (DateTimeOffset.TryParseExact(arg, DefaultDateTimeFormatString,
+        if (DateTime.TryParseExact(arg, DefaultDateTimeFormatString,
                 CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out DateTimeOffset goodValue))
+                DateTimeStyles.None, out DateTime goodValue))
         {
-            result = goodValue;
+            result = FromUtcToReportTimeZone(goodValue);
             return true;
         }
+
+        arg += ReportTimeZone;
 
         foreach (var tzThe in TimeZoneFormats)
         {
@@ -458,27 +540,4 @@ static public partial class Helper
 
         return false;
     }
-
-    static public readonly IInovke<DateTimeOffset, DateTimeOffset> ToTimeZone =
-        new ParseInvoker<DateTimeOffset, DateTimeOffset>(name: "--time-zone",
-            help: "TIME-ZONE (--8:00 for '-08:00')",
-            init: (arg) => ToDefaultLocalDateTime(arg),
-            resolve: (parser, args) =>
-            {
-                var timezoneThe = Helper.GetUnique(args, parser);
-                if (timezoneThe.StartsWith("--"))
-                {
-                    timezoneThe = timezoneThe.Substring(1);
-                }
-
-                if (TimeSpan.TryParse(timezoneThe, out TimeSpan goodValue))
-                {
-                    DefaultTimeSpan = goodValue;
-                    parser.SetImplementation((arg) => arg.ToOffset(goodValue));
-                }
-                else
-                {
-                    throw new ArgumentException($"");
-                }
-            });
 }

@@ -65,16 +65,16 @@ static public partial class Helper
             ExeCopyRight = "?";
         }
 
-        DefaultTimeSpan = TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow);
-        ToDefaultLocalDateTime = (arg) => arg.ToOffset(DefaultTimeSpan);
+        var defaultTimeSpan = TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow);
+        FromUtcToReportTimeZone = (arg) => arg.ToOffset(defaultTimeSpan);
     }
 
     /// <summary>
-    /// From Utc time zone to Local time zone
+    /// From Utc time zone to Reporting time zone
     /// </summary>
-    public static Func<DateTimeOffset, DateTimeOffset> ToDefaultLocalDateTime
+    public static Func<DateTimeOffset, DateTimeOffset> FromUtcToReportTimeZone
     { get; private set; }
-    public static TimeSpan DefaultTimeSpan { get; private set; }
+    public static string ReportTimeZone { get; private set; } = "";
 
     static public string GetExeEnvr()
     {

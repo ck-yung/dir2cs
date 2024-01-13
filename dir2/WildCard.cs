@@ -229,26 +229,28 @@ static public class Wild
             ImmutableDictionary<string, string[]> hintSizeDate =
                 new Dictionary<string, string[]>
                 {
-                    ["size"] = new string[]
-                    {
+                    ["size"] =
+                    [
                         "123",
                         "123b",
                         "34k",
                         "45Kb",
                         "67m",
                         "23Gb",
-                    },
-                    ["date"] = new string[]
-                    {
+                    ],
+
+                    ["date"] =
+                    [
                         "3day",
                         "4days",
                         "5year",
                         "6years",
                         "2019-06-12",
                         "20140928",
-                    },
-                    ["time"] = new string[]
-                    {
+                    ],
+
+                    ["time"] =
+                    [
                         "2min",
                         "3minute",
                         "4minutes",
@@ -263,11 +265,11 @@ static public class Wild
                         "2019-06-12T07:46 +8",
                         "2019-06-30T21:21:32 +08",
                         "03:47pm +08:00",
-                    },
+                    ],
                 }.ToImmutableDictionary();
 
-            string[] hintNotWithinDate = new string[]
-            {
+            string[] hintNotWithinDate =
+            [
                 "+2min",
                 "+3minute",
                 "+4minutes",
@@ -278,7 +280,7 @@ static public class Wild
                 "+2day",
                 "+3days",
                 "+4years",
-            };
+            ];
 
             long valueThe;
             if (long.TryParse(arg, out valueThe))
@@ -286,7 +288,7 @@ static public class Wild
                 return new WithData(valueThe);
             }
 
-            if (Helper.TryParseKiloNumber( arg, out valueThe))
+            if (Helper.TryParseKiloNumber(arg, out valueThe))
             {
                 return new WithData(valueThe);
             }
@@ -341,11 +343,13 @@ static public class Wild
     { get; private set; } = Always<DateTimeOffset>.True;
 
     static internal readonly IParse WithinOpt = new SimpleParser(name: "--within",
-            help: "SIZE | DATE | TIME",
+            help: "SIZE | DATE-TIME",
             resolve: (parser, args) =>
             {
                 var aa = Helper.GetUniqueTexts(args, 3, parser)
-                .Select((it) => (WithData.Parse(parser.Name, it, hasDateDelta:false), it))
+                .Select((it) => (WithData.Parse(
+                    parser.Name, System.Net.WebUtility.UrlDecode(it),
+                    hasDateDelta:false), it))
                 .GroupBy((it) => it.Item1.Type)
                 .ToImmutableDictionary(
                     (grp) => grp.Key, (grp) => grp.AsEnumerable());
@@ -389,11 +393,13 @@ static public class Wild
     { get; private set; } = Always<DateTimeOffset>.True;
 
     static internal readonly IParse NotWithinOpt = new SimpleParser(name: "--not-within",
-            help: "SIZE | DATE | TIME",
+            help: "SIZE | DATE-TIME",
             resolve: (parser, args) =>
             {
                 var aa = Helper.GetUniqueTexts(args, 3, parser)
-                .Select((it) => (WithData.Parse(parser.Name, it, hasDateDelta: true), it))
+                .Select((it) => (WithData.Parse(
+                    parser.Name, System.Net.WebUtility.UrlDecode(it),
+                    hasDateDelta: false), it))
                 .GroupBy((it) => it.Item1.Type)
                 .ToImmutableDictionary(
                     (grp) => grp.Key, (grp) => grp.AsEnumerable());
