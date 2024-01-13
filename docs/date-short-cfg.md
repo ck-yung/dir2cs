@@ -24,11 +24,11 @@
 | Culture   | ```Culture=TEXT```  | ```Culture=en-US```   | |
 | Just now  | ```Just=TEXT```     | ```Just=Just```       | ```Just```     |
 |           |                     | ```Just=Now```        | ```Now```      |
-| Today     | ```Today=FORMAT```  | ```Today=hh:mmtt```   | ```03:47PM```  |
-| Yesterday | ```YsDay=FORMAT```  | ```YsDay="Yd" hhtt``` | ```Yd 03PM```  |
-| This week | ```Week=FORMAT```   | ```Week=ddd hhtt```   | ```Wed 03PM``` |
-| This year | ```Year=FORMAT```   | ```Year=MMM dd```     | ```Jun 12```   |
-| else      | ```Else=FORMAT```   | ```Else=yyyy MMM```   | ```2019 Jun``` |
+| Today     | ```Today=```FORMAT  | ```Today=hh:mmtt```   | ```03:47PM```  |
+| Yesterday | ```YsDay=```FORMAT  | ```YsDay="Yd" hhtt``` | ```Yd 03PM```  |
+| This week | ```Week=```FORMAT   | ```Week=ddd hhtt```   | ```Wed 03PM``` |
+| This year | ```Year=```FORMAT   | ```Year=MMM dd```     | ```Jun 12```   |
+| else      | ```Else=```FORMAT   | ```Else=yyyy MMM```   | ```2019 Jun``` |
 
 ## Remark to ```FORMAT``` text
 
@@ -67,18 +67,18 @@
 
 | Type | Format | Default Format | Example Format | Example |
 | ---- | ------ | -------------- | -------------- | ------- |
-| Flag | ```TodayHours:FLAG``` | | ```TodayHours:Yes```  | |
-|      |                       | | ```TodayHours:True``` | |
-| Today 00:00 ~ 00:59 | ```Today00~01=FORMAT``` | ```hh:mmtt```| ```Today00~01=%22This%20Midnight%22%20%09``` | ```This Midnight``` |
-| Today 01:00 ~ 05:59 | ```Today01~06=FORMAT``` | ```hh:mmtt```| ```Today01~06=%22This%20Early%22%20h09``` | ```This Early 8``` |
-| Today 06:00 ~ 12:59 | ```Today06~12=FORMAT``` | ```hh:mmtt```| ```Today06~12=%22This%20Morning%22%20h%09``` | ```This Morning 11``` |
-| Today 12:00 ~ 17:59 | ```Today12~18=FORMAT``` | ```hh:mmtt```| ```Today12~18=%22This%20Afternoon%22%20h%09``` | ```This Afternoon 3``` |
-| Today 18:00 ~ 23:59 | ```Today18~24=FORMAT``` | ```hh:mmtt```| ```Today00~01=%22This%20Night%22%20h%09``` | ```This Night 11``` |
-| Yeserday 00:00 ~ 00:59 | ```Ysday00~01=FORMAT``` | ```"Yd" hhtt```| ```Ysday00~01=%22Yeserday%20Midnight%22%20%09``` | ```Yeserday Midnight``` |
-| Yeserday 01:00 ~ 05:59 | ```Ysday01~06=FORMAT``` | ```"Yd" hhtt```| ```Ysday01~06=%22Yeserday%20Early%22%20h09``` | ```Yeserday Early 8``` |
-| Yeserday 06:00 ~ 12:59 | ```Ysday06~12=FORMAT``` | ```"Yd" hhtt```| ```Ysday06~12=%22Yeserday%20Morning%22%20h%09``` | ```Yeserday Morning 11``` |
-| Yeserday 12:00 ~ 17:59 | ```Ysday12~18=FORMAT``` | ```"Yd" hhtt```| ```Ysday12~18=%22Yeserday%20Afternoon%22%20h%09``` | ```Yeserday Afternoon 3``` |
-| Yeserday 18:00 ~ 23:59 | ```Ysday18~24=FORMAT``` | ```"Yd" hhtt```| ```Ysday00~01=%22Yeserday%20Night%22%20h%09``` | ```Yeserday Night 11``` |
+| Flag | ```TodayHours=```FLAG | | ```TodayHours=Yes```  | |
+| Today 00:00 ~ 00:59 | ```Today00~01=```FORMAT | ```hh:mmtt```| ```Today00~01=%22This%20Midnight%22%20%09``` | ```This Midnight``` |
+| Today 01:00 ~ 05:59 | ```Today01~06=```FORMAT | ```hh:mmtt```| ```Today01~06=%22This%20Early%22%20h09``` | ```This Early 8``` |
+| Today 06:00 ~ 12:59 | ```Today06~12=```FORMAT | ```hh:mmtt```| ```Today06~12=%22This%20Morning%22%20h%09``` | ```This Morning 11``` |
+| Today 12:00 ~ 17:59 | ```Today12~18=```FORMAT | ```hh:mmtt```| ```Today12~18=%22This%20Afternoon%22%20h%09``` | ```This Afternoon 3``` |
+| Today 18:00 ~ 23:59 | ```Today18~24=```FORMAT | ```hh:mmtt```| ```Today00~01=%22This%20Night%22%20h%09``` | ```This Night 11``` |
+| Flag | ```YsdayHours=```FLAG | | ```YsdayHours=TRUE```  | |
+| Yeserday 00:00 ~ 00:59 | ```Ysday00~01=```FORMAT | ```"Yd" hhtt```| ```Ysday00~01=%22Yeserday%20Midnight%22%20%09``` | ```Yeserday Midnight``` |
+| Yeserday 01:00 ~ 05:59 | ```Ysday01~06=```FORMAT | ```"Yd" hhtt```| ```Ysday01~06=%22Yeserday%20Early%22%20h09``` | ```Yeserday Early 8``` |
+| Yeserday 06:00 ~ 12:59 | ```Ysday06~12=```FORMAT | ```"Yd" hhtt```| ```Ysday06~12=%22Yeserday%20Morning%22%20h%09``` | ```Yeserday Morning 11``` |
+| Yeserday 12:00 ~ 17:59 | ```Ysday12~18=```FORMAT | ```"Yd" hhtt```| ```Ysday12~18=%22Yeserday%20Afternoon%22%20h%09``` | ```Yeserday Afternoon 3``` |
+| Yeserday 18:00 ~ 23:59 | ```Ysday18~24=```FORMAT | ```"Yd" hhtt```| ```Ysday00~01=%22Yeserday%20Night%22%20h%09``` | ```Yeserday Night 11``` |
 
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)

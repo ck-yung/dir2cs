@@ -14,14 +14,9 @@ static public partial class Helper
         = "yyyy-MM-dd HH:mm";
 
     [GeneratedRegex(
-        @"^utc(?<timespan>([+-]?0?[1-9]|1[0-2]):[0-5][0-9])$",
-        RegexOptions.IgnoreCase, "en-US")]
-    private static partial Regex Reg_hhmm();
-
-    [GeneratedRegex(
-        @"^utc(?<timespan>([+-]?\d{1,2}))$",
-        RegexOptions.IgnoreCase, "en-US")]
-    private static partial Regex Reg_hh();
+        @"^utc(?<timespan>[-+][01]?([0-9])(:[0-5][0-9])?)?$",
+        RegexOptions.IgnoreCase)]
+    private static partial Regex utcTimespan();
 
     static public readonly IInovke<DateTimeOffset, string> DateFormatOpt =
         new ParseInvoker<DateTimeOffset, string>(name: "--date-format",
@@ -30,35 +25,22 @@ static public partial class Helper
             resolve: (parser, args) =>
             {
                 var timespanFound = TimeSpan.Zero;
-                var regHhmm = Reg_hhmm();
-                var regHh = Reg_hh();
+                var regUtc = utcTimespan();
                 var timespanMin = TimeSpan.FromHours(-12);
                 var timespanMax = TimeSpan.FromHours(12);
                 bool IsTimeSpan(string format)
                 {
-                    var matchHours = regHhmm.Match(format);
-                    if (matchHours.Success)
+                    var matchUtc = regUtc.Match(format);
+                    if (matchUtc.Success)
                     {
                         timespanFound = TimeSpan.Parse(
-                            matchHours.Groups["timespan"].Value);
-                        if ((timespanFound < timespanMin) || (timespanFound > timespanMax))
+                            matchUtc.Groups["timespan"].Value);
+                        if ((timespanFound < timespanMin)
+                        || (timespanFound > timespanMax))
                         {
                             throw new ArgumentException(
                                 $"'{format}' is found to '{parser.Name}' but the number must be between -12:00 and 12:00!");
                         }
-                        return true;
-                    }
-                    matchHours = regHh.Match(format);
-                    if (matchHours.Success)
-                    {
-                        var hourThe = Int16.Parse(
-                            matchHours.Groups["timespan"].Value);
-                        if ((hourThe < -12) || (hourThe > 12))
-                        {
-                            throw new ArgumentException(
-                                $"'{format}' is found to '{parser.Name}' but the number must be between -12 and 12!");
-                        }
-                        timespanFound = TimeSpan.FromHours(hourThe);
                         return true;
                     }
                     return false;
@@ -72,8 +54,7 @@ static public partial class Helper
                 {
                     if (IsTimeSpan(founds[0]))
                     {
-                        ReportTimeZone = " " + timespanFound.ToString("g");
-                        ReportTimeZone = ReportTimeZone.Substring(0, length: ReportTimeZone.Length - 3);
+                        ReportTimeZone = " " + founds[0].Substring(3);
                         FromUtcToReportTimeZone = (arg) => arg.ToOffset(timespanFound);
                         return;
                     }
@@ -85,15 +66,13 @@ static public partial class Helper
                     {
                         case (false, true):
                             formatThe = founds[0];
-                            ReportTimeZone = " " + timespanFound.ToString("g");
-                            ReportTimeZone = ReportTimeZone.Substring(0, length: ReportTimeZone.Length - 3);
+                            ReportTimeZone = " " + founds[1].Substring(3);
                             FromUtcToReportTimeZone = (arg) =>
                                 arg.ToOffset(timespanFound);
                             break;
                         case (true, false):
                             formatThe = founds[1];
-                            ReportTimeZone = " " + timespanFound.ToString("g");
-                            ReportTimeZone = ReportTimeZone.Substring(0, length: ReportTimeZone.Length - 3);
+                            ReportTimeZone = " " + founds[0].Substring(3);
                             FromUtcToReportTimeZone = (arg) =>
                                 arg.ToOffset(timespanFound);
                             break;
@@ -203,21 +182,9 @@ static public partial class Helper
                             }
 
                             var cultureThe = CultureInfo.InvariantCulture;
-                            var regCulture = new Regex(
-                                @"^culture(\s=\s|\s=|=\s|=)(?<Culture>\w.*)$",
-                                RegexOptions.IgnoreCase);
-
-                            var regJust = new Regex(
-                                @"^Just(\s=\s|\s=|=\s|=)(?<Format>\w.*)$",
-                                RegexOptions.IgnoreCase);
-
-                            var regFormat = new Regex(
-                                @"^(?<Name>[a-zA-Z0-9~]{4,21})(\s=\s|\s=|=\s|=)(?<Format>.*)$",
-                                RegexOptions.IgnoreCase);
-
-                            var regAmPmFormat = new Regex(
-                                @"^(?<Name>\w{4,21})(\s:\s|\s:|:\s|:)(?<Format>.*)$",
-                                RegexOptions.IgnoreCase);
+                            var regCulture = RegCulture();
+                            var regJustText = RegJustText();
+                            var regNameFormat = RegNameFormat();
 
                             var buf2 = new byte[1024];
                             int readCnt = 0;
@@ -253,7 +220,7 @@ static public partial class Helper
                                     }
                                 });
 
-                            var qryPhase2 = MyRegxPrase(qryPhase1, regJust,
+                            var qryPhase2 = MyRegxPrase(qryPhase1, regJustText,
                                 keyName: "none", valueName: "Format",
                                 apply: (seq) =>
                                 {
@@ -280,7 +247,7 @@ static public partial class Helper
                                     };
                                 });
 
-                            var qryPhase3 = MyRegxPrase(qryPhase2, regFormat,
+                            var qryPhase3 = MyRegxPrase(qryPhase2, regNameFormat,
                                 keyName: "Name", valueName: "Format",
                                 apply: (seq) =>
                                 {
@@ -331,7 +298,7 @@ static public partial class Helper
                                     }
                                 });
 
-                            _ = MyRegxPrase(qryPhase3, regAmPmFormat,
+                            _ = MyRegxPrase(qryPhase3, regNameFormat,
                                 keyName: "Name", valueName: "Format",
                                 apply: (seq) =>
                                 {
@@ -540,4 +507,19 @@ static public partial class Helper
 
         return false;
     }
+
+    [GeneratedRegex(
+        @"^culture(=|\s*=\s*)(?<Culture>\w.*})$",
+        RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex RegCulture();
+
+    [GeneratedRegex(
+        @"^Just(=|\s*=\s*)(?<Format>\w.*)$",
+        RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex RegJustText();
+
+    [GeneratedRegex(
+        @"^(?<Name>[a-zA-Z0-9~]{1,21})(=|\s*=\s*)(?<Format>\w.*)$",
+        RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex RegNameFormat();
 }
