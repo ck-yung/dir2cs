@@ -2,15 +2,16 @@
 
 ## Default configuartion
 
-| Type      | Description      | Default Format  | Demo        |
-| ----      | -----------      | --------------  | -------        |
-| Culture   | Language         | ```"en-US"```   | ```zh-TW```    |
-| Just now  | Within 2 minutes | ```"Just"```    | ```Just```     |
-| Today     | Within today     | ```hh:mmtt```   | ```02:46PM```  |
-| Yesterday | Within yesterday | ```"Yd" hhtt``` | ```Yd 03PM```  |
-| This week | Within 6 days    | ```ddd hhtt```  | ```Mon 04PM``` |
-| This year | Within the year  | ```MMM dd```    | ```Dec 29```   |
-| else      | Else             | ```yyyy MMM```  | ```2023 Dec``` |
+| Type       | Description      | Default Value   | Demo Format            |
+| ----       | -----------      | --------------  | -----------            |
+| Culture    | Language         | ```"en-US"```   | ```culture=zh-TW```    |
+| Just now   | Within 2 minutes | ```"Just"```    | ```just="Now"%20%20``` |
+| Today      | Within today     | ```hh:mmtt```   | ```today=HH:mm:ss```   |
+| Yesterday  | Within yesterday | ```"Yd" hhtt``` | ```yesterday=%22Yesterday%22 HH``` |
+| This week  | Within 6 days    | ```ddd hhtt```  | ```week=ddd HH:mm```   |
+| This month | Within the month | ```MMM dd```    | ```month=MMM ddtt```   |
+| This year  | Within the year  | ```MMM dd```    | ```year=MMM dd```      |
+| else       | Else             | ```yyyy MMM```  | ```else=yyyy-MM```     |
 
 * The formats of "Today AM" and "Today PM" are referred to "Today".
 
@@ -79,6 +80,12 @@
 | Yeserday 06:00 ~ 12:59 | ```Ysday06~12=```FORMAT | ```"Yd" hhtt```| ```Ysday06~12=%22Yeserday%20Morning%22%20h%09``` | ```Yeserday Morning 11``` |
 | Yeserday 12:00 ~ 17:59 | ```Ysday12~18=```FORMAT | ```"Yd" hhtt```| ```Ysday12~18=%22Yeserday%20Afternoon%22%20h%09``` | ```Yeserday Afternoon 3``` |
 | Yeserday 18:00 ~ 23:59 | ```Ysday18~24=```FORMAT | ```"Yd" hhtt```| ```Ysday00~01=%22Yeserday%20Night%22%20h%09``` | ```Yeserday Night 11``` |
+| Flag | ```WkdayHours=```FLAG | | ```WkdayHours=Yes```  | |
+| 00:00 ~ 00:59 | ```Wkday00~01=```FORMAT | ```hh:mmtt```| ```Wkday00~01=%22The%20Midnight%22%20%09``` | ```The Midnight``` |
+| 01:00 ~ 05:59 | ```Wkday01~06=```FORMAT | ```hh:mmtt```| ```Wkday01~06=%22The%20Early%22%20h09``` | ```The Early 8``` |
+| 06:00 ~ 12:59 | ```Wkday06~12=```FORMAT | ```hh:mmtt```| ```Wkday06~12=%22The%20Morning%22%20h%09``` | ```The Morning 11``` |
+| 12:00 ~ 17:59 | ```Wkday12~18=```FORMAT | ```hh:mmtt```| ```Wkday12~18=%22The%20Afternoon%22%20h%09``` | ```The Afternoon 3``` |
+| 18:00 ~ 23:59 | ```Wkday18~24=```FORMAT | ```hh:mmtt```| ```Wkday00~01=%22The%20Night%22%20h%09``` | ```The Night 11``` |
 
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
