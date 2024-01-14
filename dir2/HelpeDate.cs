@@ -153,18 +153,20 @@ static public partial class Helper
             return true;
         }
 
-        arg += ReportTimeZone;
-
-        foreach (var tzThe in TimeZoneFormats)
+        foreach (var zoneThe in new string[] {ReportTimeZone, ""})
         {
-            foreach (var fmtThe in DateTimeFormats)
+            var argThe = arg + zoneThe;
+            foreach (var tzThe in TimeZoneFormats)
             {
-                if (DateTimeOffset.TryParseExact(arg, fmtThe + tzThe,
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.None, out DateTimeOffset goodValue2))
+                foreach (var fmtThe in DateTimeFormats)
                 {
-                    result = goodValue2;
-                    return true;
+                    if (DateTimeOffset.TryParseExact(argThe, fmtThe + tzThe,
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None, out DateTimeOffset goodValue2))
+                    {
+                        result = goodValue2;
+                        return true;
+                    }
                 }
             }
         }
