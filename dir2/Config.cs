@@ -70,6 +70,10 @@ static class Config
                     MyOptions.ExclFileDirParsers,
                     tmp);
             }
+            catch (ArgumentException)
+            {
+                throw;
+            }
             catch (Exception ee)
             {
                 Console.Error.WriteLine(

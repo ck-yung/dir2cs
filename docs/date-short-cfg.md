@@ -19,16 +19,16 @@
 
 ## Configuration file of ```~\.local\dir2.date-short.opt```
 
-| Type      | Format              | Example               | Demo |
-| ----      | -----------         | ------                | ---- |
-| Culture   | ```Culture=TEXT```  | ```Culture=en-US```   | |
-| Just now  | ```Just=TEXT```     | ```Just=Just```       | ```Just```     |
-|           |                     | ```Just=Now```        | ```Now```      |
-| Today     | ```Today=```FORMAT  | ```Today=hh:mmtt```   | ```03:47PM```  |
-| Yesterday | ```YsDay=```FORMAT  | ```YsDay="Yd" hhtt``` | ```Yd 03PM```  |
-| This week | ```Week=```FORMAT   | ```Week=ddd hhtt```   | ```Wed 03PM``` |
-| This year | ```Year=```FORMAT   | ```Year=MMM dd```     | ```Jun 12```   |
-| else      | ```Else=```FORMAT   | ```Else=yyyy MMM```   | ```2019 Jun``` |
+| Type       | Format              | Default Format        | Demo Display   |
+| ----       | -----------         | --------------        | ------------   |
+| Culture    | ```Culture=TEXT```  | ```Culture=en-US```   |                |
+| Just now   | ```Just=TEXT```     | ```Just="Just"```     | ```Just```     |
+| Today      | ```Today=```FORMAT  | ```Today=hh:mmtt```   | ```03:47PM```  |
+| Yesterday  | ```YsDay=```FORMAT  | ```YsDay="Yd" hhtt``` | ```Yd 03PM```  |
+| This week  | ```Week=```FORMAT   | ```Week=ddd hhtt```   | ```Wed 03PM``` |
+| This month | ```Month=```FORMAT  | ```Month=MMM dd```    | ```Jun 12```   |
+| This year  | ```Year=```FORMAT   | ```Year=MMM dd```     | ```Jun 12```   |
+| else       | ```Else=```FORMAT   | ```Else=yyyy MMM```   | ```2019 Jun``` |
 
 ## Remark to ```FORMAT``` text
 
