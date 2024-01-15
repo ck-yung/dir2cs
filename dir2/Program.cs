@@ -28,6 +28,10 @@ public class Program
             {
                 Console.WriteLine(ee);
             }
+            else if (ee.InnerException is ArgumentException ae)
+            {
+                Console.WriteLine($"{ee.Message} {ae.Message}");
+            }
             else
             {
                 Console.WriteLine($"{ee.GetType()}: {ee.Message}");
@@ -96,8 +100,16 @@ public class Program
             cfgRest = cfgRest.Concat( Config.ParseConfigFile());
         }
 
-        cfgRest = Parsers.Resolve(cfgRest,
-            isIncludeExclNameOptions: false);
+        try
+        {
+            cfgRest = Parsers.Resolve(cfgRest,
+                isIncludeExclNameOptions: false);
+        }
+        catch (ArgumentException ae2)
+        {
+            throw new Exception(
+                $"Envir var '{nameof(dir2)}' is invalid.", ae2);
+        }
 
         var tmp2 = cfgRest
             .Concat(ExpandFromShortCut(ExpandForHomeDir(mainArgs))
