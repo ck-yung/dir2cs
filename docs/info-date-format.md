@@ -5,6 +5,8 @@
 * A literal string (fixed-text) must be enclosed by double quotation mark by ```%22```.
 * A tailing space must be enclosed as ```%20```.
 * A horizontal tab character must be enclosed as ```%09```.
+* If ```%20``` is used to ```--within``` or ```--not-wihtin``` options, a plus sign (Time-Zone) must be encoded as ```%2b```.
+Please check [encoding-list](https://github.com/ck-yung/dir2cs/blob/main/docs/info-encode-char.md) for more information.
 * [Custom configuartion to ```--date-format short```](https://github.com/ck-yung/dir2cs/blob/main/docs/date-short-cfg.md)
 * [顯示中文日期](https://github.com/ck-yung/dir2cs/blob/main/docs/date-in-chinese.md)
 

@@ -20,7 +20,7 @@ static public partial class Helper
 
     static public readonly IInovke<DateTimeOffset, string> DateFormatOpt =
         new ParseInvoker<DateTimeOffset, string>(name: "--date-format",
-            help: "DATE-FORMAT   e.g. short, unix, UTC+hh:mm, or, yy-MM-dd%20HH:mm:ss",
+            help: "DATE-FORMAT   e.g. short, yy-MM-dd%20HH:mm:ss, unix, unix+, UTC+hh:mm",
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {
@@ -31,15 +31,39 @@ static public partial class Helper
                     var matchUtc = regUtc.Match(arg);
                     if (matchUtc.Success)
                     {
-                        timespanFound = TimeSpan.Parse(
-                            matchUtc.Groups["timespan"].Value);
-                        if (timespanFound < TimeSpan.FromHours(-12)
-                        || (timespanFound > TimeSpan.FromHours(+12)))
+                        var textFound = matchUtc.Groups["timespan"].Value;
+                        var a3 = textFound.StartsWith('+') ? textFound.Substring(1) : textFound;
+                        if (false == a3.Contains(':'))
                         {
-                            throw new ArgumentException(
-                                $"'{arg}' ({parser.Name}) is NOT between -12:00 and 12:00.");
+                            a3 += ":00";
                         }
-                        return true;
+                        if (TimeSpan.TryParse(a3, out var timespanThe))
+                        {
+                            if (timespanThe < TimeSpan.FromHours(-12))
+                            {
+                                throw new ArgumentException(
+                                    $"{parser.Name} cannot be less than (UTC) -12:00 but '{textFound}' is found.");
+                            }
+
+                            if (timespanThe > TimeSpan.FromHours(12))
+                            {
+                                throw new ArgumentException(
+                                    $"{parser.Name} cannot be greater than (UTC) +12:00 but '{textFound}' is found.");
+                            }
+
+                            var a4 = timespanThe.ToString()[..^3];
+                            if (timespanThe > TimeSpan.Zero)
+                            {
+                                ReportTimeZone = " +" + a4;
+                            }
+                            else
+                            {
+                                ReportTimeZone = " "+a4;
+                            }
+
+                            timespanFound = timespanThe;
+                            return true;
+                        }
                     }
                     return false;
                 }
@@ -51,7 +75,6 @@ static public partial class Helper
                 {
                     if (IsTimeSpan(theArgs[0]))
                     {
-                        ReportTimeZone = " " + theArgs[0].Substring(3);
                         FromUtcToReportTimeZone = (arg) => arg.ToOffset(timespanFound);
                         return;
                     }
@@ -63,13 +86,11 @@ static public partial class Helper
                     {
                         case (false, true):
                             formatFound = theArgs[0];
-                            ReportTimeZone = " " + theArgs[1].Substring(3);
                             FromUtcToReportTimeZone = (arg) =>
                                 arg.ToOffset(timespanFound);
                             break;
                         case (true, false):
                             formatFound = theArgs[1];
-                            ReportTimeZone = " " + theArgs[0].Substring(3);
                             FromUtcToReportTimeZone = (arg) =>
                                 arg.ToOffset(timespanFound);
                             break;
@@ -85,6 +106,9 @@ static public partial class Helper
                     case "unix":
                         rtn = (value) => $"{value.ToUnixTimeSeconds(),11}";
                         break;
+                    case "unix+":
+                        rtn = (value) => $"{value.ToUnixTimeSeconds(),11}.{value.Millisecond:D3}";
+                        break;
                     case "short":
                         rtn = ParseToDateShortFormat(timespanFound);
                         break;
@@ -99,7 +123,7 @@ static public partial class Helper
 
     #region "Format for Parsing Date/Time value"
     static public readonly ImmutableArray<string> TimeZoneFormats =
-        ["", " zz", " zzz", " z"];
+        ["", " zz", " zzz", " z", "zz", "zzz", "z"];
 
     static public readonly ImmutableArray<string> DateTimeFormats =
         [

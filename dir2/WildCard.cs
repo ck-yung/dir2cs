@@ -298,6 +298,13 @@ static public class Wild
                 return new WithData(valueDate);
             }
 
+            if (Helper.TryParseDateTime(
+                System.Net.WebUtility.UrlDecode(arg),
+                out var valueDate2))
+            {
+                return new WithData(valueDate2);
+            }
+
             if (hasDateDelta)
             {
                 foreach (var nameThe in TryParseTimeSpans.Keys)
@@ -348,7 +355,7 @@ static public class Wild
             {
                 var aa = Helper.GetUniqueTexts(args, 3, parser)
                 .Select((it) => (WithData.Parse(
-                    parser.Name, System.Net.WebUtility.UrlDecode(it),
+                    parser.Name, it,
                     hasDateDelta:false), it))
                 .GroupBy((it) => it.Item1.Type)
                 .ToImmutableDictionary(
@@ -398,7 +405,7 @@ static public class Wild
             {
                 var aa = Helper.GetUniqueTexts(args, 3, parser)
                 .Select((it) => (WithData.Parse(
-                    parser.Name, System.Net.WebUtility.UrlDecode(it),
+                    parser.Name, it,
                     hasDateDelta: false), it))
                 .GroupBy((it) => it.Item1.Type)
                 .ToImmutableDictionary(

@@ -9,9 +9,9 @@
 |          | --sub            | ```off``` ```all```
 |          | --cfg-off        |
 |          | --utf8           |
-| -w       | [--within](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md) | DATE or SIZE | ```-w 12m``` ```-w 3day```
-| -W       | [--not-within](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md) | DATE or SIZE | ```-W 10k``` ```-W 2hour```
-|          |                  |              | ```-w 14day -W +7day```
+| -w       | [--within](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md) | DATE or SIZE | ```-w 12Mb``` ```-w 3days```
+| -W       | [--not-within](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md) | DATE or SIZE | ```-W 10k``` ```-W 2hr```
+|          |                  |              | ```-w 30days -W +7days```
 | -x       | --excl           | WILD[,WILD ..]  | ```-x *.tmp,*.temp```    |
 |          |                  | [```:link```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-file.md) |
 | -X       | --excl-dir       | WILD[,WILD ..]  | ```-X obj,bin```           |
@@ -29,8 +29,8 @@
 |          |                  |                               | ```--date-format utc+8 ```
 |          | --creation-date  |
 |          | --total          | ```off``` ```only```
-|          | --hide           | ```date,size,cout,mode,owner,link```
-|          | --show           | ```date,size,cout,mode,owner,link,link-size,link-date```
+|          | --hide           | ```date,size,cout,mode,owner,last,link```
+|          | --show           | ```date,size,cout,mode,owner,last,link,link-size,link-date```
 |          | --link           | ```incl``` [```only```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-file.md)
 |          | --excl-none      | [Clear all ```--excl``` and ```--excl-dir```]
 | -o       | --sort           | ```off``` ```name,size,date,ext,count,last``` [up to 2 columns] | ```-o date```
@@ -42,6 +42,9 @@
 |          | --end-time    | FORMAT       | ```--end-time %22TimeZone%20%22zz```
 |          |                  |              | ```--end-time %22Done%20at%20%22yyyy-MMM-dd%20HH:mm%20zz```
 
-* Option ```--end-time``` will be implemented at ```v2.1.2``` (2024 Feb).
+* The following features will be implemented at ```v2.1.2``` (2024 Feb).
+    - Option ```--end-time```
+    - ```utf```OFFSET to ```--date-format```
+    - ```last``` to options ```--show``` and ```--hide```
 
  [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
