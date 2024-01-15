@@ -249,7 +249,7 @@ static public partial class MyOptions
         Sort.ReverseOpt,
         Sort.TakeOpt,
         TotalOpt,
-        (IParse) Show.ReportTime,
+        (IParse) Show.EndTime,
     };
 
     static public readonly IParse[] ConfigParsers = new IParse[]
@@ -265,7 +265,7 @@ static public partial class MyOptions
         (IParse) Helper.DateFormatOpt,
         (IParse) Helper.IsHiddenFileOpt,
         Sort.ReverseOpt,
-        (IParse) Show.ReportTime,
+        (IParse) Show.EndTime,
     };
 
     static public readonly IParse[] ExclFileDirParsers = Parsers

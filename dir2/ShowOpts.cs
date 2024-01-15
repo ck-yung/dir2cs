@@ -324,8 +324,8 @@ static internal class Show
                 }
             });
 
-    static public readonly IInovke<bool, string> ReportTime =
-        new ParseInvoker<bool, string>("--report-time", help: "FORMAT",
+    static public readonly IInovke<bool, string> EndTime =
+        new ParseInvoker<bool, string>("--end-time", help: "FORMAT",
             init: (_) => "", resolve: (parser, args) =>
             {
                 var argThe = System.Net.WebUtility.UrlDecode(

@@ -17,20 +17,21 @@
 * Short-cut of option is **NOT** loaded from the configuration file.
 * The configuration file contains the following options only.
 
-| Option | Description |
-| --- | ---- |
-| --sort | Ordering |
-| --show | Column selection |
-| --hide | Column selection |
-| --utf8 | Text Encoding |
+| Option  | Description |
+| ------  | --------- |
+| --sort  | Ordering  |
+| --show  | Selection |
+| --hide  | Selection |
+| --utf8  | Text Encoding |
 | --regex | Regular Expression |
 | --case-sensitive | |
-| --date-format | |
-| --size-format | |
-| --count-format | |
-| --hidden | Hidden file selection |
-| --reverse | Ordering |
-| --excl | Excluding files |
+| --date-format    | |
+| --size-format    | |
+| --count-format  | |
+| --hidden   | Hidden file selection |
+| --reverse  | Ordering |
+| --end-time |          |
+| --excl     | Excluding files |
 | --excl-dir | Excluding directories |
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)

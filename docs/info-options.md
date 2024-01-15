@@ -1,4 +1,4 @@
-# Complete Option List
+﻿# Complete Option List
 
 | Shortcut | Option           | Available Value         | Example |
 | -------- | ------           | ---------------         | ------- |
@@ -24,7 +24,7 @@
 |          | --hidden         | ```incl``` ```excl``` ```only```
 |          | [--size-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-size-format.md) | INTEGER  ```commna``` ```short``` ```+short```  | ```--size-format 12,comma```
 |          |                  |                         | ```--size-format short```
-|          | [--date-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md) | ```short``` ```unix``` FORMAT | ```--date-format yyyy-MMM-ddTHH:mm:ss```
+|          | [--date-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md) | ```short``` ```unix``` FORMAT ｜```utc```OFFSET | ```--date-format yyyy-MMM-ddTHH:mm:ss```
 |          |                  |                               | ```--date-format yy-MM-dd%20HH:mm ```
 |          |                  |                               | ```--date-format utc+8 ```
 |          | --creation-date  |
@@ -39,9 +39,9 @@
 |          |                  |              | ```--take 500Mb```
 |          | --total          | ```off``` ```only```
 |          | [--sum](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md) | ```ext``` ```dir``` ```+dir``` ```year```
-|          | --report-time    | DATE-TIME-FORMAT       | ```--report-time %22TimeZone%20%22zz```
-|          |                  |              | ```--report-time %22Done%20at%20%22yyyy-MMM-dd%20HH:mm%20zz```
+|          | --end-time    | FORMAT       | ```--end-time %22TimeZone%20%22zz```
+|          |                  |              | ```--end-time %22Done%20at%20%22yyyy-MMM-dd%20HH:mm%20zz```
 
-* Option ```--report-time``` will be implemented at ```v2.1.2``` (2024 Feb).
+* Option ```--end-time``` will be implemented at ```v2.1.2``` (2024 Feb).
 
  [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)

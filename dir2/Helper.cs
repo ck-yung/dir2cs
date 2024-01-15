@@ -253,7 +253,7 @@ static public partial class Helper
                     }
                     Write(".");
                 }
-                WriteLine(Show.ReportTime.Invoke(true));
+                WriteLine(Show.EndTime.Invoke(true));
                 break;
             case 1:
                 if (printEvenCountOne)
@@ -261,7 +261,7 @@ static public partial class Helper
                     Write("One file is found: ");
                     Write(Show.Size(Show.LengthFormatOpt.Invoke(sum.Length)));
                     Write(Show.Date(DateFormatOpt.Invoke(sum.StartTime)));
-                    WriteLine(Show.ReportTime.Invoke(true));
+                    WriteLine(Show.EndTime.Invoke(true));
                 }
                 break;
             default:

@@ -230,7 +230,7 @@ public class InfoSum
     {
         if (isBase)
         {
-            var rptTime = Show.ReportTime.Invoke(true);
+            var rptTime = Show.EndTime.Invoke(true);
             if (string.IsNullOrEmpty(rptTime)) return Name;
             return Name + " " + rptTime;
         }
