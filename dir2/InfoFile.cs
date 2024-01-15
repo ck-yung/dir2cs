@@ -307,8 +307,8 @@ public class InfoSum
     {
         write(Show.Size(Show.LengthFormatOpt.Invoke(Length)));
         write(Show.Date($"{Helper.DateFormatOpt.Invoke(StartTime)} "));
-        write(Show.Date($"- "));
-        write(Show.Date($"{Helper.DateFormatOpt.Invoke(EndTime)} "));
+        write(Show.Date(Show.Last.Invoke($"- ")));
+        write(Show.Date(Show.Last.Invoke($"{Helper.DateFormatOpt.Invoke(EndTime)} ")));
         write(Show.Count(Show.CountFormat.Invoke(Count)));
         writeLine(GetName());
     }
