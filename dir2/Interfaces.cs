@@ -56,8 +56,6 @@ public partial class Helper
     public static string[] GetUniqueTexts(IEnumerable<string> args, int max, IParse opt)
     {
         var rtn = Helper.CommonSplit(args)
-            .Where((it) => it.Length > 0)
-            .Distinct()
             .Take(max+1)
             .ToArray();
 
