@@ -1,11 +1,12 @@
 using System.Collections.Immutable;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
 
 namespace dir2;
 
-static internal class Show
+static internal partial class Show
 {
     static readonly Func<string, string> blank = (arg) => string.Empty;
     static string Blank<T>(T _) { return ""; }
@@ -13,7 +14,12 @@ static internal class Show
     static public Func<string, string> GetDirName
     { get; private set; } = (dirname) => dirname.TrimEnd(Path.DirectorySeparatorChar);
 
-    static public Func<string, string> Date { get; private set; } = Helper.itself;
+    static string getDateText(string arg) => arg + " ";
+    static public Func<string, string> Date { get; private set; } = getDateText;
+
+    static string getLastDateTimeText(string arg) => $"- {arg}";
+    static public Func<string, string> Last { get; private set; } = getLastDateTimeText;
+
     static public Func<string, string> Size { get; private set; } = Helper.itself;
     static public Func<string, string> Count { get; private set; } = Helper.itself;
     static public Func<InfoBase, string> Link { get; private set; } = (arg) =>
@@ -25,7 +31,7 @@ static internal class Show
 
     static public Func<InfoBase, string> Attributes { get; private set; } = Blank;
     static public Func<InfoBase, string> Owner { get; private set; } = Blank;
-    static public Func<string, string> Last { get; private set; } = Helper.itself;
+
 
     static public readonly IParse HideOpt = new SimpleParser(name: "--hide",
         help: "date,size,count,mode,owner,last,link",
@@ -39,6 +45,7 @@ static internal class Show
                         throw new ArgumentException($"Syntax: {parser.Name} {parser.Help}");
                     case "date":
                         Date = blank;
+                        Last = blank;
                         break;
                     case "size":
                         Size = blank;
@@ -82,7 +89,7 @@ static internal class Show
                     case Helper.ExtraHelp:
                         throw new ArgumentException($"Syntax: {parser.Name} {parser.Help}");
                     case "date":
-                        Date = Helper.itself;
+                        Date = getDateText;
                         break;
                     case "size":
                         Size = Helper.itself;
@@ -94,7 +101,8 @@ static internal class Show
                         Count = Helper.itself;
                         break;
                     case "last":
-                        Last = Helper.itself;
+                        Date = getDateText;
+                        Last = getLastDateTimeText;
                         break;
                     case "link":
                         Link = (arg) =>
@@ -328,18 +336,25 @@ static internal class Show
         new ParseInvoker<bool, string>("--end-time", help: "FORMAT",
             init: (_) => "", resolve: (parser, args) =>
             {
-                var argThe = System.Net.WebUtility.UrlDecode(
-                    Helper.GetUnique(args, parser));
-                try
+                var argThe = Helper.GetUnique(args, parser);
+                if (string.IsNullOrEmpty(argThe)) return;
+                argThe = System.Web.HttpUtility.UrlDecode(argThe);
+
+                Helper.impPrintInfoTotal = (path, wilds, arg)
+                => Helper.PrintIntoTotalWithFlag( // --total always
+                    path, wilds, arg, printEvenCountOne: false);
+
+                parser.SetImplementation((_) =>
                 {
-                    parser.SetImplementation((_) =>
+                    try
                     {
                         return " " + Helper.FromUtcToReportTimeZone(
                             DateTimeOffset.UtcNow).ToString(argThe);
-                    });
-                }
-                catch
-                {
-                }
+                    }
+                    catch
+                    {
+                        return "Error!";
+                    }
+                });
             });
 }

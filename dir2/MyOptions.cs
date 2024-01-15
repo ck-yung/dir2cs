@@ -225,6 +225,7 @@ static public partial class MyOptions
 
     static public readonly IParse[] Parsers = new IParse[]
     {
+        (IParse) Show.OutputOpt,
         (IParse) PrintDirOpt,
         (IParse) SubDirOpt,
         Show.EncodeConsoleOpt,

@@ -15,14 +15,14 @@ static public class Sum
             Helper.ItemWrite(Show.Attributes(it));
             Helper.ItemWrite(Show.Owner(it));
             Helper.ItemWrite(Show.Size(Show.LengthFormatOpt.Invoke(it.Length)));
-            Helper.ItemWrite(Show.Date($"{Helper.DateFormatOpt.Invoke(Show.GetDate(it))} "));
+            Helper.ItemWrite(Show.Date(Helper.DateFormatOpt.Invoke(Show.GetDate(it))));
             Helper.ItemWrite(Helper.io.GetRelativeName(it.FullName));
             Helper.ItemWrite(Show.Link.Invoke(it));
             Helper.ItemWriteLine(string.Empty);
             return it;
         })
         .Aggregate(
-            seed: new InfoSum(IsBase:true),
+            seed: new InfoSum(isBase:true),
             func: (acc, it) => acc.AddWith(it));
 
     static public Func<IEnumerable<InfoFile>, InfoSum> Reduce
@@ -52,7 +52,7 @@ static public class Sum
                 return it;
             })
             .Aggregate(
-                seed: new InfoSum(IsBase:true),
+                seed: new InfoSum(isBase:true),
                 func: (acc, it) => acc.AddWith(it));
 
             switch (argThe)

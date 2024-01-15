@@ -298,13 +298,6 @@ static public class Wild
                 return new WithData(valueDate);
             }
 
-            if (Helper.TryParseDateTime(
-                System.Net.WebUtility.UrlDecode(arg),
-                out var valueDate2))
-            {
-                return new WithData(valueDate2);
-            }
-
             if (hasDateDelta)
             {
                 foreach (var nameThe in TryParseTimeSpans.Keys)

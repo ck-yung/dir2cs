@@ -272,14 +272,14 @@ public class Program
             if (File.Exists(arg))
             {
                 var infoFile = new FileInfo(arg);
-                Write(Show.Date($"{DateFormatOpt.Invoke(infoFile.LastWriteTime)} "));
+                Write(Show.Date(DateFormatOpt.Invoke(infoFile.LastWriteTime)));
                 Write(Show.Size(Show.LengthFormatOpt.Invoke(infoFile.Length)));
                 WriteLine(arg);
             }
             else if (Directory.Exists(arg))
             {
                 var infoDir = new DirectoryInfo(arg);
-                Write(Show.Date($"{DateFormatOpt.Invoke(infoDir.LastWriteTime)} "));
+                Write(Show.Date(DateFormatOpt.Invoke(infoDir.LastWriteTime)));
                 Write("[DIR] ");
                 WriteLine(arg);
             }

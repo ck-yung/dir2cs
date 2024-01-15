@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Xml.Linq;
 using static dir2.MyOptions;
 
 namespace dir2;
@@ -225,17 +226,9 @@ public class InfoSum
 {
     public string Name { get; private set; }
 
-    bool isBase { get; set; } = false;
-    string GetName()
-    {
-        if (isBase)
-        {
-            var rptTime = Show.EndTime.Invoke(true);
-            if (string.IsNullOrEmpty(rptTime)) return Name;
-            return Name + " " + rptTime;
-        }
-        return Name;
-    }
+    bool IsBase { get; set; } = false;
+
+    public Func<string> GetName { get; init; }
 
     public int Count { get; private set; } = 0;
     public long Length { get; private set; } = 0L;
@@ -245,18 +238,53 @@ public class InfoSum
     public InfoSum(string Name)
     {
         this.Name = Name;
+        GetName = () => Name;
+        if (Show.IsAddClosingMarkToRelativeName)
+        {
+            GetName = () => "\"" + Name + "\"";
+        }
     }
 
-    public InfoSum(string Name, bool extra)
+    static Func<string> MakeGetName(bool isBase, string name)
     {
-        this.Name = Name;
+        var isEndTime = (false == string.IsNullOrEmpty(
+            Show.EndTime.Invoke(true)));
+        switch (isBase, isEndTime, Show.IsAddClosingMarkToRelativeName)
+        {
+            case (true, true, true):
+                return  () =>
+                {
+                    var endTime = Show.EndTime.Invoke(true);
+                    return "\"" + name + " " + endTime + "\"";
+                };
+            case (true, true, false):
+                return () =>
+                {
+                    var endTime = Show.EndTime.Invoke(true);
+                    return name + " " + endTime;
+                };
+            case (_, _, true):
+                return () =>
+                {
+                    return "\"" + name + "\"";
+                };
+            default:
+                return () => name;
+        }
+    }
+
+    public InfoSum(string name, bool extra)
+    {
+        Name = name;
         StartTime = new DateTimeOffset(
             year: 1, month: 1, day: 1,
             0, 0, 0, TimeSpan.Zero);
         EndTime= StartTime;
+
+        GetName = MakeGetName(false, name);
     }
 
-    public InfoSum(bool IsBase)
+    public InfoSum(bool isBase)
     {
         Name = Helper.io.RealInitPath;
         if (Name == ("." + Path.DirectorySeparatorChar))
@@ -268,7 +296,8 @@ public class InfoSum
                 Name = a2;
             }
         }
-        isBase = IsBase;
+        IsBase = isBase;
+        GetName = MakeGetName(isBase, Name);
     }
 
     static internal readonly InfoSum Fake = new(string.Empty);
@@ -306,9 +335,8 @@ public class InfoSum
     public void Print(Action<string> write, Action<string> writeLine)
     {
         write(Show.Size(Show.LengthFormatOpt.Invoke(Length)));
-        write(Show.Date($"{Helper.DateFormatOpt.Invoke(StartTime)} "));
-        write(Show.Date(Show.Last.Invoke($"- ")));
-        write(Show.Date(Show.Last.Invoke($"{Helper.DateFormatOpt.Invoke(EndTime)} ")));
+        write(Show.Date(Helper.DateFormatOpt.Invoke(StartTime)));
+        write(Show.Date(Show.Last.Invoke(Helper.DateFormatOpt.Invoke(EndTime))));
         write(Show.Count(Show.CountFormat.Invoke(Count)));
         writeLine(GetName());
     }

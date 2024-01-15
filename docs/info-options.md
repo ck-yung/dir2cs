@@ -24,7 +24,7 @@
 |          | --hidden         | ```incl``` ```excl``` ```only```
 |          | [--size-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-size-format.md) | INTEGER  ```commna``` ```short``` ```+short```  | ```--size-format 12,comma```
 |          |                  |                         | ```--size-format short```
-|          | [--date-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md) | ```short``` ```unix``` FORMAT ｜```utc```OFFSET | ```--date-format yyyy-MMM-ddTHH:mm:ss```
+|          | [--date-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md) | ```short``` ```unix``` ```unix+``` FORMAT ｜```utc```OFFSET | ```--date-format yyyy-MMM-ddTHH:mm:ss```
 |          |                  |                               | ```--date-format yy-MM-dd%20HH:mm ```
 |          |                  |                               | ```--date-format utc+8 ```
 |          | --creation-date  |
@@ -37,14 +37,17 @@
 | -r       | --reverse        | ```off``` ```on```
 |          | --take           | COUNT  SIZE  | ```--take 10```
 |          |                  |              | ```--take 500Mb```
-|          | --total          | ```off``` ```only```
+|          | --total          | ```off``` ```only``` ```always```
 |          | [--sum](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md) | ```ext``` ```dir``` ```+dir``` ```year```
-|          | --end-time    | FORMAT       | ```--end-time %22TimeZone%20%22zz```
+|          | --end-time       | FORMAT       | ```--end-time %22TimeZone%20%22zz```
 |          |                  |              | ```--end-time %22Done%20at%20%22yyyy-MMM-dd%20HH:mm%20zz```
+|          | --ouput          | ```csv```    |
 
 * The following features will be implemented at ```v2.1.2``` (2024 Feb).
     - Option ```--end-time```
-    - ```utf```OFFSET to ```--date-format```
+    - ```utf```OFFSET to option ```--date-format```
+    - ```unix+``` to option ```--date-format```
     - ```last``` to options ```--show``` and ```--hide```
+    - Option ```--output```
 
  [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)

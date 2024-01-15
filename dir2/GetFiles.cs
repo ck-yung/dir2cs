@@ -38,7 +38,15 @@ static public partial class Helper
                 lenThe -= path.Length;
             }
 
-            GetRelativeName = (arg) => arg.Substring(lenThe);
+            if (Show.IsAddClosingMarkToRelativeName)
+            {
+                GetRelativeName = (arg) => "\""+ arg.Substring(lenThe) + "\"";
+            }
+            else
+            {
+                GetRelativeName = (arg) => arg.Substring(lenThe);
+            }
+
             return InitPath;
         }
 

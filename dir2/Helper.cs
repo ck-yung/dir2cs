@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Globalization;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
@@ -175,7 +173,7 @@ static public partial class Helper
             ItemWrite(Show.Attributes(it));
             ItemWrite(Show.Owner(it));
             ItemWrite(DirPrefixText("DIR "));
-            ItemWrite(Show.Date($"{DateFormatOpt.Invoke(Show.GetDate(it))} "));
+            ItemWrite(Show.Date(DateFormatOpt.Invoke(Show.GetDate(it))));
             ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));
             ItemWrite(Show.Link.Invoke(it));
             ItemWriteLine(string.Empty);

@@ -104,10 +104,24 @@ static public partial class Helper
                 switch (formatFound)
                 {
                     case "unix":
-                        rtn = (value) => $"{value.ToUnixTimeSeconds(),11}";
+                        if (Show.IsAddClosingMarkToRelativeName)
+                        {
+                            rtn = (value) => value.ToUnixTimeSeconds().ToString();
+                        }
+                        else
+                        {
+                            rtn = (value) => $"{value.ToUnixTimeSeconds(),11}";
+                        }
                         break;
                     case "unix+":
-                        rtn = (value) => $"{value.ToUnixTimeSeconds(),11}.{value.Millisecond:D3}";
+                        if (Show.IsAddClosingMarkToRelativeName)
+                        {
+                            rtn = (value) => $"{value.ToUnixTimeSeconds()}.{value.Millisecond:D3}";
+                        }
+                        else
+                        {
+                            rtn = (value) => $"{value.ToUnixTimeSeconds(),11}.{value.Millisecond:D3}";
+                        }
                         break;
                     case "short":
                         rtn = ParseToDateShortFormat(timespanFound);
@@ -177,19 +191,22 @@ static public partial class Helper
             return true;
         }
 
-        foreach (var zoneThe in new string[] {ReportTimeZone, ""})
+        foreach (var arg2 in new string[] { arg, System.Net.WebUtility.UrlDecode(arg) })
         {
-            var argThe = arg + zoneThe;
-            foreach (var tzThe in TimeZoneFormats)
+            foreach (var zoneThe in new string[] { ReportTimeZone, "" })
             {
-                foreach (var fmtThe in DateTimeFormats)
+                var argThe = arg2 + zoneThe;
+                foreach (var tzThe in TimeZoneFormats)
                 {
-                    if (DateTimeOffset.TryParseExact(argThe, fmtThe + tzThe,
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.None, out DateTimeOffset goodValue2))
+                    foreach (var fmtThe in DateTimeFormats)
                     {
-                        result = goodValue2;
-                        return true;
+                        if (DateTimeOffset.TryParseExact(argThe, fmtThe + tzThe,
+                            CultureInfo.InvariantCulture,
+                            DateTimeStyles.None, out DateTimeOffset goodValue2))
+                        {
+                            result = goodValue2;
+                            return true;
+                        }
                     }
                 }
             }
