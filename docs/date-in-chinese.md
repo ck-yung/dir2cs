@@ -11,6 +11,7 @@ just = 剛剛%20%09
 today= tth:mm%09
 ysday= 昨th時%09
 week = dddtt%09
+month= 本月d日%09
 year = MMMd日%09
 else = yy年MMM%09
 ```
@@ -27,6 +28,8 @@ else = yy年MMM%09
 |                | ```zh-TW``` | ```下3:47``` |
 | ```ddd tt```   | ```en-US``` | ```Wed PM``` |
 |                | ```zh-TW``` | ```週三 下午``` |
+| ```ddddt```    | ```en-US``` | ```wedensdayP``` |
+|                | ```zh-TW``` | ```星期三下``` |
 | ```MMM dd```   | ```en-US``` | ```Jun 12``` |
 |                | ```zh-TW``` | ```6月 12``` |
 | ```yyyy MMM``` | ```en-US``` | ```2023 Jun``` |
@@ -40,6 +43,7 @@ else = yy年MMM%09
 ```
  145M 12年9月    年少無知◎公民廣場.mp4
   52K 11月22日   《清室退位詔書》愛新覺羅．溥儀.1912.txt
+  33M 本月22日   《在台上我覓理想》梅艷芳.1984.mp3
    4K 週一上午   軍官學校-黃埔軍校訓詞.1924.txt
    3M 昨下10時   Nothing to Envy 我們最幸福-韓人民北的真實生活.2009.epub
  333M 上午11:26  百變1991告別舞台-梅艷芳.mp4
@@ -65,10 +69,22 @@ else = yy年MMM%09
 | 昨日 06:00 ~ 12:59 | ```Ysday06~12=```FORMAT | ```Ysday06~12=昨早hh時%20%09``` | ```昨早10時``` |
 | 昨日 12:00 ~ 17:59 | ```Ysday12~18=```FORMAT | ```Ysday12~18=昨午hh時%20%09``` | ```昨午04時``` |
 | 昨日 18:00 ~ 23:59 | ```Ysday18~24=```FORMAT | ```Ysday00~01=昨晚hh時%20%09``` | ```昨晚11時``` |
+| 啟動設定 | ```WkdayHours=```FLAG | ```WkdayHours=TRUE```  | |
+| 本週 00:00 ~ 00:59 | ```Wkday00~01=```FORMAT | ```Wkday00~01=ddd晨%20%09``` | ```昨晨00時``` |
+| 本週 01:00 ~ 05:59 | ```Wkday01~06=```FORMAT | ```Wkday01~06=ddd晨%20%09``` | ```昨晨03時``` |
+| 本週 06:00 ~ 12:59 | ```Wkday06~12=```FORMAT | ```Wkday06~12=ddd早%20%09``` | ```昨早10時``` |
+| 本週 12:00 ~ 17:59 | ```Wkday12~18=```FORMAT | ```Wkday12~18=ddd午%20%09``` | ```昨午04時``` |
+| 本週 18:00 ~ 23:59 | ```Wkday18~24=```FORMAT | ```Wkday00~01=ddd晚%20%09``` | ```昨晚11時``` |
+
 
 * 設定範例
 
 ```
+culture=zh-TW
+just = 剛剛%20%09
+month= 本月d日%09
+year = MMMd日%09
+else = yy年MMM%09
 todayHours=yes
 today00~01=今晨00:mm%09
 today01~06=今晨hh:mm%09
@@ -81,6 +97,24 @@ ysday01~06=昨晨hh時%20%09
 ysday06~12=昨早hh時%20%09
 ysday12~18=昨午hh時%20%09
 ysday18~24=昨晚hh時%20%09
+wkdayHours=yes
+wkday00~01=ddd晨%20%09
+wkday01~06=ddd晨%20%09
+wkday06~12=ddd早%20%09
+wkday12~18=ddd午%20%09
+wkday18~24=ddd晚%20%09
 ```
+
+
+* 成果範例
+```
+ 145M 12年9月    年少無知◎公民廣場.mp4
+  52K 11月22日   《清室退位詔書》愛新覺羅．溥儀.1912.txt
+  33M 本月22日   《在台上我覓理想》梅艷芳.1984.mp3
+   4K 週一早     軍官學校-黃埔軍校訓詞.1924.txt
+   3M 昨晚10時   Nothing to Envy 我們最幸福-韓人民北的真實生活.2009.epub
+ 333M 今早11:26  百變1991告別舞台-梅艷芳.mp4
+ 151K 剛剛       On Liberty 論自由（嚴復《群己權界論》）Mill.1859.epub
+ ```
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
