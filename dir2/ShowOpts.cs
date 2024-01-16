@@ -332,6 +332,9 @@ static internal partial class Show
                 }
             });
 
+    /// <summary>
+    /// Invoke(bool isLeadingSpace)
+    /// </summary>
     static public readonly IInovke<bool, string> EndTime =
         new ParseInvoker<bool, string>("--end-time", help: "FORMAT",
             init: (_) => "", resolve: (parser, args) =>
@@ -344,12 +347,15 @@ static internal partial class Show
                 => Helper.PrintIntoTotalWithFlag( // --total always
                     path, wilds, arg, printEvenCountOne: false);
 
-                parser.SetImplementation((_) =>
+                parser.SetImplementation((isLeadingSpace) =>
                 {
+                    var leading = (isLeadingSpace) ? " " : "";
                     try
                     {
-                        return " " + Helper.FromUtcToReportTimeZone(
+                        var rtn = Helper.FromUtcToReportTimeZone(
                             DateTimeOffset.UtcNow).ToString(argThe);
+                        if (string.IsNullOrEmpty(rtn)) return string.Empty;
+                        return leading + rtn;
                     }
                     catch
                     {

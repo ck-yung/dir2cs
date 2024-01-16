@@ -38,7 +38,7 @@ static public partial class Helper
                 lenThe -= path.Length;
             }
 
-            if (Show.IsAddClosingMarkToRelativeName)
+            if (Show.IsOututCsv)
             {
                 GetRelativeName = (arg) => "\""+ arg.Substring(lenThe) + "\"";
             }

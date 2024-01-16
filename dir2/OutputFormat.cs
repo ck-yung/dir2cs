@@ -7,8 +7,7 @@ namespace dir2;
 static internal partial class Show
 {
 
-    static internal bool IsAddClosingMarkToRelativeName
-    { get; private set; } = false;
+    static internal bool IsOututCsv { get; private set; } = false;
 
     static internal readonly IInovke<bool, bool> OutputOpt =
         new ParseInvoker<bool, bool>("--output", help: "csv",
@@ -34,19 +33,21 @@ static internal partial class Show
                         ((ParseInvoker<int, string>)CountFormat).SetImplementation(
                             (_) => string.Empty);
 
-                        Last = blank;
                         Date = (arg) =>
                         {
                             if (string.IsNullOrEmpty(arg)) return "";
                             return "\"" + arg + "\",";
                         };
+
+                        Last = Helper.itself;
+
                         Link = (arg) =>
                         {
                             if (string.IsNullOrEmpty(arg.LinkTarget)) return "";
                             return ",\"" + arg.LinkTarget + "\"";
                         };
 
-                        IsAddClosingMarkToRelativeName = true;
+                        IsOututCsv = true;
                         impPrintInfoTotal = InfoSum.DoNothing;
                         break;
                     default:

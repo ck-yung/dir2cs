@@ -104,7 +104,7 @@ static public partial class Helper
                 switch (formatFound)
                 {
                     case "unix":
-                        if (Show.IsAddClosingMarkToRelativeName)
+                        if (Show.IsOututCsv)
                         {
                             rtn = (value) => value.ToUnixTimeSeconds().ToString();
                         }
@@ -114,7 +114,7 @@ static public partial class Helper
                         }
                         break;
                     case "unix+":
-                        if (Show.IsAddClosingMarkToRelativeName)
+                        if (Show.IsOututCsv)
                         {
                             rtn = (value) => $"{value.ToUnixTimeSeconds()}.{value.Millisecond:D3}";
                         }
@@ -269,14 +269,14 @@ static public partial class Helper
         var now = FromUtcToReportTimeZone(DateTimeOffset.UtcNow);
         var notWithinTenMinutes = now.AddMinutes(10);
         var withinTwoMinutes = now.AddMinutes(-2);
-        var todayMidnight = new DateTimeOffset(
+        var todayTimeZero = new DateTimeOffset(
             now.Year, now.Month, now.Day,
             0, 0, 0, timespanFound);
-        var today00 = todayMidnight.AddHours(1);
-        var today06 = todayMidnight.AddHours(6);
-        var today12 = todayMidnight.AddHours(12);
-        var today18 = todayMidnight.AddHours(18);
-        var yesterday = todayMidnight.AddDays(-1);
+        var today00 = todayTimeZero.AddHours(1);
+        var today06 = todayTimeZero.AddHours(6);
+        var today12 = todayTimeZero.AddHours(12);
+        var today18 = todayTimeZero.AddHours(18);
+        var yesterday = todayTimeZero.AddDays(-1);
         var yesterday00 = today00.AddDays(-1);
         var yesterday06 = today06.AddDays(-1);
         var yesterday12 = today12.AddDays(-1);
@@ -523,7 +523,7 @@ static public partial class Helper
                 return fnElse(timeThe);
             }
 
-            if (timeThe > todayMidnight) return fnToday(timeThe);
+            if (timeThe > todayTimeZero) return fnToday(timeThe);
 
             if (timeThe > yesterday) return fnYsday(timeThe);
 

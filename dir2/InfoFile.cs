@@ -239,7 +239,7 @@ public class InfoSum
     {
         this.Name = Name;
         GetName = () => Name;
-        if (Show.IsAddClosingMarkToRelativeName)
+        if (Show.IsOututCsv)
         {
             GetName = () => "\"" + Name + "\"";
         }
@@ -248,19 +248,19 @@ public class InfoSum
     static Func<string> MakeGetName(bool isBase, string name)
     {
         var isEndTime = (false == string.IsNullOrEmpty(
-            Show.EndTime.Invoke(true)));
-        switch (isBase, isEndTime, Show.IsAddClosingMarkToRelativeName)
+            Show.EndTime.Invoke(false)));
+        switch (isBase, isEndTime, Show.IsOututCsv)
         {
             case (true, true, true):
                 return  () =>
                 {
-                    var endTime = Show.EndTime.Invoke(true);
-                    return "\"" + name + " " + endTime + "\"";
+                    var endTime = Show.EndTime.Invoke(false);
+                    return "\"" + name + "\",\"" + endTime + "\"";
                 };
             case (true, true, false):
                 return () =>
                 {
-                    var endTime = Show.EndTime.Invoke(true);
+                    var endTime = Show.EndTime.Invoke(false);
                     return name + " " + endTime;
                 };
             case (_, _, true):
