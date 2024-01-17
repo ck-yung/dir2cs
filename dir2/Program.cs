@@ -11,6 +11,10 @@ public class Program
         {
             RunMain(args);
         }
+        catch (ShowSyntaxException se)
+        {
+            Console.WriteLine(se.Message);
+        }
         catch (ArgumentException aee)
         {
             if (GetExeEnvr().Contains(DumpExceptionOpt))

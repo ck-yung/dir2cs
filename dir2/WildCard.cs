@@ -117,7 +117,7 @@ static public partial class Wild
                     var aa3 = aa2.ToArray();
                     if (aa3.Any((it) => it == Helper.ExtraHelp))
                     {
-                        throw new ArgumentException($"Syntax: {parser.Name} {parser.Help}");
+                        throw new ShowSyntaxException(parser);
                     }
                     var checkFuncs = aa3
                     .Select((it) => ToWildMatch(it))
@@ -144,7 +144,7 @@ static public partial class Wild
                     var aa3 = aa2.ToArray();
                     if (aa3.Any((it) => it == Helper.ExtraHelp))
                     {
-                        throw new ArgumentException($"Syntax: {parser.Name} {parser.Help}");
+                        throw new ShowSyntaxException(parser);
                     }
 
                     var checkFuncs = aa3
@@ -202,19 +202,18 @@ static public partial class Wild
         static ImmutableDictionary<string, (Regex, Func<int, TimeSpan>)> TryParseTimeSpans
             = new Dictionary<string, (Regex, Func<int, TimeSpan>)>
             {
-                ["year"] = (RegexYear(), (it) => TimeSpan.FromDays(365 * it)),
-                ["years"] = (RgexeYears(), (it) => TimeSpan.FromDays(365 * it)),
-                ["day"] = (RegexDay(), (it) => TimeSpan.FromDays(it)),
-                ["days"] = (RegexDays(), (it) => TimeSpan.FromDays(it)),
-                ["hour"] = (RegexHours(), (it) => TimeSpan.FromHours(it)),
-                ["hours"] = (RegexHour(), (it) => TimeSpan.FromHours(it)),
+                ["min"] = (RegMinuteShort(), (it) => TimeSpan.FromMinutes(it)),
                 ["hr"] = (RegexHourShort(), (it) => TimeSpan.FromHours(it)),
-                ["min"] = (RegMinuteShort(),
-                (it) => TimeSpan.FromMinutes(it)),
-                ["minute"] = (RegexMinute(),
-                (it) => TimeSpan.FromMinutes(it)),
-                ["minutes"] = (RegexMinutes(),
-                (it) => TimeSpan.FromMinutes(it)),
+
+                ["minutes"] = (RegexMinutes(), (it) => TimeSpan.FromMinutes(it)),
+                ["hours"] = (RegexHour(), (it) => TimeSpan.FromHours(it)),
+                ["days"] = (RegexDays(), (it) => TimeSpan.FromDays(it)),
+                ["years"] = (RgexeYears(), (it) => TimeSpan.FromDays(365 * it)),
+
+                ["minute"] = (RegexMinute(), (it) => TimeSpan.FromMinutes(it)),
+                ["hour"] = (RegexHours(), (it) => TimeSpan.FromHours(it)),
+                ["day"] = (RegexDay(), (it) => TimeSpan.FromDays(it)),
+                ["year"] = (RegexYear(), (it) => TimeSpan.FromDays(365 * it)),
             }.ToImmutableDictionary();
 
         static public WithData Parse(string name, string arg, bool hasDateDelta)
@@ -256,8 +255,12 @@ static public partial class Wild
                         "15:47",
                         "15:47:31",
                         "2019-06-12T07:46 +8",
+                        "2019-06-12T07:46 -8",
                         "2019-06-30T21:21:32 +08",
                         "03:47pm +08:00",
+                        "2019-06-12T07:46%20%2b8",
+                        "2019-06-30T21:21:32%20%2b08",
+                        "03:47pm%20%2b08:00",
                     ],
                 }.ToImmutableDictionary();
 
@@ -325,22 +328,31 @@ static public partial class Wild
 
         [GeneratedRegex(@"^\+(?<year>\d+)year$", RegexOptions.Compiled)]
         private static partial Regex RegexYear();
+
         [GeneratedRegex(@"^\+(?<years>\d+)years$", RegexOptions.Compiled)]
         private static partial Regex RgexeYears();
+
         [GeneratedRegex(@"^\+(?<day>\d+)day$", RegexOptions.Compiled)]
         private static partial Regex RegexDay();
+
         [GeneratedRegex(@"^\+(?<days>\d+)days$", RegexOptions.Compiled)]
         private static partial Regex RegexDays();
+
         [GeneratedRegex(@"^\+(?<hour>\d+)hour$", RegexOptions.Compiled)]
         private static partial Regex RegexHours();
+
         [GeneratedRegex(@"^\+(?<hours>\d+)hours$", RegexOptions.Compiled)]
         private static partial Regex RegexHour();
+
         [GeneratedRegex(@"^\+(?<hr>\d+)hr$", RegexOptions.Compiled)]
         private static partial Regex RegexHourShort();
+
         [GeneratedRegex(@"^\+(?<min>\d+)min$", RegexOptions.Compiled)]
         private static partial Regex RegMinuteShort();
+
         [GeneratedRegex(@"^\+(?<minute>\d+)minute$", RegexOptions.Compiled)]
         private static partial Regex RegexMinute();
+
         [GeneratedRegex(@"^\+(?<minutes>\d+)minutes$", RegexOptions.Compiled)]
         private static partial Regex RegexMinutes();
     }

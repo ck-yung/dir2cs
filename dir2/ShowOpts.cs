@@ -42,7 +42,7 @@ static internal partial class Show
                 switch (arg)
                 {
                     case Helper.ExtraHelp:
-                        throw new ArgumentException($"Syntax: {parser.Name} {parser.Help}");
+                        throw new ShowSyntaxException(parser);
                     case "date":
                         Date = blank;
                         Last = blank;
@@ -87,7 +87,7 @@ static internal partial class Show
                 switch (arg)
                 {
                     case Helper.ExtraHelp:
-                        throw new ArgumentException($"Syntax: {parser.Name} {parser.Help}");
+                        throw new ShowSyntaxException(parser);
                     case "date":
                         Date = getDateText;
                         break;
@@ -249,17 +249,17 @@ static internal partial class Show
             help: "short | +short | comma;WIDTH",
             init: (it) => $"{it,8} ", resolve: (parser, args) =>
             {
-                var pattern = @"\d+|comma|short";
                 var aa = Helper.CommonSplit(args).OrderBy((it) => it).Take(4).ToArray();
 
                 if (aa.Any((it) => it == Helper.ExtraHelp))
                 {
-                    throw new ArgumentException($"Syntax: {parser.Name} {parser.Help}");
+                    throw new ShowSyntaxException(parser);
                 }
 
+                var chkRegex = RegexDateOptionText();
                 foreach (var a2 in aa)
                 {
-                    if (false == Regex.Match(a2, pattern, RegexOptions.None).Success)
+                    if (false == chkRegex.IsMatch(a2))
                     {
                         if (a2.ToUpper().Equals("WIDTH"))
                         {

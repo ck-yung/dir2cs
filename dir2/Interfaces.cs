@@ -47,7 +47,7 @@ public partial class Helper
 
         if (rtn[0] == ExtraHelp)
         {
-            throw new ArgumentException($"Syntax: {opt.Name} {opt.Help}");
+            throw new ShowSyntaxException(opt);
         }
 
         return rtn[0];
@@ -71,9 +71,17 @@ public partial class Helper
 
         if (rtn.Any((it) => it == ExtraHelp))
         {
-            throw new ArgumentException($"Syntax: {opt.Name} {opt.Help}");
+            throw new ShowSyntaxException(opt);
         }
 
         return rtn;
+    }
+}
+
+public class ShowSyntaxException: Exception
+{
+    internal ShowSyntaxException(IParse parser)
+        : base($"Syntax: {parser.Name} {parser.Help}")
+    {
     }
 }
