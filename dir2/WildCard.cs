@@ -4,7 +4,7 @@ using static dir2.MyOptions;
 
 namespace dir2;
 
-static public class Wild
+static public partial class Wild
 {
     static internal StringComparer StringComparer
     { get; private set; } = StringComparer.OrdinalIgnoreCase;
@@ -184,7 +184,7 @@ static public class Wild
         DeltaDate,
     };
 
-    record WithData(DataType Type, long Size, DateTimeOffset Date, TimeSpan DateDelta)
+    partial record WithData(DataType Type, long Size, DateTimeOffset Date, TimeSpan DateDelta)
     {
         public WithData(long size)
             : this(DataType.Size, Size: size, Date: DateTimeOffset.MinValue
@@ -202,25 +202,18 @@ static public class Wild
         static ImmutableDictionary<string, (Regex, Func<int, TimeSpan>)> TryParseTimeSpans
             = new Dictionary<string, (Regex, Func<int, TimeSpan>)>
             {
-                ["year"] = (new Regex(@"^\+(?<year>\d+)year$", RegexOptions.Compiled),
-                (it) => TimeSpan.FromDays(365 * it)),
-                ["years"] = (new Regex(@"^\+(?<years>\d+)years$", RegexOptions.Compiled),
-                (it) => TimeSpan.FromDays(365 * it)),
-                ["day"] = (new Regex(@"^\+(?<day>\d+)day$", RegexOptions.Compiled),
-                (it) => TimeSpan.FromDays(it)),
-                ["days"] = (new Regex(@"^\+(?<days>\d+)days$", RegexOptions.Compiled),
-                (it) => TimeSpan.FromDays(it)),
-                ["hour"] = (new Regex(@"^\+(?<hour>\d+)hour$", RegexOptions.Compiled),
-                (it) => TimeSpan.FromHours(it)),
-                ["hours"] = (new Regex(@"^\+(?<hours>\d+)hours$", RegexOptions.Compiled),
-                (it) => TimeSpan.FromHours(it)),
-                ["hr"] = (new Regex(@"^\+(?<hr>\d+)hr$", RegexOptions.Compiled),
-                (it) => TimeSpan.FromHours(it)),
-                ["min"] = (new Regex(@"^\+(?<min>\d+)min$", RegexOptions.Compiled),
+                ["year"] = (RegexYear(), (it) => TimeSpan.FromDays(365 * it)),
+                ["years"] = (RgexeYears(), (it) => TimeSpan.FromDays(365 * it)),
+                ["day"] = (RegexDay(), (it) => TimeSpan.FromDays(it)),
+                ["days"] = (RegexDays(), (it) => TimeSpan.FromDays(it)),
+                ["hour"] = (RegexHours(), (it) => TimeSpan.FromHours(it)),
+                ["hours"] = (RegexHour(), (it) => TimeSpan.FromHours(it)),
+                ["hr"] = (RegexHourShort(), (it) => TimeSpan.FromHours(it)),
+                ["min"] = (RegMinuteShort(),
                 (it) => TimeSpan.FromMinutes(it)),
-                ["minute"] = (new Regex(@"^\+(?<minute>\d+)minute$", RegexOptions.Compiled),
+                ["minute"] = (RegexMinute(),
                 (it) => TimeSpan.FromMinutes(it)),
-                ["minutes"] = (new Regex(@"^\+(?<minutes>\d+)minutes$", RegexOptions.Compiled),
+                ["minutes"] = (RegexMinutes(),
                 (it) => TimeSpan.FromMinutes(it)),
             }.ToImmutableDictionary();
 
@@ -329,6 +322,27 @@ static public class Wild
 
             throw new ArgumentException($"'{arg}' is bad to {name}");
         }
+
+        [GeneratedRegex(@"^\+(?<year>\d+)year$", RegexOptions.Compiled)]
+        private static partial Regex RegexYear();
+        [GeneratedRegex(@"^\+(?<years>\d+)years$", RegexOptions.Compiled)]
+        private static partial Regex RgexeYears();
+        [GeneratedRegex(@"^\+(?<day>\d+)day$", RegexOptions.Compiled)]
+        private static partial Regex RegexDay();
+        [GeneratedRegex(@"^\+(?<days>\d+)days$", RegexOptions.Compiled)]
+        private static partial Regex RegexDays();
+        [GeneratedRegex(@"^\+(?<hour>\d+)hour$", RegexOptions.Compiled)]
+        private static partial Regex RegexHours();
+        [GeneratedRegex(@"^\+(?<hours>\d+)hours$", RegexOptions.Compiled)]
+        private static partial Regex RegexHour();
+        [GeneratedRegex(@"^\+(?<hr>\d+)hr$", RegexOptions.Compiled)]
+        private static partial Regex RegexHourShort();
+        [GeneratedRegex(@"^\+(?<min>\d+)min$", RegexOptions.Compiled)]
+        private static partial Regex RegMinuteShort();
+        [GeneratedRegex(@"^\+(?<minute>\d+)minute$", RegexOptions.Compiled)]
+        private static partial Regex RegexMinute();
+        [GeneratedRegex(@"^\+(?<minutes>\d+)minutes$", RegexOptions.Compiled)]
+        private static partial Regex RegexMinutes();
     }
 
     static Func<TimeSpan, string, DateTimeOffset> AssignNotWithinDate { get; set; } = (_, deltaText) =>
@@ -343,7 +357,7 @@ static public class Wild
     { get; private set; } = Always<DateTimeOffset>.True;
 
     static internal readonly IParse WithinOpt = new SimpleParser(name: "--within",
-            help: "SIZE | DATE-TIME",
+            help: "SIZE | DATE | TIME",
             resolve: (parser, args) =>
             {
                 var aa = Helper.GetUniqueTexts(args, 3, parser)
@@ -393,7 +407,7 @@ static public class Wild
     { get; private set; } = Always<DateTimeOffset>.True;
 
     static internal readonly IParse NotWithinOpt = new SimpleParser(name: "--not-within",
-            help: "SIZE | DATE-TIME",
+            help: "SIZE | DATE | TIME",
             resolve: (parser, args) =>
             {
                 var aa = Helper.GetUniqueTexts(args, 3, parser)

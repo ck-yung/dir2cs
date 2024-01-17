@@ -1,5 +1,5 @@
 # Dir2
-**v2.1.1.1**
+**Version at least v2.1.1**
 
 ## Syntax:
 ```
@@ -28,7 +28,7 @@ dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb
 | ```dir2 -??```        | To list all options
 | ```dir2 -? cfg```     | To list options loading by config file ```~\.local\dir2.opt```
 
-### Common used
+### Common usage
 
 | Command | Description |
 | ------- | ----------- |
@@ -40,12 +40,22 @@ dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb
 | ```dir2 -X .vs,obj```        | To list excluding some dir ('x' in upper case)
 | ```dir2 -sH```               | To list all hidden files (excluding file-link, and file in link-dir)
 
-### Advanced common used
+### Quick help to an option
+
+| Sample Command | Sample Ouput |
+| -------------  | ------------ |
+| ```dir2 --sum +?``` | ```--sum ext | dir | +dir | year``` |
+| ```dir2 -w size```  | ```--within 123kb``` |
+|                     | ```--wihtin 123mb``` |
+
+[More information of QUICK HELP](https://github.com/ck-yung/dir2cs/blob/main/docs/info-short-help.md)
+
+### Advanced common usage
 
 | Command | Description |
 | ------- | ----------- |
-| ```dir2 -so date --sum dir``` | To list dir-sum and order by the earliest of written dates
-| ```dir2 -so last --sum ext``` | To list file-ext-sum and order by the last of written dates
+| ```dir2 -so date --sum dir``` | To list sum of dir and order by the earliest of written dates
+| ```dir2 -so last --sum ext``` | To list sum of file-ext and order by the last of written dates
 | ```dir2 -R```                 | To list all directories in a tree structure
 | ```dir2 -kb Docu*```          | To list filename with the directory name
 | ```dir2 -sx :link```          | To list all files excluding file-link
@@ -64,4 +74,4 @@ Yung, Chun Kau
 
 <yung.chun.kau@gmail.com>
 
-2024 Jan
+2024 Feb

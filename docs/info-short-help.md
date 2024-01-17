@@ -6,8 +6,11 @@
 
 | Example Command | Example Output |
 | --------------- | -------------- |
-| ```dir2 --sub +?``` | ```Syntax: --sub  off all``` |
-| ```dir2 -w +?``` | ```Syntax: --within SIZE｜DATE｜TIME``` |
+| ```dir2 --sub +?``` | ```Syntax: --sub off all``` |
+| ```dir2 -w +?```    | ```Syntax: --within SIZE｜DATE｜TIME``` |
+| ```dir2 -w size```  | ```--within 123kb``` |
+|                     | ```--wihtin 123mb``` |
+
 
 ## Quick Help Example Command
 

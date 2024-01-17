@@ -356,14 +356,10 @@ static public partial class Helper
         };
         var regs = new Regex[]
         {
-            new Regex(@"^(?<valueFound>\d{1,})(?<unitFound>[kmgt])b$",
-            RegexOptions.IgnoreCase),
-            new Regex(@"^(?<valueFound>\d{1,})(?<unitFound>[kmgt])$",
-            RegexOptions.IgnoreCase),
-            new Regex(@"^(?<valueFound>\d{1,})b$",
-            RegexOptions.IgnoreCase),
-            new Regex(@"^(?<valueFound>\d{1,})$",
-            RegexOptions.IgnoreCase),
+            RegexSizeWithUnitB(),
+            RegexSizeWithUnit(),
+            RegexSizeB(),
+            RegexSize(),
         };
         foreach (var regThe in regs)
         {
@@ -380,4 +376,20 @@ static public partial class Helper
         }
         return false;
     }
+
+    [GeneratedRegex(@"^(?<valueFound>\d{1,})(?<unitFound>[kmgt])b$",
+        RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex RegexSizeWithUnitB();
+
+    [GeneratedRegex(@"^(?<valueFound>\d{1,})(?<unitFound>[kmgt])$",
+        RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex RegexSizeWithUnit();
+
+    [GeneratedRegex(@"^(?<valueFound>\d{1,})b$",
+        RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex RegexSizeB();
+
+    [GeneratedRegex(@"^(?<valueFound>\d{1,})$",
+        RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex RegexSize();
 }

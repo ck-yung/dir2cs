@@ -82,7 +82,7 @@ else = yy年MMM%09
 ```
 culture=zh-TW
 just = 剛剛%20%09
-month= 本月d日%09
+month= dd日tt%20%09
 year = MMMd日%09
 else = yy年MMM%09
 todayHours=yes
@@ -98,11 +98,11 @@ ysday06~12=昨早hh時%20%09
 ysday12~18=昨午hh時%20%09
 ysday18~24=昨晚hh時%20%09
 wkdayHours=yes
-wkday00~01=ddd晨%20%09
-wkday01~06=ddd晨%20%09
-wkday06~12=ddd早%20%09
-wkday12~18=ddd午%20%09
-wkday18~24=ddd晚%20%09
+wkday00~01=dddd晨%09
+wkday01~06=dddd晨%09
+wkday06~12=dddd早%09
+wkday12~18=dddd午%09
+wkday18~24=dddd晚%09
 ```
 
 
@@ -110,8 +110,8 @@ wkday18~24=ddd晚%20%09
 ```
  145M 12年9月    年少無知◎公民廣場.mp4
   52K 11月22日   《清室退位詔書》愛新覺羅．溥儀.1912.txt
-  33M 本月22日   《在台上我覓理想》梅艷芳.1984.mp3
-   4K 週一早     軍官學校-黃埔軍校訓詞.1924.txt
+  33M 23日上午   《在台上我覓理想》梅艷芳.1984.mp3
+   4K 星期一早   軍官學校-黃埔軍校訓詞.1924.txt
    3M 昨晚10時   Nothing to Envy 我們最幸福-韓人民北的真實生活.2009.epub
  333M 今早11:26  百變1991告別舞台-梅艷芳.mp4
  151K 剛剛       On Liberty 論自由（嚴復《群己權界論》）Mill.1859.epub

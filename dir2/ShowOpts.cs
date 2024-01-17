@@ -190,7 +190,7 @@ static internal partial class Show
             {
                 var aa = Helper.GetUniqueTexts(args, 2, parser).ToImmutableSortedSet();
 
-                var chkRegex = new Regex(@"\d+|comma|short");
+                var chkRegex = RegexDateOptionText();
                 foreach (var a2 in aa)
                 {
                     if (false == chkRegex.IsMatch(a2))
@@ -363,4 +363,7 @@ static internal partial class Show
                     }
                 });
             });
+
+    [GeneratedRegex(@"\d+|comma|short")]
+    private static partial Regex RegexDateOptionText();
 }
