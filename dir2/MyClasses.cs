@@ -101,12 +101,16 @@ static public partial class MyOptions
                 .GroupBy((it) => it.Item1)
                 .ToImmutableDictionary((it) => it.Key, (it) => it.AsEnumerable());
 
-            if (groupThe.ContainsKey(true))
+            if (groupThe.TryGetValue(true, out var matches))
             {
-                Resolve(this, groupThe[true].Select((it) => it.Item3));
+                Resolve(this, matches.Select((it) => it.Item3));
             }
 
-            if (groupThe.ContainsKey(false)) return groupThe[false];
+            if (groupThe.TryGetValue(false, out var notMatches))
+            {
+                return notMatches;
+            }
+
             return Enumerable.Empty<(bool, ArgType, string)>();
         }
     }

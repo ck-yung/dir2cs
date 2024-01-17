@@ -123,15 +123,16 @@ public class Program
             (grp) => grp.AsEnumerable());
 
         string[] args = Array.Empty<string>();
-        if (tmp3.ContainsKey(true))
+
+        if (tmp3.TryGetValue(true, out var matches))
         {
-            args = Wild.Parse_ExclNone(tmp3[true]
+            args = Wild.Parse_ExclNone(matches
                 .Select((it) => it.Item2));
         }
 
-        if (tmp3.ContainsKey(false))
+        if (tmp3.TryGetValue(false, out var notMatches))
         {
-            foreach (var tmp4 in tmp3[false]
+            foreach (var tmp4 in notMatches
                 .GroupBy((it) => it.Item1))
             {
                 var tmp5 = string.Join(" ",
@@ -154,13 +155,14 @@ public class Program
             })
             .GroupBy((it) => it.hasColon)
             .ToImmutableDictionary((grp) => grp.Key, (grp) => grp.ToArray());
-        if (dd.ContainsKey(true) && dd[true].Length == 1)
+
+        if (dd.TryGetValue(true, out var hasColons) && hasColons.Length == 1)
         {
-            (var path2, var wild2) = ScanTheDir(dd[true].First().path);
-            if (dd.ContainsKey(false))
+            (var path2, var wild2) = ScanTheDir(hasColons.First().path);
+            if (dd.TryGetValue(false, out var noColons))
             {
-                var wild3 = dd[false].Select((it) => it.path).ToList();
-                if (false==string.IsNullOrEmpty(wild2))
+                var wild3 = noColons.Select((it) => it.path).ToList();
+                if (false == string.IsNullOrEmpty(wild2))
                 {
                     wild3.Add(wild2);
                 }
@@ -171,7 +173,7 @@ public class Program
             else
             {
                 return ScanSubDir(path: path2,
-                    wilds: new[] {wild2},
+                    wilds: new[] { wild2 },
                     mark: "mark-20");
             }
         }
@@ -200,7 +202,8 @@ public class Program
             var bb2 = bb.Values.First()
                 .Where((it) => false == string.IsNullOrEmpty(it))
                 .ToList();
-            return (bb.Count(), aa.ContainsKey(false)) switch
+
+            return (bb.Count(), aa.TryGetValue(false, out var notFound)) switch
             {
                 (1, false) => ScanSubDir(path: path4,
                 wilds: bb.Values.First()
@@ -209,7 +212,7 @@ public class Program
                 mark: "mark-30"),
 
                 (1, true) => ScanSubDir(path: path4,
-                wilds: bb.Values.First().Concat(aa[false])
+                wilds: bb.Values.First().Concat(notFound)
                 .Where((it) => false == string.IsNullOrEmpty(it))
                 .ToArray(),
                 mark: "mark-40"),

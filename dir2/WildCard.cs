@@ -169,9 +169,9 @@ static public class Wild
             ((ExclFeauture<string, bool>)ExclDirNameOpt).SetImplementation(Helper.Never);
         }
 
-        if (chkThe.ContainsKey(false))
+        if (chkThe.TryGetValue(false, out var others))
         {
-            return chkThe[false].ToArray();
+            return others.ToArray();
         }
         return Array.Empty<string>();
     }
@@ -404,9 +404,9 @@ static public class Wild
                 .ToImmutableDictionary(
                     (grp) => grp.Key, (grp) => grp.AsEnumerable());
 
-                if (aa.ContainsKey(DataType.Size))
+                if (aa.TryGetValue(DataType.Size, out var sizes))
                 {
-                    var sizeNotWith = aa[DataType.Size].Take(2).ToArray();
+                    var sizeNotWith = sizes.Take(2).ToArray();
                     if (sizeNotWith.Length > 1)
                     {
                         throw new ArgumentException(
@@ -416,12 +416,13 @@ static public class Wild
                     IsMatchNotWithinSize = (size) => (size > sizeMin);
                 }
 
-                switch (aa.ContainsKey(DataType.DateTime), aa.ContainsKey(DataType.DeltaDate))
+                switch (aa.TryGetValue(DataType.DateTime, out var dateFounds),
+                aa.TryGetValue(DataType.DeltaDate, out var deltaDateFounds))
                 {
                     case (false, false):
                         break;
                     case (true, false):
-                        var dateNotWithin = aa[DataType.DateTime].Take(2).ToArray();
+                        var dateNotWithin = dateFounds.Take(2).ToArray();
                         if (dateNotWithin.Length > 1)
                         {
                             throw new ArgumentException(
@@ -431,7 +432,7 @@ static public class Wild
                         IsMatchNotWithinDate = (date) => (date < dateMin);
                         break;
                     case (false, true):
-                        var deltaFound = aa[DataType.DeltaDate].Take(2).ToArray();
+                        var deltaFound = deltaDateFounds.Take(2).ToArray();
                         if (deltaFound.Length > 1)
                         {
                             throw new ArgumentException(

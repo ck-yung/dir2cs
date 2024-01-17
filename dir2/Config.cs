@@ -61,26 +61,18 @@ static class Config
                 Encoding.UTF8.GetString(buf2, 0, readCnt)
                 .Split('\n', '\r'))
                 .Select((it) => (false, it.Item1, it.Item2));
-            try
-            {
-                var tmp = MyOptions.ConfigParsers
-                    .Aggregate(args, (acc, opt) => opt.Parse(acc))
-                    .Select((it) => (it.Item2, it.Item3));
-                return Wild.SelectExclFeatures(
-                    MyOptions.ExclFileDirParsers,
-                    tmp);
-            }
-            catch (ArgumentException)
-            {
-                throw;
-            }
-            catch (Exception ee)
-            {
-                Console.Error.WriteLine(
-                    $"Config file {cfgFilename} [{ee.GetType()}] {ee.Message}");
-                Console.Error.WriteLine();
-                return Enumerable.Empty<(ArgType, string)>();
-            }
+            var tmp = MyOptions.ConfigParsers
+                .Aggregate(args, (acc, opt) => opt.Parse(acc))
+                .Select((it) => (it.Item2, it.Item3));
+            return Wild.SelectExclFeatures(
+                MyOptions.ExclFileDirParsers,
+                tmp);
+        }
+        catch (ArgumentException ae)
+        {
+            Console.Error.WriteLine(ae.Message);
+            Console.Error.WriteLine();
+            return Enumerable.Empty<(ArgType, string)>();
         }
         catch
         {
@@ -107,10 +99,10 @@ static class Config
                 .ToImmutableDictionary((grp) => grp.Key,
                 (grp) => grp.AsEnumerable());
             var isCfgOff = aa.ContainsKey(true);
-            if (aa.ContainsKey(false))
+            if (aa.TryGetValue(false, out var notFounds))
             {
                 return (isCfgOff, SelectArgsFromLines(
-                    ArgType.Environment, aa[false]));
+                    ArgType.Environment, notFounds));
             }
             return (isCfgOff, Enumerable.Empty<(ArgType, string)>());
         }
