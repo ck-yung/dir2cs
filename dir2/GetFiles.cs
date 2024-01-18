@@ -4,22 +4,34 @@ namespace dir2;
 
 static public partial class Helper
 {
-    static public Action<string> Write
-    { get; private set; } = (msg) => Console.Write(msg);
-    static public Action<string> WriteLine
-    { get; private set; } = (msg) => Console.WriteLine(msg);
-
-    static public void Init(
-        Action<string> Write,
-        Action<string> WriteLine)
+    static public Func<string, string> Write
+    { get; private set; } = (msg) =>
     {
-        Helper.Write = Write;
-        Helper.WriteLine = WriteLine;
+        Console.Write(msg);
+        return msg;
+    };
+
+    static public Func<string, string> WriteLine
+    { get; private set; } = (msg) =>
+    {
+        Console.WriteLine(Show.ColorOpt.Invoke(msg));
+        return msg;
+    };
+
+    static public void WriteTotalLine(string msg)
+    {
+        Console.WriteLine(msg);
     }
 
-#pragma warning disable CS8981 // The type name only contains lower-cased ascii char.
-    static public partial class io
-#pragma warning restore CS8981 // The type name only contains lower-cased ascii char.
+    static public void Init(
+        Func<string, string> write,
+        Func<string, string> writeLine)
+    {
+        Write = write;
+        WriteLine = writeLine;
+    }
+
+    static public partial class Io
     {
         static public string InitPath { get; private set; } = "?";
         static public string RealInitPath { get; private set; } = string.Empty;
@@ -64,7 +76,7 @@ static public partial class Helper
             Func<string,string> GetFileName)
         {
             _GetFullPath= GetFullPath;
-            io.GetFileName= GetFileName;
+            Io.GetFileName= GetFileName;
         }
     }
 

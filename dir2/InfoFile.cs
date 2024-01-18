@@ -286,7 +286,7 @@ public class InfoSum
 
     public InfoSum(bool isBase)
     {
-        Name = Helper.io.RealInitPath;
+        Name = Helper.Io.RealInitPath;
         if (Name == ("." + Path.DirectorySeparatorChar))
         {
             var a2 = Directory.GetCurrentDirectory();
@@ -332,13 +332,25 @@ public class InfoSum
         return this;
     }
 
-    public void Print(Action<string> write, Action<string> writeLine)
+    public void Print(Func<string, string> write,
+        Func<string, string> writeLine)
     {
         write(Show.Size(Show.LengthFormatOpt.Invoke(Length)));
         write(Show.Date(Helper.DateFormatOpt.Invoke(StartTime)));
         write(Show.Date(Show.Last.Invoke(Helper.DateFormatOpt.Invoke(EndTime))));
         write(Show.Count(Show.CountFormat.Invoke(Count)));
         writeLine(GetName());
+    }
+
+    public override string ToString()
+    {
+        var rtn = new StringBuilder();
+        rtn.Append(Show.Size(Show.LengthFormatOpt.Invoke(Length)));
+        rtn.Append(Show.Date(Helper.DateFormatOpt.Invoke(StartTime)));
+        rtn.Append(Show.Date(Show.Last.Invoke(Helper.DateFormatOpt.Invoke(EndTime))));
+        rtn.Append(Show.Count(Show.CountFormat.Invoke(Count)));
+        rtn.Append(GetName());
+        return rtn.ToString();
     }
 }
 

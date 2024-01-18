@@ -59,25 +59,20 @@ static public partial class MyOptions
                     break;
                 case "only":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
-                    PrintDirCount = (
-                        count) => PrintDirCountWithCheck(count);
+                    PrintDirCount = (count) => PrintDirCountWithCheck(count);
                     PrintDir = EnumPrint.OnlyDir;
-                    parser.SetImplementation(
-                        (path) => Helper.PrintDir(Helper.ToInfoDir(path)));
+                    parser.SetImplementation((path) => Helper.PrintDir(Helper.ToInfoDir(path)));
                     break;
                 case "only-link":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
-                    PrintDirCount = (
-                        count) => PrintDirCountWithCheck(count);
+                    PrintDirCount = (count) => PrintDirCountWithCheck(count);
                     PrintDir = EnumPrint.OnlyDir;
                     CheckDirLink = (info) => info.IsLinked;
-                    parser.SetImplementation(
-                        (path) => Helper.PrintDir(Helper.ToInfoDir(path)));
+                    parser.SetImplementation((path) => Helper.PrintDir(Helper.ToInfoDir(path)));
                     break;
                 case "off":
                     PrintDir = EnumPrint.OnlyFile;
-                    parser.SetImplementation(
-                        (path) => Helper.GetFiles(Helper.ToInfoDir(path)));
+                    parser.SetImplementation((path) => Helper.GetFiles(Helper.ToInfoDir(path)));
                     break;
                 case "tree":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;
@@ -117,23 +112,24 @@ static public partial class MyOptions
     static void PrintDirCountWithCheck(int count, bool addNewLine = true,
         bool skipLessTwo = true)
     {
+        string lineEnd = (addNewLine) ? Environment.NewLine : string.Empty;
+        Show.Color.ChangeTotalLineBackgroundColor();
         switch (count, skipLessTwo)
         {
             case (<2, true):
-                break;
+                Show.Color.Reset();
+                return;
             case (1, _):
-                Helper.WriteLine("One dir is found.");
-                if (addNewLine) Helper.WriteLine("");
+                Helper.WriteTotalLine("One dir is found."+ lineEnd);
                 break;
             case (0, _):
-                Helper.WriteLine("No dir is found.");
-                if (addNewLine) Helper.WriteLine("");
+                Helper.WriteTotalLine("No dir is found."+ lineEnd);
                 break;
             default:
-                Helper.WriteLine($"{count} dirs are found.");
-                if (addNewLine) Helper.WriteLine("");
+                Helper.WriteTotalLine($"{count} dirs are found."+ lineEnd);
                 break;
         }
+        Show.Color.Reset();
     }
 
     static public readonly IParse TotalOpt = new SimpleParser(name: "--total",
@@ -148,8 +144,8 @@ static public partial class MyOptions
                     break;
 
                 case "only":
-                    Helper.ItemWrite = Helper.DoNothing;
-                    Helper.ItemWriteLine = Helper.DoNothing;
+                    Helper.ItemWrite = Helper.ReturnEmptyString;
+                    Helper.ItemWriteLine = Helper.ReturnEmptyString;
 
                     PrintDirCount = (cntDir) => PrintDirCountWithCheck(
                         cntDir, addNewLine: false, skipLessTwo: false);
@@ -243,7 +239,7 @@ static public partial class MyOptions
         Sum.Opt,
         Show.Opt,
         Show.HideOpt,
-        (IParse) Helper.io.KeepDirOpt,
+        (IParse) Helper.Io.KeepDirOpt,
         Wild.WithinOpt,
         Wild.NotWithinOpt,
         Show.CreationDateOpt,
@@ -251,6 +247,7 @@ static public partial class MyOptions
         Sort.TakeOpt,
         TotalOpt,
         (IParse) Show.EndTime,
+        (IParse) Show.ColorOpt,
     };
 
     static public readonly IParse[] ConfigParsers = new IParse[]
@@ -267,6 +264,7 @@ static public partial class MyOptions
         (IParse) Helper.IsHiddenFileOpt,
         Sort.ReverseOpt,
         (IParse) Show.EndTime,
+        (IParse) Show.ColorOpt,
     };
 
     static public readonly IParse[] ExclFileDirParsers = Parsers

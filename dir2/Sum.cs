@@ -16,7 +16,7 @@ static public class Sum
             Helper.ItemWrite(Show.Owner(it));
             Helper.ItemWrite(Show.Size(Show.LengthFormatOpt.Invoke(it.Length)));
             Helper.ItemWrite(Show.Date(Helper.DateFormatOpt.Invoke(Show.GetDate(it))));
-            Helper.ItemWrite(Helper.io.GetRelativeName(it.FullName));
+            Helper.ItemWrite(Helper.Io.GetRelativeName(it.FullName));
             Helper.ItemWrite(Show.Link.Invoke(it));
             Helper.ItemWriteLine(string.Empty);
             return it;
@@ -61,7 +61,7 @@ static public class Sum
                     Helper.PrintDir = (_) => InfoSum.Fake;
                     Reduce = (seq) => seq
                         .GroupBy((it) => Helper.GetFirstDir(Path.GetDirectoryName(
-                            Helper.io.GetRelativeName(it.FullName))))
+                            Helper.Io.GetRelativeName(it.FullName))))
                         .Select((grp) => grp.Aggregate(
                             seed: new InfoSum(Name:
                             string.IsNullOrEmpty(grp.Key) ? "." : grp.Key),
@@ -84,7 +84,7 @@ static public class Sum
                     {
                         var qry2 = seq
                         .GroupBy((it) => Helper.GetFirstDir(
-                            Path.GetDirectoryName(Helper.io.GetRelativeName(it.FullName))))
+                            Path.GetDirectoryName(Helper.Io.GetRelativeName(it.FullName))))
                         .Select((grp) => grp.Aggregate(
                             seed: new InfoSum(Name:
                             string.IsNullOrEmpty(grp.Key) ? "." : grp.Key),
@@ -92,7 +92,7 @@ static public class Sum
 
                         var qry3 =
                         from dirName in new string[] { "." }.AsEnumerable()
-                        .Union(Directory.EnumerateDirectories(Helper.io.InitPath))
+                        .Union(Directory.EnumerateDirectories(Helper.Io.InitPath))
                         .Select((it) => Path.GetFileName(it))
                         join dirThe in qry2
                         on dirName equals dirThe.Name into joinQuery

@@ -62,7 +62,7 @@ public class Program
 	{
         if (GetExeEnvr().Contains("--debug:on"))
         {
-            MyDebugWrite = (msg) => Console.WriteLine(msg);
+            MyDebugWrite = (msg) => Console.Error.WriteLine(msg);
         }
 
 		if (mainArgs.Contains("--version") ||
@@ -328,10 +328,9 @@ public class Program
             path += Path.DirectorySeparatorChar;
         }
 
-        path = io.GetFullPath(path);
+        path = Io.GetFullPath(path);
         InfoSum sumThe = SubDirOpt.Invoke(path);
         PrintInfoTotal(path, wilds, sumThe);
-
         return true;
     }
 

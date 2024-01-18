@@ -25,8 +25,10 @@ static public partial class Helper
     }
 
     static public void DoNothing<T>(T _) { }
-    static public void DoNothing<T1,T2>(T1 _1, T2 _2) { }
+    static public void DoNothing<T1, T2>(T1 _1, T2 _2) { }
     static public void DoNothing<T1, T2, T3>(T1 _1, T2 _2, T3 _3) { }
+
+    static public string ReturnEmptyString(string _) => string.Empty;
 
     static public T itself<T>(T arg) => arg;
 
@@ -174,7 +176,7 @@ static public partial class Helper
             ItemWrite(Show.Owner(it));
             ItemWrite(DirPrefixText("DIR "));
             ItemWrite(Show.Date(DateFormatOpt.Invoke(Show.GetDate(it))));
-            ItemWrite(Show.GetDirName(io.GetRelativeName(it.FullName)));
+            ItemWrite(Show.GetDirName(Io.GetRelativeName(it.FullName)));
             ItemWrite(Show.Link.Invoke(it));
             ItemWriteLine(string.Empty);
             return it;
@@ -201,8 +203,10 @@ static public partial class Helper
             .Invoke(Sum.Reduce);
     }
 
-    static internal Action<string> ItemWrite { get; set; } = Write;
-    static internal Action<string> ItemWriteLine { get; set; } = WriteLine;
+    static internal Func<string, string> ItemWrite
+    { get; set; } = Write;
+    static internal Func<string, string> ItemWriteLine
+    { get; set; } = WriteLine;
 
     static internal Action<string, string[]> DumpArgsAction { get; set; }
         = (path, wilds) =>
@@ -219,6 +223,8 @@ static public partial class Helper
     static internal void PrintIntoTotalWithFlag(string path, string[] wilds,
         InfoSum sum, bool printEvenCountOne)
     {
+        if (sum.IsFake) return;
+        var txt = new StringBuilder();
         switch (sum.Count)
         {
             case 0:
@@ -226,7 +232,7 @@ static public partial class Helper
                 {
                     if ((wilds.Length > 0) && !string.IsNullOrEmpty(wilds[0]))
                     {
-                        Write($"No file is found for '{wilds[0]}'");
+                        txt.Append($"No file is found for '{wilds[0]}'.");
                     }
                     else
                     {
@@ -237,35 +243,39 @@ static public partial class Helper
                 {
                     if (Directory.Exists(path))
                     {
-                        Write("No file is found");
+                        txt.Append("No file is found");
                         if ((wilds.Length > 0) && !string.IsNullOrEmpty(wilds[0]))
                         {
-                            Write($" for '{wilds[0]}'");
+                            txt.Append($" for '{wilds[0]}'");
                         }
-                        Write($" on '{path}'");
+                        txt.Append($" on '{path}'");
                         DumpArgsAction(path, wilds);
                     }
                     else
                     {
-                        Write($"Dir '{path}' is not found");
+                        txt.Append($"Dir '{path}' is not found");
                     }
-                    Write(".");
+                    txt.Append(".");
                 }
-                WriteLine(Show.EndTime.Invoke(true));
+                txt.Append(Show.EndTime.Invoke(true));
                 break;
+
             case 1:
                 if (printEvenCountOne)
                 {
-                    Write("One file is found: ");
-                    Write(Show.Size(Show.LengthFormatOpt.Invoke(sum.Length)));
-                    Write(Show.Date(DateFormatOpt.Invoke(sum.StartTime)));
-                    WriteLine(Show.EndTime.Invoke(true));
+                    txt.Append("One file is found: ");
+                    txt.Append(Show.Size(Show.LengthFormatOpt.Invoke(sum.Length)));
+                    txt.Append(Show.Date(DateFormatOpt.Invoke(sum.StartTime)));
+                    txt.Append(Show.EndTime.Invoke(true));
                 }
                 break;
             default:
-                sum.Print(Write, WriteLine);
+                txt.Append(sum.ToString());
                 break;
         }
+        Show.Color.ChangeTotalLineBackgroundColor();
+        WriteTotalLine(txt.ToString());
+        Show.Color.Reset();
     }
 
     static internal Action<string, string[], InfoSum> impPrintInfoTotal { get; set; }
@@ -274,7 +284,7 @@ static public partial class Helper
 
     static internal void PrintInfoTotal(string path, string[] wilds, InfoSum arg)
     {
-        if (arg.IsNotFake) impPrintInfoTotal(path, wilds, arg);
+        impPrintInfoTotal(path, wilds, arg);
     }
 
     static internal string GetFirstDir(string path)

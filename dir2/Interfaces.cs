@@ -53,7 +53,8 @@ public partial class Helper
         return rtn[0];
     }
 
-    public static string[] GetUniqueTexts(IEnumerable<string> args, int max, IParse opt)
+    public static string[] GetUniqueTexts(IEnumerable<string> args, int max,
+        IParse opt, bool ignoreExtraHelp = false)
     {
         var rtn = Helper.CommonSplit(args)
             .Take(max+1)
@@ -68,6 +69,8 @@ public partial class Helper
         {
             throw new ArgumentException($"Too many values to '{opt.Name}'");
         }
+
+        if (ignoreExtraHelp) return rtn;
 
         if (rtn.Any((it) => it == ExtraHelp))
         {
