@@ -15,27 +15,30 @@ or
 dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb
 ```
 
-## Help Topcis
-
-[Link to Complete Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
-
-
 ### On-line help
 
 | Command | Description |
 | ------- | ----------- |
 | ```dir2 -?```         | To list common-used options
-| ```dir2 -??```        | To list all options
-| ```dir2 -? cfg```     | To list options loading by config file ```~\.local\dir2.opt```
+| ```dir2 -??```        | [To list all options](https://github.com/ck-yung/dir2cs/blob/main/docs/info-options.md)
+| ```dir2 -? cfg```     | To list options loading by config file [```dir2.opt```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-config-file.md)
+
+### [Quick help](https://github.com/ck-yung/dir2cs/blob/main/docs/info-short-help.md) to an option
+
+| Sample Command | Sample Ouput |
+| -------------  | ------------ |
+| ```dir2 --sum +?``` | ```--sum ext | dir | +dir | year``` |
+| ```dir2 -w size```  | ```--within 123kb``` |
+|                     | ```--wihtin 123mb``` |
 
 ### Common used
 
 | Command | Description |
 | ------- | ----------- |
 | ```dir2 -fo size```          | To list files only and order by file size
-| ```dir2 -sw 13days```        | To list all files whose time-stamp is within (including) 13 days ago
-| ```dir2 -W 4hours```         | To list files whose time-stamp is before 4 hours ago ('w' in upper case)
-| ```dir2 -W 123Mb -w 2Gb```   | To list files whose size is larger than 123 Mb and smaller (including) than 2 Gb
+| ```dir2 -sw 13days```        | To list all files whose time-stamp is [within (including) 13 days ago](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md).
+| ```dir2 -W 4hours```         | To list files whose time-stamp is [before 4 hours ago](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md) ('w' in upper case).
+| ```dir2 -W 123Mb -w 2Gb```   | To list files whose size is [larger than 123 Mb and smaller (including) than 2 Gb](https://github.com/ck-yung/dir2cs/blob/main/docs/info-within.md).
 | ```dir2 -x *.tmp,*.obj```    | To list excluding some files
 | ```dir2 -X .vs,obj```        | To list excluding some dir ('x' in upper case)
 | ```dir2 -sH```               | To list all hidden files (excluding file-link, and file in link-dir)
@@ -44,14 +47,14 @@ dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb
 
 | Command | Description |
 | ------- | ----------- |
-| ```dir2 -so date --sum dir``` | To list dir-sum and order by the earliest of written dates
-| ```dir2 -so last --sum ext``` | To list file-ext-sum and order by the last of written dates
+| ```dir2 -so date --sum dir``` | To list [dir-sum](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md) and order by the earliest of written dates
+| ```dir2 -so last --sum ext``` | To list [ext-sum](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md) and order by the last of written dates
 | ```dir2 -R```                 | To list all directories in a tree structure
 | ```dir2 -kb Docu*```          | To list filename with the directory name
-| ```dir2 -sx :link```          | To list all files excluding file-link
-| ```dir2 -sdX :link```         | To list all directories excluding link-dir
-| ```dir2 -s --link only```     | To list all file-links
-| ```dir2 -s --dir only-link``` | To list all link-dirs
+| ```dir2 -sx :link```          | To list all files excluding [file-link](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-file.md)
+| ```dir2 -sdX :link```         | To list all directories excluding [link-dir](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-dir.md)
+| ```dir2 -s --link only```     | To list all [file-links](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-file.md)
+| ```dir2 -s --dir only-link``` | To list all [link-dirs](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-dir.md)
 
 ### Provide '--files-from' on pipeline operation
 Store '.cs' files from all sub dir on 'my_proj' into a new tar file, or, a new zip file.
