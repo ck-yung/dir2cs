@@ -10,9 +10,11 @@ static public class Sum
         .Invoke(Sort.Files)
         .Invoke(Sort.ReverseInfo)
         .Invoke(Sort.TakeInfo)
-        .Select((it) =>
+        .Zip(Show.ColorOpt.Invoke(1))
+        .Select((itm) =>
         {
-            // TODO: Mark 01 - Files
+            var it = itm.First;
+            Helper.ItemWrite(itm.Second()); // TODO: Mark 01 - Files
             Helper.ItemWrite(Show.Attributes(it));
             Helper.ItemWrite(Show.Owner(it));
             Helper.ItemWrite(Show.Size(Show.LengthFormatOpt.Invoke(it.Length)));
@@ -47,8 +49,11 @@ static public class Sum
             .Invoke(Sort.Sums)
             .Invoke(Sort.ReverseSum)
             .Invoke(Sort.TakeSum)
-            .Select((it) =>
+            .Zip(Show.ColorOpt.Invoke(4))
+            .Select((itm) =>
             {
+                var it = itm.First;
+                Helper.ItemWrite(itm.Second.Invoke()); // TODO: Mark 04 - InfoSum
                 it.Print(Helper.ItemWrite, Helper.ItemWriteLine);
                 return it;
             })

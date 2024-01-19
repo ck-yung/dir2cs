@@ -112,24 +112,21 @@ static public partial class MyOptions
     static void PrintDirCountWithCheck(int count, bool addNewLine = true,
         bool skipLessTwo = true)
     {
-        // TODO: Change Backgroup Color
         switch (count, skipLessTwo)
         {
             case (<2, true):
-                // TODO: Change Backgroup Color
+                Helper.Write(Show.Color.Reset());
                 return;
             case (1, _):
-                Helper.WriteTotalLine("One dir is found.");
+                Helper.WriteTotalLine("One dir is found.", addNewLine);
                 break;
             case (0, _):
-                Helper.WriteTotalLine("No dir is found.");
+                Helper.WriteTotalLine("No dir is found.", addNewLine);
                 break;
             default:
-                Helper.WriteTotalLine($"{count} dirs are found.");
+                Helper.WriteTotalLine($"{count} dirs are found.", addNewLine);
                 break;
         }
-        // TODO: Reset Backgroup Color
-        if (addNewLine) Helper.WriteTotalLine("");
     }
 
     static public readonly IParse TotalOpt = new SimpleParser(name: "--total",

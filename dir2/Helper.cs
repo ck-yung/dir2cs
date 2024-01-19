@@ -170,9 +170,11 @@ static public partial class Helper
         .Invoke(Sort.Dirs)
         .Invoke(Sort.ReverseDir)
         .Invoke(Sort.TakeDir)
-        .Select((it) =>
+        .Zip(Show.ColorOpt.Invoke(3))
+        .Select((itm) =>
         {
-            // TODO: Mark 03 - PrintDir
+            var it = itm.First;
+            ItemWrite(itm.Second.Invoke()); // TODO: Mark 03 - PrintDir
             ItemWrite(Show.Attributes(it));
             ItemWrite(Show.Owner(it));
             ItemWrite(DirPrefixText("DIR "));
@@ -274,8 +276,10 @@ static public partial class Helper
                 txt.Append(sum.ToString());
                 break;
         }
-        // TODO: Change Backgroup Color
-        WriteTotalLine(txt.ToString());
+        // TODO: Mark 05 - InfoSum - TotalLine
+        var a2 = txt.ToString();
+        if (false == string.IsNullOrEmpty(a2)) WriteTotalLine(a2);
+        Console.Write(Show.Color.Reset());
     }
 
     static internal Action<string, string[], InfoSum> impPrintInfoTotal { get; set; }

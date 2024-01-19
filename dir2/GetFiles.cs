@@ -18,9 +18,18 @@ static public partial class Helper
         return msg;
     };
 
-    static public void WriteTotalLine(string msg)
+    static public void WriteTotalLine(string msg, bool isExtraNewLine = false)
     {
-        Console.WriteLine(msg);
+        if (false == string.IsNullOrEmpty(msg))
+        {
+            Console.Write(Show.Color.TotalLine());
+            Console.WriteLine(msg);
+        }
+
+        if (isExtraNewLine)
+        {
+            Console.WriteLine(Show.Color.Reset());
+        }
     }
 
     static public void Init(
@@ -111,6 +120,13 @@ static public partial class Helper
 
     static public InfoSum PrintDirTree(string path)
     {
+        var colorThe = Show.ColorOpt.Invoke(6).GetEnumerator();
+        string GetNextColor()
+        {
+            colorThe.MoveNext();
+            return colorThe.Current();
+        }
+
         void PrintSubTree(string prefix, InfoDir dir)
         {
             var enumDir = dir.GetDirectories()
@@ -123,6 +139,7 @@ static public partial class Helper
             {
                 var currDir = enumDir.Current;
                 if (currDir.IsFake) break;
+                Console.Write(GetNextColor());
                 Console.WriteLine($"{prefix}+- {prevDir.Name}");
                 PrintSubTree($"{prefix}|  ", prevDir);
                 prevDir = currDir;
@@ -130,6 +147,7 @@ static public partial class Helper
 
             if (prevDir.IsNotFake)
             {
+                Console.Write(GetNextColor());
                 Console.WriteLine($"{prefix}\\- {prevDir.Name}");
                 PrintSubTree($"{prefix}   ", prevDir);
             }

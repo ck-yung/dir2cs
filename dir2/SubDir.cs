@@ -12,9 +12,11 @@ static public partial class MyOptions
             .Invoke(Sort.Dirs)
             .Invoke(Sort.ReverseDir)
             .Invoke(Sort.TakeDir)
-            .Select((it) =>
+            .Zip(Show.ColorOpt.Invoke(2))
+            .Select((itm) =>
             {
-                // TODO: Mark 02 - Dir
+                var it = itm.First;
+                Helper.ItemWrite(itm.Second.Invoke()); // TODO: Mark 02 - Sub Dir-only
                 Helper.ItemWrite(Show.Attributes(it));
                 Helper.ItemWrite(Show.Owner(it));
                 Helper.ItemWrite(Show.Date(Helper.DateFormatOpt.Invoke(Show.GetDate(it))));

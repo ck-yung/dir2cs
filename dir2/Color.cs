@@ -20,7 +20,7 @@ static internal partial class Show
         static internal string[] GetColorNames() =>
             Enum.GetNames<ConsoleColor>().ToArray();
 
-        static internal void Init(IParse parser,
+        static internal int Init(IParse parser,
             int countToChangeBackground,
             string colorNamePerCount,
             string colorNameTotalLine)
@@ -31,11 +31,12 @@ static internal partial class Show
                     $"LineCountToChangeBackgroundColor {countToChangeBackground} is too small. The min is 2.");
                 throw new ShowSyntaxException(parser);
             }
-            CountLineMax = countToChangeBackground - 1;
+            CountLineMax = countToChangeBackground;
+            System.Diagnostics.Debug.WriteLine($"dbg: Color.CountLineMax={CountLineMax}");
 
             if (Enum.TryParse(typeof(ConsoleColor), colorNamePerCount, ignoreCase: true, out var result2))
             {
-                Console.Error.WriteLine($"dbg: NamePerCount {colorNamePerCount}");
+                System.Diagnostics.Debug.WriteLine($"dbg: Color.NamePerCount {colorNamePerCount}");
                 BackgroundColorPerLineCount = (ConsoleColor)result2;
             }
             else
@@ -46,7 +47,7 @@ static internal partial class Show
 
             if (Enum.TryParse(typeof(ConsoleColor), colorNameTotalLine, ignoreCase: true, out var result3))
             {
-                Console.Error.WriteLine($"dbg: totalLine {colorNameTotalLine}");
+                System.Diagnostics.Debug.WriteLine($"dbg: Color.totalLine {colorNameTotalLine}");
                 BackgroundColorTotalLine = (ConsoleColor)result3;
             }
             else
@@ -54,19 +55,55 @@ static internal partial class Show
                 Console.Error.WriteLine($"'{colorNamePerCount}' is NOT a color name");
                 throw new ShowSyntaxException(parser);
             }
+
+            Reset = () =>
+            {
+                return "[###]";
+            };
+
+            TotalLine = () =>
+            {
+                return "[***]";
+            };
+
+            return CountLineMax;
         }
 
         static void DoNothing() { }
 
+        static string ReturnBlank() => string.Empty;
+
+        static internal IEnumerable<Func<string>> GetBlanks()
+        {
+            while (true) yield return ReturnBlank;
+        }
+
+        static internal IEnumerable<Func<string>> GetNumberTexts(int dbgMarker, int cntMax)
+        {
+            var cntThis = 0;
+            while (true)
+            {
+                cntThis += 1;
+                if (cntThis >= cntMax) cntThis = 0;
+                yield return () => $"[{dbgMarker}:{cntThis}] ";
+            }
+        }
+
+        static internal Func<string> Reset { get; private set; } = ReturnBlank;
+        static internal Func<string> TotalLine { get; private set; } = ReturnBlank;
     }
 
-    static internal readonly IInovke<string, string> ColorOpt =
-        new ParseInvoker<string, string>("--color",
+    static internal readonly IInovke<int, IEnumerable<Func<string>>> ColorOpt =
+        new ParseInvoker<int, IEnumerable<Func<string>>>("--color",
             help: "INTEGER,COLOR,COLOR  (Check dir2 --color +?)",
-            init: (it) => it, resolve: (parser, args) =>
+            init: (_) => Color.GetBlanks(), resolve: (parser, args) =>
             {
-                var aa = Helper.GetUniqueTexts(args, 4, parser,
-                    ignoreExtraHelp: true);
+                var aa = args
+                .Select((it) => it.Split(';', ','))
+                .SelectMany((it) => it)
+                .Where((it) => it.Length > 0)
+                .Take(4)
+                .ToArray();
 
                 if (aa.Any((it) => it == Helper.ExtraHelp))
                 {
@@ -85,11 +122,8 @@ static internal partial class Show
 
                 if (int.TryParse(aa[0], out var lineCountToChangeBackgroundColor))
                 {
-                    Color.Init(parser, lineCountToChangeBackgroundColor, aa[1], aa[2]);
-                    parser.SetImplementation((Func<string, string>)((it) =>
-                    {
-                        return it;
-                    }));
+                    var cntMax = Color.Init(parser, lineCountToChangeBackgroundColor, aa[1], aa[2]);
+                    parser.SetImplementation((arg) => Color.GetNumberTexts(arg, cntMax));
                 }
                 else
                 {
