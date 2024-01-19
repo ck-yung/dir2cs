@@ -14,6 +14,7 @@ static public partial class MyOptions
             .Invoke(Sort.TakeDir)
             .Select((it) =>
             {
+                // TODO: Mark 02 - Dir
                 Helper.ItemWrite(Show.Attributes(it));
                 Helper.ItemWrite(Show.Owner(it));
                 Helper.ItemWrite(Show.Date(Helper.DateFormatOpt.Invoke(Show.GetDate(it))));

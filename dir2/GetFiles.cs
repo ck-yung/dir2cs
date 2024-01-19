@@ -14,7 +14,7 @@ static public partial class Helper
     static public Func<string, string> WriteLine
     { get; private set; } = (msg) =>
     {
-        Console.WriteLine(Show.ColorOpt.Invoke(msg));
+        Console.WriteLine(msg);
         return msg;
     };
 

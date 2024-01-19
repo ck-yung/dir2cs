@@ -12,6 +12,7 @@ static public class Sum
         .Invoke(Sort.TakeInfo)
         .Select((it) =>
         {
+            // TODO: Mark 01 - Files
             Helper.ItemWrite(Show.Attributes(it));
             Helper.ItemWrite(Show.Owner(it));
             Helper.ItemWrite(Show.Size(Show.LengthFormatOpt.Invoke(it.Length)));

@@ -58,42 +58,6 @@ static internal partial class Show
 
         static void DoNothing() { }
 
-        static void ChangePerLineCountBackground()
-        {
-            Console.BackgroundColor = BackgroundColorPerLineCount;
-            NextUpdate = Restore;
-        }
-
-        static void Restore()
-        {
-            Console.ResetColor();
-            NextUpdate = DoNothing;
-        }
-
-        static Action NextUpdate { get; set; } = DoNothing;
-
-        static internal void UpdateBackground()
-        {
-            NextUpdate();
-            CountLine += 1;
-            if (CountLine > CountLineMax)
-            {
-                NextUpdate = ChangePerLineCountBackground;
-                CountLine = -1;
-            }
-        }
-
-        static internal void Reset()
-        {
-            Restore();
-            CountLine = 1;
-        }
-
-        static internal void ChangeTotalLineBackgroundColor()
-        {
-            Console.ResetColor();
-            Console.BackgroundColor = BackgroundColorTotalLine;
-        }
     }
 
     static internal readonly IInovke<string, string> ColorOpt =
@@ -124,7 +88,6 @@ static internal partial class Show
                     Color.Init(parser, lineCountToChangeBackgroundColor, aa[1], aa[2]);
                     parser.SetImplementation((Func<string, string>)((it) =>
                     {
-                        Show.Color.UpdateBackground();
                         return it;
                     }));
                 }

@@ -172,6 +172,7 @@ static public partial class Helper
         .Invoke(Sort.TakeDir)
         .Select((it) =>
         {
+            // TODO: Mark 03 - PrintDir
             ItemWrite(Show.Attributes(it));
             ItemWrite(Show.Owner(it));
             ItemWrite(DirPrefixText("DIR "));
@@ -273,9 +274,8 @@ static public partial class Helper
                 txt.Append(sum.ToString());
                 break;
         }
-        Show.Color.ChangeTotalLineBackgroundColor();
+        // TODO: Change Backgroup Color
         WriteTotalLine(txt.ToString());
-        Show.Color.Reset();
     }
 
     static internal Action<string, string[], InfoSum> impPrintInfoTotal { get; set; }

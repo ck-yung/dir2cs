@@ -335,6 +335,7 @@ public class InfoSum
     public void Print(Func<string, string> write,
         Func<string, string> writeLine)
     {
+        // TODO: Mark 04 - InfoSum
         write(Show.Size(Show.LengthFormatOpt.Invoke(Length)));
         write(Show.Date(Helper.DateFormatOpt.Invoke(StartTime)));
         write(Show.Date(Show.Last.Invoke(Helper.DateFormatOpt.Invoke(EndTime))));
@@ -344,6 +345,7 @@ public class InfoSum
 
     public override string ToString()
     {
+        // TODO: Mark 05 - InfoSum - TotalLine
         var rtn = new StringBuilder();
         rtn.Append(Show.Size(Show.LengthFormatOpt.Invoke(Length)));
         rtn.Append(Show.Date(Helper.DateFormatOpt.Invoke(StartTime)));
