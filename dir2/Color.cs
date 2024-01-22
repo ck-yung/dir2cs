@@ -12,6 +12,12 @@ static internal partial class Show
 {
     static internal class Color
     {
+        static Color()
+        {
+            ForegroundColorDefault = Console.ForegroundColor;
+            ForegroundColorSwitch = Console.ForegroundColor;
+        }
+
         static internal string[] GetColorNames() =>
             Enum.GetNames<ConsoleColor>().ToArray();
 
@@ -41,7 +47,6 @@ static internal partial class Show
                 throw new ShowSyntaxException(parser);
             }
 
-            ForegroundColorDefault = Console.ForegroundColor;
             ForegroundColorSwitch = ForegroundColorPerLineCount;
             SwitchFore = (it) => SwitchForeColorBack(it, switchBackuground: false);
             ResetFore = () =>
@@ -81,7 +86,7 @@ static internal partial class Show
 
         static string DoNothing(string text) => text;
 
-        static internal string SwitchForeColorBack(string text, bool switchBackuground)
+        static string SwitchForeColorBack(string text, bool switchBackuground)
         {
             if (string.IsNullOrEmpty(text))
             {

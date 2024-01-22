@@ -186,7 +186,6 @@ static public partial class Helper
             return it;
         })
         .Count();
-        Show.Color.SwitchForeColorBack("reset", switchBackuground: false);
         PrintDirCount(cntDir);
         return InfoSum.Fake;
     };
