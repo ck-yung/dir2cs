@@ -335,11 +335,12 @@ public class InfoSum
     public void Print(Func<string, string> write,
         Func<string, string> writeLine)
     {
-        write(Show.Size(Show.LengthFormatOpt.Invoke(Length)));
-        write(Show.Date(Helper.DateFormatOpt.Invoke(StartTime)));
-        write(Show.Date(Show.Last.Invoke(Helper.DateFormatOpt.Invoke(EndTime))));
-        write(Show.Count(Show.CountFormat.Invoke(Count)));
-        writeLine(GetName());
+        write(Show.Color.SwitchFore(Show.Size(Show.LengthFormatOpt.Invoke(Length))));
+        write(Show.Color.SwitchFore(Show.Date(Helper.DateFormatOpt.Invoke(StartTime))));
+        write(Show.Color.SwitchFore(Show.Date(Show.Last.Invoke(Helper.DateFormatOpt.Invoke(EndTime)))));
+        write(Show.Color.SwitchFore(Show.Count(Show.CountFormat.Invoke(Count))));
+        write(Show.Color.SwitchFore(GetName()));
+        writeLine(Show.Color.TotallyResetFore(""));
     }
 
     public override string ToString()

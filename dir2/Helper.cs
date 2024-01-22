@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Drawing;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
@@ -175,16 +176,17 @@ static public partial class Helper
         {
             var it = itm.First;
             ItemWrite(itm.Second.Invoke()); // TODO: Mark 03 - PrintDir
-            ItemWrite(Show.Attributes(it));
-            ItemWrite(Show.Owner(it));
-            ItemWrite(DirPrefixText("DIR "));
-            ItemWrite(Show.Date(DateFormatOpt.Invoke(Show.GetDate(it))));
-            ItemWrite(Show.GetDirName(Io.GetRelativeName(it.FullName)));
-            ItemWrite(Show.Link.Invoke(it));
-            ItemWriteLine(string.Empty);
+            ItemWrite(Show.Color.SwitchFore(Show.Attributes(it)));
+            ItemWrite(Show.Color.SwitchFore(Show.Owner(it)));
+            ItemWrite(Show.Color.SwitchFore(DirPrefixText("DIR ")));
+            ItemWrite(Show.Color.SwitchFore(Show.Date(DateFormatOpt.Invoke(Show.GetDate(it)))));
+            ItemWrite(Show.Color.SwitchFore(Show.GetDirName(Io.GetRelativeName(it.FullName))));
+            ItemWrite(Show.Color.SwitchFore(Show.Link.Invoke(it)));
+            ItemWriteLine(Show.Color.TotallyResetFore(""));
             return it;
         })
         .Count();
+        Show.Color.SwitchForeColorBack("reset", switchBackuground: false);
         PrintDirCount(cntDir);
         return InfoSum.Fake;
     };

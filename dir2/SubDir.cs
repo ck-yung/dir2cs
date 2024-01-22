@@ -17,12 +17,12 @@ static public partial class MyOptions
             {
                 var it = itm.First;
                 Helper.ItemWrite(itm.Second.Invoke()); // TODO: Mark 02 - Sub Dir-only
-                Helper.ItemWrite(Show.Attributes(it));
-                Helper.ItemWrite(Show.Owner(it));
-                Helper.ItemWrite(Show.Date(Helper.DateFormatOpt.Invoke(Show.GetDate(it))));
-                Helper.ItemWrite(Show.GetDirName(Helper.Io.GetRelativeName(it.FullName)));
-                Helper.ItemWrite(Show.Link.Invoke(it));
-                Helper.ItemWriteLine(string.Empty);
+                Helper.ItemWrite(Show.Color.SwitchFore(Show.Attributes(it)));
+                Helper.ItemWrite(Show.Color.SwitchFore(Show.Owner(it)));
+                Helper.ItemWrite(Show.Color.SwitchFore(Show.Date(Helper.DateFormatOpt.Invoke(Show.GetDate(it)))));
+                Helper.ItemWrite(Show.Color.SwitchFore(Show.GetDirName(Helper.Io.GetRelativeName(it.FullName))));
+                Helper.ItemWrite(Show.Color.SwitchFore(Show.Link.Invoke(it)));
+                Helper.ItemWriteLine(Show.Color.TotallyResetFore(""));
                 return it;
             })
             .Count();

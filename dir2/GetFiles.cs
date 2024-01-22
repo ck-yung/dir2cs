@@ -22,14 +22,16 @@ static public partial class Helper
     {
         if (false == string.IsNullOrEmpty(msg))
         {
-            Console.Write(Show.Color.TotalLine());
+            Show.Color.TotalLine();
             Console.WriteLine(msg);
         }
 
         if (isExtraNewLine)
         {
-            Console.WriteLine(Show.Color.Reset());
+            Console.WriteLine();
         }
+
+        Show.Color.Reset();
     }
 
     static public void Init(

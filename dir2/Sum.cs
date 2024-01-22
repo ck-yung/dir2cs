@@ -15,13 +15,13 @@ static public class Sum
         {
             var it = itm.First;
             Helper.ItemWrite(itm.Second()); // TODO: Mark 01 - Files
-            Helper.ItemWrite(Show.Attributes(it));
-            Helper.ItemWrite(Show.Owner(it));
-            Helper.ItemWrite(Show.Size(Show.LengthFormatOpt.Invoke(it.Length)));
-            Helper.ItemWrite(Show.Date(Helper.DateFormatOpt.Invoke(Show.GetDate(it))));
-            Helper.ItemWrite(Helper.Io.GetRelativeName(it.FullName));
-            Helper.ItemWrite(Show.Link.Invoke(it));
-            Helper.ItemWriteLine(string.Empty);
+            Helper.ItemWrite(Show.Color.SwitchFore(Show.Attributes(it)));
+            Helper.ItemWrite(Show.Color.SwitchFore(Show.Owner(it)));
+            Helper.ItemWrite(Show.Color.SwitchFore(Show.Size(Show.LengthFormatOpt.Invoke(it.Length))));
+            Helper.ItemWrite(Show.Color.SwitchFore(Show.Date(Helper.DateFormatOpt.Invoke(Show.GetDate(it)))));
+            Helper.ItemWrite(Show.Color.SwitchFore(Helper.Io.GetRelativeName(it.FullName)));
+            Helper.ItemWrite(Show.Color.SwitchFore(Show.Link.Invoke(it)));
+            Helper.ItemWriteLine(Show.Color.TotallyResetFore(""));
             return it;
         })
         .Aggregate(
