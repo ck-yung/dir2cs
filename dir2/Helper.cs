@@ -174,8 +174,8 @@ static public partial class Helper
         .Zip(Show.ColorOpt.Invoke(3))
         .Select((itm) =>
         {
+            itm.Second.Invoke();
             var it = itm.First;
-            ItemWrite(itm.Second.Invoke()); // TODO: Mark 03 - PrintDir
             ItemWrite(Show.Color.SwitchFore(Show.Attributes(it)));
             ItemWrite(Show.Color.SwitchFore(Show.Owner(it)));
             ItemWrite(Show.Color.SwitchFore(DirPrefixText("DIR ")));
@@ -228,6 +228,7 @@ static public partial class Helper
         InfoSum sum, bool printEvenCountOne)
     {
         if (sum.IsFake) return;
+        if ((sum.AddCount == 1) && (false == printEvenCountOne)) return;
         var txt = new StringBuilder();
         switch (sum.Count)
         {
@@ -277,10 +278,7 @@ static public partial class Helper
                 txt.Append(sum.ToString());
                 break;
         }
-        // TODO: Mark 05 - InfoSum - TotalLine
-        var a2 = txt.ToString();
-        if (false == string.IsNullOrEmpty(a2)) WriteTotalLine(a2);
-        Console.Write(Show.Color.Reset());
+        WriteTotalLine(txt.ToString());
     }
 
     static internal Action<string, string[], InfoSum> impPrintInfoTotal { get; set; }

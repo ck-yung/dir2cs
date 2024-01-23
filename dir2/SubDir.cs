@@ -15,8 +15,8 @@ static public partial class MyOptions
             .Zip(Show.ColorOpt.Invoke(2))
             .Select((itm) =>
             {
+                itm.Second.Invoke();
                 var it = itm.First;
-                Helper.ItemWrite(itm.Second.Invoke()); // TODO: Mark 02 - Sub Dir-only
                 Helper.ItemWrite(Show.Color.SwitchFore(Show.Attributes(it)));
                 Helper.ItemWrite(Show.Color.SwitchFore(Show.Owner(it)));
                 Helper.ItemWrite(Show.Color.SwitchFore(Show.Date(Helper.DateFormatOpt.Invoke(Show.GetDate(it)))));

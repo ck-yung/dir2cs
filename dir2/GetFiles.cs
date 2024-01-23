@@ -123,7 +123,7 @@ static public partial class Helper
     static public InfoSum PrintDirTree(string path)
     {
         var colorThe = Show.ColorOpt.Invoke(6).GetEnumerator();
-        string GetNextColor()
+        int GetNextColor()
         {
             colorThe.MoveNext();
             return colorThe.Current();

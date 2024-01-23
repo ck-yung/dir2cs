@@ -231,6 +231,7 @@ public class InfoSum
     public Func<string> GetName { get; init; }
 
     public int Count { get; private set; } = 0;
+    public int AddCount { get; private set; } = 0;
     public long Length { get; private set; } = 0L;
     public DateTimeOffset StartTime { get; private set; } = DateTimeOffset.MaxValue;
     public DateTimeOffset EndTime { get; private set; } = DateTimeOffset.MinValue;
@@ -326,6 +327,7 @@ public class InfoSum
     {
         Count += other.Count;
         Length += other.Length;
+        AddCount += 1;
         if (EndTime < other.EndTime) EndTime= other.EndTime;
         if (StartTime > other.StartTime && other.StartTime.Year > 1)
             StartTime = other.StartTime;

@@ -67,13 +67,13 @@ static internal partial class Show
             Reset = () =>
             {
                 Console.ResetColor();
-                return string.Empty;
+                return 3;
             };
 
             TotalLine = () =>
             {
                 Console.ForegroundColor = ForegroundColorTotalLine;
-                return string.Empty;
+                return 4;
             };
 
             return CountLineMax;
@@ -130,14 +130,14 @@ static internal partial class Show
         }
         #endregion
 
-        static string ReturnBlank() => string.Empty;
+        static int ReturnZero() => 0;
 
-        static internal IEnumerable<Func<string>> GetBlanks()
+        static internal IEnumerable<Func<int>> GetZeroes()
         {
-            while (true) yield return ReturnBlank;
+            while (true) yield return ReturnZero;
         }
 
-        static internal IEnumerable<Func<string>> Background(int dbgMarker, int cntMax)
+        static internal IEnumerable<Func<int>> Background(int dbgMarker, int cntMax)
         {
             var cntThis = 0;
             while (true)
@@ -153,19 +153,19 @@ static internal partial class Show
                         TotallyResetFore = DoNothing;
                         return string.Empty;
                     };
-                    yield return () => "";
+                    yield return () => 1;
                 }
                 else
                 {
                     SwitchBackground(false);
                     ResetFore();
-                    yield return () => "";
+                    yield return () => 2;
                 }
             }
         }
 
-        static internal Func<string> Reset { get; private set; } = ReturnBlank;
-        static internal Func<string> TotalLine { get; private set; } = ReturnBlank;
+        static internal Func<int> Reset { get; private set; } = ReturnZero;
+        static internal Func<int> TotalLine { get; private set; } = ReturnZero;
         static int CountLineMax { get; set; } = 0;
         static ConsoleColor ForegroundColorDefault { get; set; }
         static ConsoleColor ForegroundColorSwitch { get; set; }
@@ -173,10 +173,10 @@ static internal partial class Show
         static ConsoleColor ForegroundColorTotalLine { get; set; }
     }
 
-    static internal readonly IInovke<int, IEnumerable<Func<string>>> ColorOpt =
-        new ParseInvoker<int, IEnumerable<Func<string>>>("--color",
+    static internal readonly IInovke<int, IEnumerable<Func<int>>> ColorOpt =
+        new ParseInvoker<int, IEnumerable<Func<int>>>("--color",
             help: "INTEGER,COLOR,COLOR-OF-TOTAL-LINE  (Check dir2 --color +?)",
-            init: (_) => Color.GetBlanks(), resolve: (parser, args) =>
+            init: (_) => Color.GetZeroes(), resolve: (parser, args) =>
             {
                 var aa = args
                 .Select((it) => it.Split(';', ','))
