@@ -443,7 +443,7 @@ static public partial class Helper
                         parser.SetImplementation((it) => it.IsHidden());
                         break;
                     default:
-                        throw new ArgumentException($"'{argThe}' is bad value to {argThe}");
+                        throw new ConfigException($"'{argThe}' is bad value to {argThe}");
                 }
             });
 
@@ -461,7 +461,7 @@ static public partial class Helper
                         parser.SetImplementation((it) => it.IsLinked);
                         break;
                     default:
-                        throw new ArgumentException($"'{argThe}' is bad value to {parser.Name}");
+                        throw new ConfigException($"'{argThe}' is bad value to {parser.Name}");
                 }
             });
 }

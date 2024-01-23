@@ -41,13 +41,13 @@ static public partial class Helper
                         {
                             if (timespanThe < TimeSpan.FromHours(-12))
                             {
-                                throw new ArgumentException(
+                                throw new ConfigException(
                                     $"{parser.Name} cannot be less than (UTC) -12:00 but '{textFound}' is found.");
                             }
 
                             if (timespanThe > TimeSpan.FromHours(12))
                             {
-                                throw new ArgumentException(
+                                throw new ConfigException(
                                     $"{parser.Name} cannot be greater than (UTC) +12:00 but '{textFound}' is found.");
                             }
 
@@ -95,7 +95,7 @@ static public partial class Helper
                                 arg.ToOffset(timespanFound);
                             break;
                         default:
-                            throw new ArgumentException(
+                            throw new ConfigException(
                                 $"{parser.Name} : '{theArgs[0]}' and '{theArgs[1]}' are same type!");
                     }
                 }
@@ -397,7 +397,7 @@ static public partial class Helper
                 {
                     if (founds.Length > 1)
                     {
-                        throw new ArgumentException(
+                        throw new ConfigException(
                             $"In {cfgFilename}, '{keyCulture}' has more than one assignment!");
                     }
                     cultureThe = CultureInfo.CreateSpecificCulture(founds[0]);
@@ -409,7 +409,7 @@ static public partial class Helper
                     {
                         if (founds.Length > 1)
                         {
-                            throw new ArgumentException(
+                            throw new ConfigException(
                                 $"In {cfgFilename}, '{keyThe}' has more than one assignment!");
                         }
                         flagHours[keyThe] = flags
@@ -425,7 +425,7 @@ static public partial class Helper
                 {
                     if (itm.Value.Length > 1)
                     {
-                        throw new ArgumentException(
+                        throw new ConfigException(
                             $"In {cfgFilename}, '{itm.Key}' has more than one assignment!");
                     }
                     var textFormat = System.Net.WebUtility.UrlDecode(itm.Value[0]);

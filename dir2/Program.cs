@@ -10,12 +10,30 @@ public class Program
         try
         {
             RunMain(args);
+            foreach (var ae3 in ConfigException.GetErrors())
+            {
+                switch (ae3.Type)
+                {
+                    case ArgType.ConfigFile:
+                        Console.WriteLine(
+                            $"Config file '{ae3.Source}': {ae3.Error.Message}");
+                        break;
+                    case ArgType.Environment:
+                        Console.WriteLine(
+                            $"Envir var '{ae3.Source}': {ae3.Error.Message}");
+                        break;
+                    default:
+                        Console.WriteLine(
+                            $"Unknown error '{ae3.Source}': {ae3.Error.Message}");
+                        break;
+                }
+            }
         }
         catch (ShowSyntaxException se)
         {
             Console.WriteLine(se.Message);
         }
-        catch (ArgumentException aee)
+        catch (ConfigException aee)
         {
             if (GetExeEnvr().Contains(DumpExceptionOpt))
             {
@@ -32,7 +50,7 @@ public class Program
             {
                 Console.WriteLine(ee);
             }
-            else if (ee.InnerException is ArgumentException ae)
+            else if (ee.InnerException is ConfigException ae)
             {
                 Console.WriteLine($"{ee.Message} {ae.Message}");
             }
@@ -109,10 +127,10 @@ public class Program
             cfgRest = Parsers.Resolve(cfgRest,
                 isIncludeExclNameOptions: false);
         }
-        catch (ArgumentException ae2)
+        catch (ConfigException ae2)
         {
-            throw new Exception(
-                $"Envir var '{nameof(dir2)}' is invalid.", ae2);
+            cfgRest = Enumerable.Empty<(ArgType, string)>();
+            ConfigException.Add(ArgType.Environment, nameof(dir2), ae2);
         }
 
         var tmp2 = cfgRest
@@ -411,13 +429,13 @@ public class Program
                 switch (ff.Length)
                 {
                     case 0:
-                        throw new ArgumentException(
+                        throw new ConfigException(
                                 $"No dir matching  '{d3}'");
                     case 1:
                         d3 = ff[0];
                         break;
                     default:
-                        throw new ArgumentException(
+                        throw new ConfigException(
                             $"Too many dir matching '{d3}'");
                 }
             }
@@ -442,14 +460,14 @@ public class Program
                     }
                     else
                     {
-                        throw new ArgumentException(
+                        throw new ConfigException(
                             $"No dir matching '{ee[ndx]}' on '{d3}'");
                     }
                 case 1:
                     d3 = ff[0];
                     break;
                 default:
-                    throw new ArgumentException(
+                    throw new ConfigException(
                         $"Too many dir matching '{ee[ndx]}' on '{d3}'");
             }
         }

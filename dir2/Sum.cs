@@ -118,7 +118,7 @@ static public class Sum
                         .Invoke(reduceTotal);
                     break;
                 default:
-                    throw new ArgumentException($"Bad value '{argThe}' to {parser.Name}");
+                    throw new ConfigException($"Bad value '{argThe}' to {parser.Name}");
             }
         });
 }

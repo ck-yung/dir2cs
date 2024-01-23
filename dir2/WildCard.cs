@@ -93,7 +93,7 @@ static public partial class Wild
                 }
                 else
                 {
-                    throw new ArgumentException($"Missing value to {current}");
+                    throw new ConfigException($"Missing value to {current}");
                 }
             }
         }
@@ -320,10 +320,10 @@ static public partial class Wild
                         Console.Error.WriteLine($"  {name} {hintThe}");
                     }
                 }
-                throw new ArgumentException(string.Empty);
+                throw new ConfigException(string.Empty);
             }
 
-            throw new ArgumentException($"'{arg}' is bad to {name}");
+            throw new ConfigException($"'{arg}' is bad to {name}");
         }
 
         [GeneratedRegex(@"^\+(?<year>\d+)year$", RegexOptions.Compiled)]
@@ -359,7 +359,7 @@ static public partial class Wild
 
     static Func<TimeSpan, string, DateTimeOffset> AssignNotWithinDate { get; set; } = (_, deltaText) =>
     {
-        throw new ArgumentException($"Option '--within' is required for '--not-wihtin {deltaText}' !");
+        throw new ConfigException($"Option '--within' is required for '--not-wihtin {deltaText}' !");
     };
 
     static internal Func<long, bool> IsMatchWithinSize
@@ -388,7 +388,7 @@ static public partial class Wild
                             var sizeWith = aa[typeThe].Take(2).ToArray();
                             if (sizeWith.Length > 1)
                             {
-                                throw new ArgumentException(
+                                throw new ConfigException(
                                     $"Too many Size '{sizeWith[0].Item2}', '{sizeWith[1].Item2}' to {parser.Name}");
                             }
                             var sizeMax = sizeWith[0].Item1.Size;
@@ -398,7 +398,7 @@ static public partial class Wild
                             var dateWithin = aa[typeThe].Take(2).ToArray();
                             if (dateWithin.Length > 1)
                             {
-                                throw new ArgumentException(
+                                throw new ConfigException(
                                     $"Too many DateTime '{dateWithin[0].Item2}', '{dateWithin[1].Item2}' to {parser.Name}");
                             }
                             var dateMax = dateWithin[0].Item1.Date;
@@ -407,7 +407,7 @@ static public partial class Wild
                             break;
                         default:
                             var valueThe = aa[typeThe].FirstOrDefault().Item2;
-                            throw new ArgumentException($"{valueThe} is bad to {parser.Name}");
+                            throw new ConfigException($"{valueThe} is bad to {parser.Name}");
                     }
                 }
             });
@@ -435,7 +435,7 @@ static public partial class Wild
                     var sizeNotWith = sizes.Take(2).ToArray();
                     if (sizeNotWith.Length > 1)
                     {
-                        throw new ArgumentException(
+                        throw new ConfigException(
                             $"Too many Size '{sizeNotWith[0].Item2}', '{sizeNotWith[1].Item2}' to {parser.Name}");
                     }
                     var sizeMin = sizeNotWith[0].Item1.Size;
@@ -451,7 +451,7 @@ static public partial class Wild
                         var dateNotWithin = dateFounds.Take(2).ToArray();
                         if (dateNotWithin.Length > 1)
                         {
-                            throw new ArgumentException(
+                            throw new ConfigException(
                                 $"Too many DateTime '{dateNotWithin[0].Item2}', '{dateNotWithin[1].Item2}' to {parser.Name}");
                         }
                         var dateMin = dateNotWithin[0].Item1.Date;
@@ -461,7 +461,7 @@ static public partial class Wild
                         var deltaFound = deltaDateFounds.Take(2).ToArray();
                         if (deltaFound.Length > 1)
                         {
-                            throw new ArgumentException(
+                            throw new ConfigException(
                                 $"Too many DateTime '{deltaFound[0].Item2}', '{deltaFound[1].Item2}' to {parser.Name}");
                         }
                         var deltaThe = deltaFound[0].Item1.DateDelta;
@@ -469,7 +469,7 @@ static public partial class Wild
                         IsMatchNotWithinDate = (date) => (date < dateMin2);
                         break;
                     default:
-                        throw new ArgumentException(
+                        throw new ConfigException(
                             $"Too many values to {parser.Name}");
                 }
             });
@@ -491,7 +491,7 @@ static public partial class Wild
                         parser.SetImplementation((it) => string.IsNullOrEmpty(it.Extension));
                         break;
                     default:
-                        throw new ArgumentException($"'{argThe}' is bad value to {parser.Name}");
+                        throw new ConfigException($"'{argThe}' is bad value to {parser.Name}");
                 }
             });
 }

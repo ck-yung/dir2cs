@@ -48,9 +48,10 @@ static class Config
 
     static public IEnumerable<(ArgType, string)> ParseConfigFile()
     {
+        var cfgFilename = "[undefined]";
         try
         {
-            var cfgFilename = GetFilename();
+            cfgFilename = GetFilename();
             var buf2 = new byte[2048];
             int readCnt = 0;
             using (var inpFp = File.OpenRead(cfgFilename))
@@ -68,10 +69,9 @@ static class Config
                 MyOptions.ExclFileDirParsers,
                 tmp);
         }
-        catch (ArgumentException ae)
+        catch (ConfigException ae)
         {
-            Console.Error.WriteLine(ae.Message);
-            Console.Error.WriteLine();
+            ConfigException.Add(ArgType.ConfigFile, cfgFilename, ae);
             return Enumerable.Empty<(ArgType, string)>();
         }
         catch
@@ -108,9 +108,7 @@ static class Config
         }
         catch (Exception ee)
         {
-            Console.Error.WriteLine(
-                $"Enivr {nameof(dir2)}: [{ee.GetType()}] {ee.Message}");
-            Console.Error.WriteLine();
+            ConfigException.Add(ArgType.Environment, nameof(dir2), ee);
             return (false, Enumerable.Empty<(ArgType, string)>());
         }
     }

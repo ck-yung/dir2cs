@@ -81,7 +81,7 @@ static public partial class MyOptions
                     Helper.PrintDirTree(arg));
                     break;
                 default:
-                    throw new ArgumentException(
+                    throw new ConfigException(
                         "Valid option: " + parser.Help + Environment.NewLine +
                         $"Bad value '{argThe}' to {parser.Name}");
             }
@@ -103,7 +103,7 @@ static public partial class MyOptions
                         parser.SetImplementation((path) => impSubDir(path));
                         break;
                     default:
-                        throw new ArgumentException(
+                        throw new ConfigException(
                             "Valid option: "+ parser.Help + Environment.NewLine +
                             $"Bad value '{argThe}' to {parser.Name}");
                 }
@@ -165,7 +165,7 @@ static public partial class MyOptions
                     break;
 
                 default:
-                    throw new ArgumentException($"Bad value '{argThe}' to {parser.Name}");
+                    throw new ConfigException($"Bad value '{argThe}' to {parser.Name}");
             }
         });
 

@@ -72,7 +72,7 @@ static internal partial class Show
                         Owner = Blank;
                         break;
                     default:
-                        throw new ArgumentException($"Bad value '{arg}' to {parser.Name}");
+                        throw new ConfigException($"Bad value '{arg}' to {parser.Name}");
                 }
             }
         });
@@ -163,7 +163,7 @@ static internal partial class Show
                         };
                         break;
                     default:
-                        throw new ArgumentException($"Bad value '{arg}' to {parser.Name}");
+                        throw new ConfigException($"Bad value '{arg}' to {parser.Name}");
                 }
             }
         });
@@ -194,7 +194,7 @@ static internal partial class Show
                 {
                     if (false == chkRegex.IsMatch(a2))
                     {
-                        throw new ArgumentException($"'{a2}' is bad to {parser.Name}");
+                        throw new ConfigException($"'{a2}' is bad to {parser.Name}");
                     }
                 }
 
@@ -212,26 +212,26 @@ static internal partial class Show
                         if (int.TryParse(aa[0], out int width))
                         {
                             if (width > 30)
-                                throw new ArgumentException($"'{aa[0]}' is too largth width to {parser.Name}");
+                                throw new ConfigException($"'{aa[0]}' is too largth width to {parser.Name}");
                             var fmtThe = $"{{0,{width}}} ";
                             parser.SetImplementation((it) => string.Format(fmtThe, it));
                             return;
                         }
-                        throw new ArgumentException($"'{aa[0]}' is NOT width to {parser.Name}");
+                        throw new ConfigException($"'{aa[0]}' is NOT width to {parser.Name}");
 
                     case (2, true, false):
                         if (int.TryParse(aa[0], out int width2))
                         {
                             if (width2 > 30)
-                                throw new ArgumentException($"'{aa[0]}' is too largth width to {parser.Name}");
+                                throw new ConfigException($"'{aa[0]}' is too largth width to {parser.Name}");
                             var fmtThe = $"{{0,{width2}:N0}} ";
                             parser.SetImplementation((it) => string.Format(fmtThe, it));
                             return;
                         }
-                        throw new ArgumentException($"'{aa[0]}' is NOT width to {parser.Name}");
+                        throw new ConfigException($"'{aa[0]}' is NOT width to {parser.Name}");
 
                     default:
-                        throw new ArgumentException($"Bad values is found to {parser.Name}");
+                        throw new ConfigException($"Bad values is found to {parser.Name}");
                 }
             });
 
@@ -262,7 +262,7 @@ static internal partial class Show
                     {
                         if (a2.ToUpper().Equals("WIDTH"))
                         {
-                            throw new ArgumentException($"""
+                            throw new ConfigException($"""
                                 Command line option could be
                                   --size-format 12
                                   --size-format comma,12
@@ -270,14 +270,14 @@ static internal partial class Show
                                   --size-format +short
                                 """);
                         }
-                        throw new ArgumentException($"'{a2}' is bad to {parser.Name}");
+                        throw new ConfigException($"'{a2}' is bad to {parser.Name}");
                     }
                 }
 
                 if (aa.Contains("short"))
                 {
                     if (aa.Length > 1)
-                        throw new ArgumentException($"Too many values to {parser.Name}");
+                        throw new ConfigException($"Too many values to {parser.Name}");
                     parser.SetImplementation((val) => Helper.ToKiloUnit(val));
                     return;
                 }
@@ -285,7 +285,7 @@ static internal partial class Show
                 if (aa.Contains("+short"))
                 {
                     if (aa.Length > 1)
-                        throw new ArgumentException($"Too many values to {parser.Name}");
+                        throw new ConfigException($"Too many values to {parser.Name}");
                     parser.SetImplementation((val) => Helper.ToExtraShortKiloUnit(val));
                     return;
                 }
@@ -302,13 +302,13 @@ static internal partial class Show
                         if (int.TryParse(aa[0], out int width))
                         {
                             if (width > 30)
-                                throw new ArgumentException(
+                                throw new ConfigException(
                                     $"'{aa[0]}' is too largth width to {parser.Name}");
                             var fmtThe = $"{{0,{width}}} ";
                             parser.SetImplementation((it) => string.Format(fmtThe, it));
                             return;
                         }
-                        throw new ArgumentException($"'{aa[0]}' is NOT width to {parser.Name}");
+                        throw new ConfigException($"'{aa[0]}' is NOT width to {parser.Name}");
                     }
                 }
                 else if (2 == aa.Length && aa[1] == "comma")
@@ -316,18 +316,18 @@ static internal partial class Show
                     if (int.TryParse(aa[0], out int width))
                     {
                         if (width > 30)
-                            throw new ArgumentException(
+                            throw new ConfigException(
                                 $"'{aa[0]}' is too largth width to {parser.Name}");
                         var fmtThe = $"{{0,{width}:N0}} ";
                         parser.SetImplementation((it) => string.Format(fmtThe, it));
                         return;
                     }
-                    throw new ArgumentException(
+                    throw new ConfigException(
                         $"'{aa[0]}' is NOT width to {parser.Name}");
                 }
                 else
                 {
-                    throw new ArgumentException($"Bad values is found to {parser.Name}");
+                    throw new ConfigException($"Bad values is found to {parser.Name}");
                 }
             });
 

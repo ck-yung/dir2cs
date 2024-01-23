@@ -51,7 +51,7 @@ static internal partial class Show
                         impPrintInfoTotal = InfoSum.DoNothing;
                         break;
                     default:
-                        throw new ArgumentException($"'{argThe}' is bad value to {parser.Name}");
+                        throw new ConfigException($"'{argThe}' is bad value to {parser.Name}");
                 }
             });
 }

@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+using System.ComponentModel;
 using static dir2.MyOptions;
 
 namespace dir2;
@@ -37,12 +39,12 @@ public partial class Helper
 
         if (rtn.Length == 0)
         {
-            throw new ArgumentException($"Missing value to '{opt.Name}'");
+            throw new ConfigException($"Missing value to '{opt.Name}'");
         }
 
         if (rtn.Length > 1)
         {
-            throw new ArgumentException($"Too many values ({rtn[0]};{rtn[1]}) to '{opt.Name}'");
+            throw new ConfigException($"Too many values ({rtn[0]};{rtn[1]}) to '{opt.Name}'");
         }
 
         if (rtn[0] == ExtraHelp)
@@ -62,12 +64,12 @@ public partial class Helper
 
         if (rtn.Length == 0)
         {
-            throw new ArgumentException($"Missing value to '{opt.Name}'");
+            throw new ConfigException($"Missing value to '{opt.Name}'");
         }
 
         if (rtn.Length > max)
         {
-            throw new ArgumentException($"Too many values to '{opt.Name}'");
+            throw new ConfigException($"Too many values to '{opt.Name}'");
         }
 
         if (ignoreExtraHelp) return rtn;
@@ -86,5 +88,26 @@ public class ShowSyntaxException: Exception
     internal ShowSyntaxException(IParse parser)
         : base($"Syntax: {parser.Name} {parser.Help}")
     {
+    }
+}
+
+internal class ConfigException: Exception
+{
+    public record Info(ArgType Type, string Source, Exception Error);
+
+    public ConfigException(string message) : base(message)
+    {
+    }
+
+    static readonly IList<Info> Errors = new List<Info>();
+
+    static public void Add(ArgType type, string source, Exception e)
+    {
+        Errors.Add(new Info(type, source, e));
+    }
+
+    static public IEnumerable<Info> GetErrors()
+    {
+        return Errors;
     }
 }

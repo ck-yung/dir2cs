@@ -18,7 +18,7 @@ static public class Sort
         Func<IEnumerable<InfoSum>, IEnumerable<InfoSum>>)
         unknownValues(string name, string bad1, string bad2)
     {
-        throw new ArgumentException($"Value pair ({bad1},{bad2}) is UNKNOWN to {name}.");
+        throw new ConfigException($"Value pair ({bad1},{bad2}) is UNKNOWN to {name}.");
     }
 
     static public readonly IParse Opt = new SimpleParser(name: "--sort",
@@ -69,7 +69,7 @@ static public class Sort
                         Sums = (seq) => seq.OrderBy((it) => it.EndTime);
                         break;
                     default:
-                        throw new ArgumentException($"Bad value '{aa[0]}' to {parser.Name}");
+                        throw new ConfigException($"Bad value '{aa[0]}' to {parser.Name}");
                 }
             }
             else if (aa.Length == 2)
@@ -208,7 +208,7 @@ static public class Sort
             }
             else
             {
-                throw new ArgumentException($"Too many values to {parser.Name}");
+                throw new ConfigException($"Too many values to {parser.Name}");
             }
         });
 
@@ -236,7 +236,7 @@ static public class Sort
                     ReverseSum = (seq) => seq.Reverse();
                     break;
                 default:
-                    throw new ArgumentException($"'{argThe}' is bad value to {parser.Name}");
+                    throw new ConfigException($"'{argThe}' is bad value to {parser.Name}");
             }
         });
 
@@ -253,7 +253,7 @@ static public class Sort
 
             if (0 == string.Compare("count", argThe, StringComparison.OrdinalIgnoreCase))
             {
-                throw new ArgumentException("""
+                throw new ConfigException("""
                     Total file count within option '--take' if '--sum' is given.
                     For example,
                        dir2 -so count --sum +dir --take 1
@@ -263,7 +263,7 @@ static public class Sort
 
             if (0 == string.Compare("size", argThe, StringComparison.OrdinalIgnoreCase))
             {
-                throw new ArgumentException("""
+                throw new ConfigException("""
                     Total file size within option '--take' if '--sum' is given.
                     For example,
                        dir2 --take 2Mb
@@ -319,7 +319,7 @@ static public class Sort
             }
             else
             {
-                throw new ArgumentException($"'{argThe}' is bad value to {parser.Name}");
+                throw new ConfigException($"'{argThe}' is bad value to {parser.Name}");
             }
         });
 }

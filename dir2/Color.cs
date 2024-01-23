@@ -28,23 +28,20 @@ static internal partial class Show
         {
             if (2 > countToChangeBackground)
             {
-                Console.Error.WriteLine(
-                    $"LineCountToChangeBackgroundColor {countToChangeBackground} is too small. The min is 2.");
-                throw new ShowSyntaxException(parser);
+                throw new ConfigException(
+                    $"Line counter {countToChangeBackground} (to {parser.Name}) MUST be greater 1.");
             }
             CountLineMax = countToChangeBackground;
-            System.Diagnostics.Debug.WriteLine($"dbg: Color.CountLineMax={CountLineMax}");
 
             if (Enum.TryParse(typeof(ConsoleColor), colorNamePerCount,
                 ignoreCase: true, out var result2))
             {
-                System.Diagnostics.Debug.WriteLine($"dbg: Color.NamePerCount {colorNamePerCount}");
                 ForegroundColorPerLineCount = (ConsoleColor)result2;
             }
             else
             {
-                Console.Error.WriteLine($"'{colorNamePerCount}' is NOT a color name");
-                throw new ShowSyntaxException(parser);
+                throw new ConfigException(
+                    $"'{colorNamePerCount}' (to {parser.Name}) is NOT color name.");
             }
 
             ForegroundColorSwitch = ForegroundColorPerLineCount;
@@ -59,13 +56,12 @@ static internal partial class Show
             if (Enum.TryParse(typeof(ConsoleColor), colorNameTotalLine,
                 ignoreCase: true, out var result3))
             {
-                System.Diagnostics.Debug.WriteLine($"dbg: Color.totalLine {colorNameTotalLine}");
                 ForegroundColorTotalLine = (ConsoleColor)result3;
             }
             else
             {
-                Console.Error.WriteLine($"'{colorNameTotalLine}' is NOT a color name");
-                throw new ShowSyntaxException(parser);
+                throw new ConfigException(
+                    $"Total line '{colorNameTotalLine}' (to {parser.Name}) is NOT color name.");
             }
 
             Reset = () =>
@@ -196,12 +192,14 @@ static internal partial class Show
                     {
                         Console.WriteLine($"\t{a2}");
                     }
+                    // TODO: Write Color-Help .MD URI
                     throw new ShowSyntaxException(parser);
                 }
 
                 if (aa.Length != 3)
                 {
-                    throw new ShowSyntaxException(parser);
+                    throw new ConfigException(
+                        $"Too many values are assigned to {parser.Name}.");
                 }
 
                 if (int.TryParse(aa[0], out var lineCountToChangeBackgroundColor))
@@ -211,8 +209,8 @@ static internal partial class Show
                 }
                 else
                 {
-                    Console.Error.WriteLine($"'{aa[0]}' is NOT a number.");
-                    throw new ShowSyntaxException(parser);
+                    throw new ConfigException(
+                        $"Line count '{aa[0]} to {parser.Name} MUSt be a number.");
                 }
             });
 }
