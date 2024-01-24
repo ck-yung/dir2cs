@@ -9,6 +9,14 @@ public class Program
     {
         try
         {
+            Console.CancelKeyPress += (_, e) =>
+            {
+                if (e.SpecialKey == ConsoleSpecialKey.ControlC
+                || e.SpecialKey == ConsoleSpecialKey.ControlBreak)
+                {
+                    Console.ResetColor();
+                }
+            };
             RunMain(args);
             foreach (var ae3 in ConfigException.GetErrors())
             {

@@ -91,7 +91,7 @@ static public partial class Helper
           {ExeName} -?
         """;
 
-    static public string ShortSyntax = $"""
+    static public readonly string ShortSyntax = $"""
         Syntax: dir2 -??
         Syntax: dir2 [OPTION ..] [DIR] [WILD ..]
         Frequently used options:
