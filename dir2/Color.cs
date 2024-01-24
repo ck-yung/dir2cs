@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static dir2.MyOptions;
+﻿using static dir2.MyOptions;
 
 namespace dir2;
 
@@ -12,28 +6,23 @@ static internal partial class Show
 {
     static internal class Color
     {
+        static internal bool IsConsoleOutputRedirected { get; private set; }
         static Color()
         {
             ForegroundColorDefault = Console.ForegroundColor;
             ForegroundColorSwitch = Console.ForegroundColor;
+            IsConsoleOutputRedirected = Console.IsOutputRedirected;
         }
 
         static internal string[] GetColorNames() =>
             Enum.GetNames<ConsoleColor>().ToArray();
 
-        static internal int Init(IParse parser,
-            int countToChangeBackground,
-            string colorNamePerCount,
-            string colorNameTotalLine)
+        static internal Func<int, (bool, int)> Init(IParse parser,
+            int lineCountToAlterColumnColor,
+            string colorToAlterColumnColor,
+            string colorTotalLine)
         {
-            if (2 > countToChangeBackground)
-            {
-                throw new ConfigException(
-                    $"Line counter {countToChangeBackground} (to {parser.Name}) MUST be greater 1.");
-            }
-            CountLineMax = countToChangeBackground;
-
-            if (Enum.TryParse(typeof(ConsoleColor), colorNamePerCount,
+            if (Enum.TryParse(typeof(ConsoleColor), colorToAlterColumnColor,
                 ignoreCase: true, out var result2))
             {
                 ForegroundColorPerLineCount = (ConsoleColor)result2;
@@ -41,7 +30,7 @@ static internal partial class Show
             else
             {
                 throw new ConfigException(
-                    $"'{colorNamePerCount}' (to {parser.Name}) is NOT color name.");
+                    $"'{colorToAlterColumnColor}' (to {parser.Name}) is NOT color name.");
             }
 
             ForegroundColorSwitch = ForegroundColorPerLineCount;
@@ -53,7 +42,7 @@ static internal partial class Show
                 return "";
             };
 
-            if (Enum.TryParse(typeof(ConsoleColor), colorNameTotalLine,
+            if (Enum.TryParse(typeof(ConsoleColor), colorTotalLine,
                 ignoreCase: true, out var result3))
             {
                 ForegroundColorTotalLine = (ConsoleColor)result3;
@@ -61,7 +50,7 @@ static internal partial class Show
             else
             {
                 throw new ConfigException(
-                    $"Total line '{colorNameTotalLine}' (to {parser.Name}) is NOT color name.");
+                    $"Total line '{colorTotalLine}' (to {parser.Name}) is NOT color name.");
             }
 
             Reset = () =>
@@ -76,12 +65,66 @@ static internal partial class Show
                 return 4;
             };
 
-            return CountLineMax;
+            if (2 > lineCountToAlterColumnColor)
+            {
+                throw new ConfigException(
+                    $"Line counter {lineCountToAlterColumnColor} (to {parser.Name}) MUST be greater 1.");
+            }
+
+            return (lineCount) =>
+            {
+                int newLineCount = lineCount + 1;
+                bool lineCountResetFlag = false;
+                if (newLineCount >= lineCountToAlterColumnColor)
+                {
+                    lineCountResetFlag = true;
+                    newLineCount = 0;
+                }
+                return (lineCountResetFlag, newLineCount);
+            };
         }
-        #region Foreground Color
 
-        static string DoNothing(string text) => text;
+        static internal Func<int, (bool, int)> Init(IParse parser,
+            string colorToAlterColumnColor)
+        {
+            if (Enum.TryParse(typeof(ConsoleColor), colorToAlterColumnColor,
+                ignoreCase: true, out var result2))
+            {
+                ForegroundColorPerLineCount = (ConsoleColor)result2;
+            }
+            else
+            {
+                throw new ConfigException(
+                    $"'{colorToAlterColumnColor}' (to {parser.Name}) is NOT color name.");
+            }
 
+            ForegroundColorSwitch = ForegroundColorPerLineCount;
+            SwitchFore = (it) => SwitchForeColorBack(it, switchBackuground: false);
+            ResetFore = () =>
+            {
+                Console.ForegroundColor = ForegroundColorDefault;
+                SwitchFore = (it) => SwitchForeColorBack(it, switchBackuground: false);
+                return "";
+            };
+
+            ForegroundColorTotalLine = ForegroundColorPerLineCount;
+
+            Reset = () =>
+            {
+                Console.ResetColor();
+                return 3;
+            };
+
+            TotalLine = () =>
+            {
+                Console.ForegroundColor = ForegroundColorTotalLine;
+                return 4;
+            };
+
+            return (_) => (false, 1); // lineCountResetFlag always is FALSE
+        }
+
+        #region Alter Column Foreground Color
         static string SwitchForeColorBack(string text, bool switchBackuground)
         {
             if (string.IsNullOrEmpty(text))
@@ -109,23 +152,26 @@ static internal partial class Show
             SwitchFore = (it) => SwitchForeColorBack(it, switchBackuground);
             return text;
         }
-        static internal Func<string,string> SwitchFore { get; private set; } = DoNothing;
-        static internal Func<string, string> TotallyResetFore { get; private set; } = DoNothing;
-        static internal Func<string> ResetFore { get; private set; } = () => string.Empty;
+        static internal Func<string, string> SwitchFore
+        { get; private set; } = Helper.itself;
+        static internal Func<string, string> TotallyResetFore
+        { get; private set; } = Helper.ReturnEmptyString;
+        static internal Func<string> ResetFore
+        { get; private set; } = Helper.GetEmptyString;
         #endregion
 
-        #region Background Color
-        static internal Func<bool, string> SwitchBackground { set; private get; }
+        #region Alter the Basic of Foreground Color
+        static internal Func<bool, string> ForegroundAlterBack { set; private get; }
             = (_) => SwitchBackgroundBack();
         static string SwitchBackgroundBack()
         {
             SwitchFore = (it) => SwitchForeColorBack(it, switchBackuground: false);
             return string.Empty;
         }
-        static string SwitchBackgroundTo()
+        static string ForegroundAlterTo()
         {
             SwitchFore = (it) => SwitchForeColorTo(it, switchBackuground: true);
-            SwitchBackground = (_) => SwitchBackgroundBack();
+            ForegroundAlterBack = (_) => SwitchBackgroundBack();
             return string.Empty;
         }
         #endregion
@@ -137,27 +183,28 @@ static internal partial class Show
             while (true) yield return ReturnZero;
         }
 
-        static internal IEnumerable<Func<int>> Background(int dbgMarker, int cntMax)
+        static internal IEnumerable<Func<int>> ForegroundColors(int dbgMarker,
+            Func<int, (bool, int)> incLineCount)
         {
-            var cntThis = 0;
+            bool isLineCountReset = false;
+            var lineCount = 0;
             while (true)
             {
-                cntThis += 1;
-                if (cntThis >= cntMax) cntThis = 0;
-                if (cntThis == 0)
+                (isLineCountReset, lineCount) = incLineCount(lineCount);
+                if (isLineCountReset)
                 {
-                    SwitchBackgroundTo();
+                    ForegroundAlterTo();
                     TotallyResetFore = (_) =>
                     {
-                        SwitchBackground(false);
-                        TotallyResetFore = DoNothing;
+                        ForegroundAlterBack(false);
+                        TotallyResetFore = Helper.itself;
                         return string.Empty;
                     };
                     yield return () => 1;
                 }
                 else
                 {
-                    SwitchBackground(false);
+                    ForegroundAlterBack(false);
                     ResetFore();
                     yield return () => 2;
                 }
@@ -166,7 +213,6 @@ static internal partial class Show
 
         static internal Func<int> Reset { get; private set; } = ReturnZero;
         static internal Func<int> TotalLine { get; private set; } = ReturnZero;
-        static int CountLineMax { get; set; } = 0;
         static ConsoleColor ForegroundColorDefault { get; set; }
         static ConsoleColor ForegroundColorSwitch { get; set; }
         static ConsoleColor ForegroundColorPerLineCount { get; set; }
@@ -175,9 +221,11 @@ static internal partial class Show
 
     static internal readonly IInovke<int, IEnumerable<Func<int>>> ColorOpt =
         new ParseInvoker<int, IEnumerable<Func<int>>>("--color",
-            help: "INTEGER,COLOR,COLOR-OF-TOTAL-LINE  (Check dir2 --color +?)",
+            help: "COLOR | INTEGER,COLOR,COLOR-OF-TOTAL-LINE (Check dir2 --color +?)",
             init: (_) => Color.GetZeroes(), resolve: (parser, args) =>
             {
+                if (Color.IsConsoleOutputRedirected) return;
+
                 var aa = args
                 .Select((it) => it.Split(';', ','))
                 .SelectMany((it) => it)
@@ -196,21 +244,27 @@ static internal partial class Show
                     throw new ShowSyntaxException(parser);
                 }
 
-                if (aa.Length != 3)
+                Func<int, (bool, int)> incFunc;
+                switch (aa.Length)
                 {
-                    throw new ConfigException(
-                        $"Too many values are assigned to {parser.Name}.");
-                }
-
-                if (int.TryParse(aa[0], out var lineCountToChangeBackgroundColor))
-                {
-                    var cntMax = Color.Init(parser, lineCountToChangeBackgroundColor, aa[1], aa[2]);
-                    parser.SetImplementation((arg) => Color.Background(arg, cntMax));
-                }
-                else
-                {
-                    throw new ConfigException(
-                        $"Line count '{aa[0]} to {parser.Name} MUSt be a number.");
+                    case 1:
+                        incFunc = Color.Init(parser, aa[0]);
+                        parser.SetImplementation((arg) => Color.ForegroundColors(arg, incFunc));
+                        break;
+                    case 3:
+                        if (int.TryParse(aa[0], out var lineCountToChangeBackgroundColor))
+                        {
+                            incFunc = Color.Init(parser, lineCountToChangeBackgroundColor, aa[1], aa[2]);
+                            parser.SetImplementation((arg) => Color.ForegroundColors(arg, incFunc));
+                        }
+                        else
+                        {
+                            throw new ConfigException(
+                                $"Line count to {parser.Name} SHOULD be a number but '{aa[0]}' is found.");
+                        }
+                        break;
+                    default:
+                        throw new ShowSyntaxException(parser);
                 }
             });
 }

@@ -29,6 +29,7 @@ static public partial class Helper
     static public void DoNothing<T1, T2>(T1 _1, T2 _2) { }
     static public void DoNothing<T1, T2, T3>(T1 _1, T2 _2, T3 _3) { }
 
+    static public string GetEmptyString() => string.Empty;
     static public string ReturnEmptyString(string _) => string.Empty;
 
     static public T itself<T>(T arg) => arg;
