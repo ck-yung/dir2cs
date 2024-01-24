@@ -245,6 +245,7 @@ static public partial class MyOptions
         TotalOpt,
         (IParse) Show.EndTime,
         (IParse) Show.ColorOpt,
+        (IParse) Show.PauseOpt,
     };
 
     static public readonly IParse[] ConfigParsers = new IParse[]
@@ -262,6 +263,7 @@ static public partial class MyOptions
         Sort.ReverseOpt,
         (IParse) Show.EndTime,
         (IParse) Show.ColorOpt,
+        (IParse) Show.PauseOpt,
     };
 
     static public readonly IParse[] ExclFileDirParsers = Parsers
@@ -278,6 +280,7 @@ static public partial class MyOptions
             ["-W"] = "--not-within",
             ["-x"] = "--excl",
             ["-X"] = "--excl-dir",
+            ["-p"] = "--pause",
         }.ToImmutableDictionary();
 
     static internal ImmutableDictionary<string, (string, string[])>
@@ -291,6 +294,7 @@ static public partial class MyOptions
             ["-s"] = ("Scan all sub dir", new[] { "--sub", "all" }),
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
+            ["-P"] = ("", new[] { "--pause", "off" }),
             ["-b"] = ("Brief path name", new[] {
                 "--total", "off", "--hide", "date,size,count,mode,owner,link" }),
         }.ToImmutableDictionary();

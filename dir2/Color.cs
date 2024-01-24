@@ -267,4 +267,55 @@ static internal partial class Show
                         throw new ShowSyntaxException(parser);
                 }
             });
+
+    static internal readonly IInovke<bool, bool> PauseOpt =
+        new ParseInvoker<bool, bool>("--pause",
+            help: "INTEGER | off", init: Helper.itself, resolve: (parser, args) =>
+            {
+                if (Color.IsConsoleOutputRedirected) return;
+                var argThe = Helper.GetUnique(args, parser);
+                if (argThe == "off")
+                {
+                    parser.SetImplementation((_) => false);
+                    return;
+                }
+
+                if (int.TryParse(argThe, out var lineCountToPause))
+                {
+                    if (lineCountToPause < 6)
+                    {
+                        throw new ConfigException(
+                            $"Line count to {parser.Name} SHOULD be greater 5 but {lineCountToPause} is found.");
+                    }
+                    int lineCount = 0;
+                    int cursorRow = 0;
+                    parser.SetImplementation((_) =>
+                    {
+                        lineCount += 1;
+                        if (lineCount >= lineCountToPause)
+                        {
+                            lineCount = 0;
+                            (var _, cursorRow) = Console.GetCursorPosition();
+                            Console.Write("Press any key to continue (q to quick) ");
+                            var inpChar = Console.ReadKey();
+                            if (inpChar.KeyChar == 'q' || inpChar.KeyChar == 'Q')
+                            {
+                                Console.ResetColor();
+                                Console.SetCursorPosition(left: 0, top: cursorRow);
+                                // sole.Write("Press any key to continue (q to quick) Q");
+                                Console.Write("                                        ");
+                                Console.SetCursorPosition(left: 0, top: cursorRow);
+                                Environment.Exit(0);
+                            }
+                            Console.SetCursorPosition(left: 0, top: cursorRow);
+                        }
+                        return false;
+                    });
+                }
+                else
+                {
+                    throw new ConfigException(
+                        $"Line count to {parser.Name} SHOULD be a number or 'off' but '{argThe}' is found.");
+                }
+            });
 }

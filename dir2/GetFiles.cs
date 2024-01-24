@@ -15,6 +15,7 @@ static public partial class Helper
     { get; private set; } = (msg) =>
     {
         Console.WriteLine(msg);
+        Show.PauseOpt.Invoke(false);
         return msg;
     };
 
@@ -23,12 +24,14 @@ static public partial class Helper
         if (false == string.IsNullOrEmpty(msg))
         {
             Show.Color.TotalLine();
+            Show.PauseOpt.Invoke(false);
             Console.WriteLine(msg);
         }
 
         if (isExtraNewLine)
         {
             Console.WriteLine();
+            Show.PauseOpt.Invoke(false);
         }
 
         Show.Color.Reset();
