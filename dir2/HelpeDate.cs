@@ -240,22 +240,19 @@ static public partial class Helper
         const string keyJust = "just";
         const string keyToday = "today";
         const string keyTodayHours = "todayhours";
-        const string keyToday00 = "today00~01";
-        const string keyToday06 = "today01~06";
+        const string keyToday06 = "today00~06";
         const string keyToday12 = "today06~12";
         const string keyToday18 = "today12~18";
         const string keyToday24 = "today18~24";
         const string keyYsday = "ysday";
         const string keyYsdayHours = "ysdayhours";
-        const string keyYsday00 = "ysday00~01";
-        const string keyYsday06 = "ysday01~06";
+        const string keyYsday06 = "ysday00~06";
         const string keyYsday12 = "ysday06~12";
         const string keyYsday18 = "ysday12~18";
         const string keyYsday24 = "ysday18~24";
         const string keyWkdayHours = "wkdayhours";
         const string keyWkday = "wkday";
-        const string keyWkday00 = "wkday00~01";
-        const string keyWkday06 = "wkday01~06";
+        const string keyWkday06 = "wkday00~06";
         const string keyWkday12 = "wkday06~12";
         const string keyWkday18 = "wkday12~18";
         const string keyWkday24 = "wkday18~24";
@@ -314,21 +311,18 @@ static public partial class Helper
             [keyElse] = new FormatFunc(true, DefaultElseFormat),
 
             [keyToday] = new FormatFunc(true, DefaultTodayFormat),
-            [keyToday00] = new FormatFunc(true, DefaultTodayFormat),
             [keyToday06] = new FormatFunc(true, DefaultTodayFormat),
             [keyToday12] = new FormatFunc(true, DefaultTodayFormat),
             [keyToday18] = new FormatFunc(true, DefaultTodayFormat),
             [keyToday24] = new FormatFunc(true, DefaultTodayFormat),
 
             [keyYsday] = new FormatFunc(true, DefaultYsdayFormat),
-            [keyYsday00] = new FormatFunc(true, DefaultYsdayFormat),
             [keyYsday06] = new FormatFunc(true, DefaultYsdayFormat),
             [keyYsday12] = new FormatFunc(true, DefaultYsdayFormat),
             [keyYsday18] = new FormatFunc(true, DefaultYsdayFormat),
             [keyYsday24] = new FormatFunc(true, DefaultYsdayFormat),
 
             [keyWkday] = new FormatFunc(true, DefaultWkdayFormat),
-            [keyWkday00] = new FormatFunc(true, DefaultWkdayFormat),
             [keyWkday06] = new FormatFunc(true, DefaultWkdayFormat),
             [keyWkday12] = new FormatFunc(true, DefaultWkdayFormat),
             [keyWkday18] = new FormatFunc(true, DefaultWkdayFormat),
@@ -438,19 +432,16 @@ static public partial class Helper
         #region format functions of default value and config value
         var fnJust = formatMap[keyJust].Func;
         var fnToday = formatMap[keyToday].Func;
-        var fnToday00 = formatMap[keyToday00].Func;
         var fnToday06 = formatMap[keyToday06].Func;
         var fnToday12 = formatMap[keyToday12].Func;
         var fnToday18 = formatMap[keyToday18].Func;
         var fnToday24 = formatMap[keyToday24].Func;
         var fnYsday = formatMap[keyYsday].Func;
-        var fnYsday00 = formatMap[keyYsday00].Func;
         var fnYsday06 = formatMap[keyYsday06].Func;
         var fnYsday12 = formatMap[keyYsday12].Func;
         var fnYsday18 = formatMap[keyYsday18].Func;
         var fnYsday24 = formatMap[keyYsday24].Func;
         var fnWkday = formatMap[keyWkday].Func;
-        var fnWkday00 = formatMap[keyWkday00].Func;
         var fnWkday06 = formatMap[keyWkday06].Func;
         var fnWkday12 = formatMap[keyWkday12].Func;
         var fnWkday18 = formatMap[keyWkday18].Func;
@@ -465,7 +456,6 @@ static public partial class Helper
         {
             fnToday = (arg) =>
             {
-                if (arg < today00) return fnToday00(arg);
                 if (arg < today06) return fnToday06(arg);
                 if (arg < today12) return fnToday12(arg);
                 if (arg < today18) return fnToday18(arg);
@@ -477,7 +467,6 @@ static public partial class Helper
         {
             fnYsday = (arg) =>
             {
-                if (arg < yesterday00) return fnYsday00(arg);
                 if (arg < yesterday06) return fnYsday06(arg);
                 if (arg < yesterday12) return fnYsday12(arg);
                 if (arg < yesterday18) return fnYsday18(arg);
@@ -489,7 +478,6 @@ static public partial class Helper
         {
             fnWkday = (arg) =>
             {
-                if (arg.Hour <= 1) return fnWkday00(arg);
                 if (arg.Hour <= 6) return fnWkday06(arg);
                 if (arg.Hour <= 12) return fnWkday12(arg);
                 if (arg.Hour <= 18) return fnWkday18(arg);

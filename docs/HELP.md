@@ -40,7 +40,11 @@
 
 * [About dir link](https://github.com/ck-yung/dir2cs/blob/main/docs/info-dir-file.md)
  
-* [顯示中文日期](https://github.com/ck-yung/dir2cs/blob/main/docs/date-in-chinese.md)
+* [Display Date in Short Form](date-lang-code.md)
+
+* [顯示中文日期](date-lang-code.md#細緻時段)
+
+* [日付を日本語で表示](https://github.com/ck-yung/dir2cs/blob/main/docs/date-lang-code.md)
 
 * [FAQ: Why closing marks are required?](https://github.com/ck-yung/dir2cs/blob/main/docs/FAQ.md)
 

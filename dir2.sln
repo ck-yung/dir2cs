@@ -7,8 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dir2", "dir2\dir2.csproj", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A9B2CD0D-DD34-4EFD-8332-E7E3FDC22A13}"
 	ProjectSection(SolutionItems) = preProject
-		docs\date-in-chinese.md = docs\date-in-chinese.md
 		docs\date-short-cfg.md = docs\date-short-cfg.md
+		docs\date-lang-code.md = docs\date-lang-code.md
 		docs\FAQ.md = docs\FAQ.md
 		docs\HELP.md = docs\HELP.md
 		docs\info-config-file.md = docs\info-config-file.md

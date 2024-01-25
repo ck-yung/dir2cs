@@ -1,10 +1,26 @@
 # Dir2
-**v2.1.1.1**
+**v2.1.2.0**
 
 ## Syntax:
 ```
 dir2 [DIR/WILD ..] [OPT ..]
 ```
+
+### Features
+
+* Version 2.1.2 will be released on 2024 February.
+
+* Performs MSDOS DIR and UNIX LS command.
+
+* Group by: File-Ext, or, Group by Dir
+
+* Filter on: Date, Size, Symbolic-Link
+
+* Column Selection: File Attribute, File Owner, File Size, Last Written Date, Creation Date, Date of Target Link, Size of Target Link
+
+* Custom Display Format: Size and Date-Time
+
+* Color: Column, Total Line
 
 ### Example:
 ```
@@ -12,7 +28,7 @@ dir2 ~/Projects/dir2cs --sub all --excl-dir bin,obj --excl "*.user" --within 3da
 ```
 or
 ```
-dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb
+dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb --color green
 ```
 
 ### On-line help
@@ -67,4 +83,4 @@ Yung, Chun Kau
 
 <yung.chun.kau@gmail.com>
 
-2024 Jan
+2024 Feb
