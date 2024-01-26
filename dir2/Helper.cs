@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
@@ -118,27 +117,35 @@ static public partial class Helper
         https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md
         """;
 
+    public record OptionHelp(string Name, string Help, string Shortcut);
+
+    static public IEnumerable<OptionHelp> GetOptionHelps() =>
+        from parser in MyOptions.Parsers
+        join shortcut in MyOptions.ShortcutOptions
+        on parser.Name equals shortcut.Value into gj
+        from found in gj.DefaultIfEmpty()
+        select new OptionHelp(
+            parser.Name,
+            parser.Help,
+            Shortcut: string.IsNullOrEmpty(found.Key) ? "  " : found.Key);
+
     static public string GetSyntax()
     {
         var rtn = new StringBuilder($"""
         Syntax: {ExeName} --version
         Syntax: {ExeName} [OPTION ..] [DIR] [WILD ..]
+        HELP:
+          --dir2 -?
+          --dir2 -? cfg
+          --dir2 -? -
+          --dir2 -? +
         OPTION:
         """);
         rtn.AppendLine();
 
         rtn.AppendLine($" {Program.CfgOffOpt,16}     [CFG INFO: {ExeName} -? cfg]");
 
-        foreach (var optThe in
-        from parser in MyOptions.Parsers
-        join shortcut in MyOptions.ShortcutOptions
-        on parser.Name equals shortcut.Value into gj
-        from found in gj.DefaultIfEmpty()
-        select new
-        {
-            parser.Name, parser.Help,
-            Shortcut = string.IsNullOrEmpty(found.Key) ? "  " : found.Key
-        })
+        foreach (var optThe in GetOptionHelps())
         {
             rtn.AppendLine($" {optThe.Name,16} {optThe.Shortcut}  {optThe.Help}");
         }

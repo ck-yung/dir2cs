@@ -336,7 +336,7 @@ static internal partial class Show
     /// Invoke(bool isLeadingSpace)
     /// </summary>
     static public readonly IInovke<bool, string> EndTime =
-        new ParseInvoker<bool, string>("--end-time", help: "FORMAT",
+        new ParseInvoker<bool, string>("--end-time", help: "DATE-FORMAT",
             init: (_) => "", resolve: (parser, args) =>
             {
                 var argThe = Helper.GetUnique(args, parser);

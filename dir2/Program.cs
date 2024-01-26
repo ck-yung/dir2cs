@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using static dir2.MyOptions;
 using static dir2.Helper;
+using System.Text;
 
 namespace dir2;
 public class Program
@@ -115,19 +116,56 @@ public class Program
             return false;
         }
 
-        if (mainArgs.Contains("--help") ||
-            mainArgs.Contains("-h") ||
-            mainArgs.Contains("-?"))
+        var ndxHelp = Array.FindIndex(mainArgs,
+            (it) => it == "-?" || it == "-h" || it == "--help");
+        if (-1 < ndxHelp)
         {
-            if (mainArgs.Contains("cfg") ||
-                mainArgs.Contains("config"))
+            if (ndxHelp+1 < mainArgs.Length)
             {
-                Write(Config.GetHelp());
-            }
-            else
-            {
-                Write(ShortSyntax);
-            }
+                switch(mainArgs[ndxHelp+1])
+                {
+                    case "cfg":
+                        Write(Config.GetHelp());
+                        return false;
+                    case "config":
+                        Write(Config.GetHelp());
+                        return false;
+
+                    case "-":
+                        WriteLine("Shortcut:");
+                        foreach (var optThe in GetOptionHelps()
+                            .Where((it) => false == string.IsNullOrEmpty(it.Shortcut.Trim())))
+                        {
+                            WriteLine($" {optThe.Name,16} {optThe.Shortcut}  {optThe.Help}");
+                        }
+
+                        foreach (var kvThe in MyOptions.ShortcutComplexOptions
+                            .OrderBy((it) => it.Value.Item1)
+                            .OrderBy((it) => it.Key))
+                        {
+                            // te( ".1234567890123456");
+                            Write( "                 ");
+                            Write($" {kvThe.Key}");
+                            var text2The = string.Join(" ", kvThe.Value.Item2);
+                            Write($"  => {text2The,-12}");
+                            WriteLine("");
+                        }
+                        return false;
+
+                    case "+":
+                        WriteLine("Quick help +? can be the following options.");
+                        foreach (var optThe in GetOptionHelps()
+                            .Where((it) => false == string.IsNullOrEmpty(it.Help)))
+                        {
+                            WriteLine($" {optThe.Name,16} {optThe.Shortcut}  {optThe.Help}");
+                        }
+                        return false;
+
+                    default:
+                        break;
+                }
+           }
+            Write(ShortSyntax);
             return false;
         }
 

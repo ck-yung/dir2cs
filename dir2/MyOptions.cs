@@ -294,7 +294,6 @@ static public partial class MyOptions
             ["-f"] = ("File only", new[] { "--dir", "off" }),
             ["-d"] = ("Dir only", new[] { "--dir", "only" }),
             ["-p"] = ("", new[] { "--pause", "on" }),
-            ["-P"] = ("", new[] { "--pause", "off" }),
             ["-b"] = ("Brief path name", new[] {
                 "--total", "off", "--hide", "date,size,count,mode,owner,link" }),
         }.ToImmutableDictionary();
