@@ -33,6 +33,7 @@ public partial class Helper
     {
         var rtn = args
             .Where((it) => it.Length > 0)
+            .Select((it) => it.ToLower())
             .Distinct()
             .Take(2)
             .ToArray();

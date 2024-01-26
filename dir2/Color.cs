@@ -41,11 +41,11 @@ static internal partial class Show
             }
 
             ForegroundColorSwitch = ForegroundColorPerLineCount;
-            SwitchFore = (it) => SwitchForeColorBack(it, switchBackuground: false);
+            SwitchFore = (it) => SwitchForeColorBack(it);
             ResetFore = () =>
             {
                 Console.ForegroundColor = ForegroundColorDefault;
-                SwitchFore = (it) => SwitchForeColorBack(it, switchBackuground: false);
+                SwitchFore = (it) => SwitchForeColorBack(it);
                 return "";
             };
 
@@ -106,11 +106,11 @@ static internal partial class Show
             }
 
             ForegroundColorSwitch = ForegroundColorPerLineCount;
-            SwitchFore = (it) => SwitchForeColorBack(it, switchBackuground: false);
+            SwitchFore = (it) => SwitchForeColorBack(it);
             ResetFore = () =>
             {
                 Console.ForegroundColor = ForegroundColorDefault;
-                SwitchFore = (it) => SwitchForeColorBack(it, switchBackuground: false);
+                SwitchFore = (it) => SwitchForeColorBack(it);
                 return "";
             };
 
@@ -132,13 +132,13 @@ static internal partial class Show
         }
 
         #region Alter Column Foreground Color
-        static string SwitchForeColorBack(string text, bool switchBackuground)
+        static string SwitchForeColorBack(string text, bool isTotalLine = false)
         {
             if (string.IsNullOrEmpty(text))
             {
                 return text;
             }
-            if (switchBackuground)
+            if (isTotalLine)
             {
                 Console.ForegroundColor = ForegroundColorTotalLine;
             }
@@ -146,17 +146,17 @@ static internal partial class Show
             {
                 Console.ForegroundColor = ForegroundColorDefault;
             }
-            SwitchFore = (it) => SwitchForeColorTo(it, switchBackuground);
+            SwitchFore = (it) => SwitchForeColorTo(it, isTotalLine);
             return text;
         }
-        static string SwitchForeColorTo(string text, bool switchBackuground)
+        static string SwitchForeColorTo(string text, bool isTotalLine)
         {
             if (string.IsNullOrEmpty(text))
             {
                 return text;
             }
             Console.ForegroundColor = ForegroundColorSwitch;
-            SwitchFore = (it) => SwitchForeColorBack(it, switchBackuground);
+            SwitchFore = (it) => SwitchForeColorBack(it, isTotalLine);
             return text;
         }
         static internal Func<string, string> SwitchFore
@@ -172,12 +172,12 @@ static internal partial class Show
             = (_) => SwitchBackgroundBack();
         static string SwitchBackgroundBack()
         {
-            SwitchFore = (it) => SwitchForeColorBack(it, switchBackuground: false);
+            SwitchFore = (it) => SwitchForeColorBack(it);
             return string.Empty;
         }
         static string ForegroundAlterTo()
         {
-            SwitchFore = (it) => SwitchForeColorTo(it, switchBackuground: true);
+            SwitchFore = (it) => SwitchForeColorTo(it, isTotalLine: true);
             ForegroundAlterBack = (_) => SwitchBackgroundBack();
             return string.Empty;
         }

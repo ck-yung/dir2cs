@@ -4,20 +4,18 @@ namespace dir2;
 
 static public partial class Helper
 {
-    static public Func<string, string> Write
-    { get; private set; } = (msg) =>
+    static public string Write(string msg)
     {
         Console.Write(msg);
         return msg;
-    };
+    }
 
-    static public Func<string, string> WriteLine
-    { get; private set; } = (msg) =>
+    static public string WriteLine(string msg)
     {
         Console.WriteLine(msg);
         Show.PauseOpt.Invoke(false);
         return msg;
-    };
+    }
 
     static public void WriteTotalLine(string msg, bool isExtraNewLine = false)
     {
@@ -35,14 +33,6 @@ static public partial class Helper
         }
 
         Show.Color.Reset();
-    }
-
-    static public void Init(
-        Func<string, string> write,
-        Func<string, string> writeLine)
-    {
-        Write = write;
-        WriteLine = writeLine;
     }
 
     static public partial class Io
@@ -144,16 +134,16 @@ static public partial class Helper
             {
                 var currDir = enumDir.Current;
                 if (currDir.IsFake) break;
-                Console.Write(GetNextColor());
-                Console.WriteLine($"{prefix}+- {prevDir.Name}");
+                var a2 = GetNextColor();
+                Helper.WriteLine(Show.Color.SwitchFore($"{prefix}+- {prevDir.Name}"));
                 PrintSubTree($"{prefix}|  ", prevDir);
                 prevDir = currDir;
             }
 
             if (prevDir.IsNotFake)
             {
-                Console.Write(GetNextColor());
-                Console.WriteLine($"{prefix}\\- {prevDir.Name}");
+                var a3 = GetNextColor();
+                Helper.WriteLine(Show.Color.SwitchFore($"{prefix}\\- {prevDir.Name}"));
                 PrintSubTree($"{prefix}   ", prevDir);
             }
         }
@@ -165,7 +155,7 @@ static public partial class Helper
         }
         else
         {
-            Console.WriteLine(path);
+            Helper.WriteLine(path);
             PrintSubTree("", infoThe);
         }
         return InfoSum.Fake;

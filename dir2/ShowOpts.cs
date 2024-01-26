@@ -7,8 +7,7 @@ namespace dir2;
 
 static internal partial class Show
 {
-    static readonly Func<string, string> blank = (arg) => string.Empty;
-    static string Blank<T>(T _) { return ""; }
+    static private string Blank<T>(T _) { return ""; }
 
     static public Func<string, string> GetDirName
     { get; private set; } = (dirname) => dirname.TrimEnd(Path.DirectorySeparatorChar);
@@ -43,12 +42,12 @@ static internal partial class Show
                     case Helper.ExtraHelp:
                         throw new ShowSyntaxException(parser);
                     case "date":
-                        Date = blank;
-                        Last = blank;
+                        Date = Blank;
+                        Last = Blank;
                         break;
                     case "size":
-                        Size = blank;
-                        Helper.DirPrefixText = blank;
+                        Size = Blank;
+                        Helper.DirPrefixText = Blank;
                         GetDirName = (dirname) =>
                         {
                             if (dirname.EndsWith(Path.DirectorySeparatorChar))
@@ -57,10 +56,10 @@ static internal partial class Show
                         };
                         break;
                     case "count":
-                        Count = blank;
+                        Count = Blank;
                         break;
                     case "last":
-                        Last = blank;
+                        Last = Blank;
                         break;
                     case "link":
                         Link = Blank;
@@ -112,7 +111,7 @@ static internal partial class Show
                         };
                         break;
                     case "mode":
-                        Helper.DirPrefixText = blank;
+                        Helper.DirPrefixText = Blank;
                         Attributes = (arg) => arg.AttributeText();
                         break;
                     case "owner":
