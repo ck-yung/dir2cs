@@ -194,6 +194,7 @@ static public partial class Helper
         })
         .Count();
         PrintDirCount(cntDir);
+        Show.Color.Reset();
         return InfoSum.Fake;
     };
 

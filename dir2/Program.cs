@@ -405,6 +405,7 @@ public class Program
         path = Io.GetFullPath(path);
         InfoSum sumThe = SubDirOpt.Invoke(path);
         PrintInfoTotal(path, wilds, sumThe);
+        Show.Color.Reset();
         return true;
     }
 

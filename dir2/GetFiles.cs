@@ -31,8 +31,6 @@ static public partial class Helper
             Console.WriteLine();
             Show.PauseOpt.Invoke(false);
         }
-
-        Show.Color.Reset();
     }
 
     static public partial class Io

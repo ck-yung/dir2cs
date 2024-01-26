@@ -27,6 +27,7 @@ static public partial class MyOptions
             })
             .Count();
             PrintDirCount(cntDir);
+            Show.Color.Reset();
             return InfoSum.Fake;
         }
         return Helper.GetAllFiles(Helper.ToInfoDir(path))

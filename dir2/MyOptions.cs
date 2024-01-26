@@ -115,7 +115,6 @@ static public partial class MyOptions
         switch (count, skipLessTwo)
         {
             case (<2, true):
-                Show.Color.Reset();
                 return;
             case (1, _):
                 Helper.WriteTotalLine("One dir is found.", addNewLine);
