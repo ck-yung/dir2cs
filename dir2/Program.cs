@@ -101,7 +101,13 @@ public class Program
 
         if (mainArgs.Contains("--HELP") || mainArgs.Contains("-??"))
         {
-            Write(GetSyntax());
+            ((IParse) Show.PauseOpt).Parse(new List<(bool, ArgType, string)>
+            {(true, ArgType.CommandLine, "on")});
+            foreach (var line in GetSyntax().Split(Environment.NewLine))
+            {
+                Show.PauseOpt.Invoke(false);
+                Console.WriteLine(line);
+            }
             return false;
         }
 
