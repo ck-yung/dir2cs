@@ -97,9 +97,9 @@ static public partial class Helper
         Frequently used options:
             --size-format     short | +short | WIDTH
                               e.g --size-format +short
-                   --excl -x  EXCL-WILD[;EXCL-WILD ..]
+                   --excl -x  EXCL-WILD[,EXCL-WILD ..]
                               e.g. -x *.tmp;*.temp
-               --excl-dir -X  EXCL-WILD[;EXCL-WILD ..]
+               --excl-dir -X  EXCL-WILD[,EXCL-WILD ..]
                    --sort -o  off | name | size | date | ext | count | last
                               e.g. -o size
                     --sum     ext | dir | +dir | year

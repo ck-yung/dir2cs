@@ -285,10 +285,10 @@ static internal partial class Show
 
     static void ConsoleReadKey()
     {
-        Console.Write("Press any key (q to quick) ");
+        Console.Write("Press any key (q to quit) ");
         var inp = Console.ReadKey();
         Console.Write("\r");
-        // sole.Write("Press any key (q to quick) AB");
+        // sole.Write("Press any key (q to quit) AB");
         Console.Write("                             ");
         Console.Write("\r");
         if (inp.KeyChar == 'q' || inp.KeyChar == 'Q')

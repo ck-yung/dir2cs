@@ -433,7 +433,7 @@ static public partial class Helper
             init: (it) => false == it.IsHidden(), resolve: (parser, args) =>
             {
                 var argThe = Helper.GetUnique(args, parser);
-                switch (argThe)
+                switch (argThe.ToLower())
                 {
                     case "excl":
                         parser.SetImplementation((it) => false == it.IsHidden());
@@ -454,7 +454,7 @@ static public partial class Helper
             init: Always<InfoFile>.True, resolve: (parser, args) =>
             {
                 var argThe = Helper.GetUnique(args, parser);
-                switch (argThe)
+                switch (argThe.ToLower())
                 {
                     case "incl":
                         parser.SetImplementation(Always<InfoFile>.True);

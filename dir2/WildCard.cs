@@ -100,12 +100,12 @@ static public partial class Wild
     }
 
     static internal readonly IInovke<string, bool> ExclFileNameOpt =
-        new ExclFeauture<string, bool>("--excl", help: "EXCL-WILD[;EXCL-WILD ..]",
+        new ExclFeauture<string, bool>("--excl", help: "EXCL-WILD[,EXCL-WILD ..][,:link]",
             init: Helper.Never,
             resolve: (parser, args) =>
             {
                 var aa = Helper.CommonSplit(args)
-                .GroupBy((it) => it.Equals(":link"))
+                .GroupBy((it) => it.ToLower().Equals(":link"))
                 .ToImmutableDictionary((grp) => grp.Key, (grp) => grp);
                 if (aa?.ContainsKey(true) ?? false)
                 {
@@ -127,12 +127,12 @@ static public partial class Wild
             });
 
     static internal readonly IInovke<string, bool> ExclDirNameOpt =
-        new ExclFeauture<string, bool>("--excl-dir", help: "EXCL-WILD[;EXCL-WILD ..]",
+        new ExclFeauture<string, bool>("--excl-dir", help: "EXCL-WILD[,EXCL-WILD ..][,:link]",
             init: Helper.Never,
             resolve: (parser, args) =>
             {
                 var aa = Helper.CommonSplit(args)
-                .GroupBy((it) => it.Equals(":link"))
+                .GroupBy((it) => it.ToLower().Equals(":link"))
                 .ToImmutableDictionary((grp) => grp.Key, (grp) => grp);
                 if (aa?.ContainsKey(true) ?? false)
                 {
@@ -479,7 +479,7 @@ static public partial class Wild
             init: Always<InfoFile>.True, resolve: (parser, args) =>
             {
                 var argThe = Helper.GetUnique(args, parser);
-                switch (argThe)
+                switch (argThe.ToLower())
                 {
                     case "incl":
                         parser.SetImplementation(Always<InfoFile>.True);

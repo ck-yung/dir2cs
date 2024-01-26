@@ -51,7 +51,7 @@ static public partial class MyOptions
         resolve: (parser, args) =>
         {
             var argThe = Helper.GetUnique(args, parser);
-            switch (argThe)
+            switch (argThe.ToLower())
             {
                 case "both":
                     PrintDir = EnumPrint.FileAndDir;
@@ -94,7 +94,7 @@ static public partial class MyOptions
             resolve: (parser, args) =>
             {
                 var argThe = Helper.GetUnique(args, parser);
-                switch (argThe)
+                switch (argThe.ToLower())
                 {
                     case "off":
                         parser.SetImplementation((path) => PrintDirOpt.Invoke(path));
@@ -133,7 +133,7 @@ static public partial class MyOptions
         help: "off | only | always", resolve: (parser, args) =>
         {
             var argThe = Helper.GetUnique(args, parser);
-            switch (argThe)
+            switch (argThe.ToLower())
             {
                 case "off":
                     Helper.impPrintInfoTotal = InfoSum.DoNothing;

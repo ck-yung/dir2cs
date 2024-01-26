@@ -338,7 +338,7 @@ static internal partial class Show
             init: (_) => "", resolve: (parser, args) =>
             {
                 var argThe = Helper.GetUnique(args, parser);
-                if (string.IsNullOrEmpty(argThe)) return;
+                // Upper case is kept in the date format string
                 argThe = System.Web.HttpUtility.UrlDecode(argThe);
 
                 Helper.impPrintInfoTotal = (path, wilds, arg)

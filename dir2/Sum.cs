@@ -61,7 +61,7 @@ static public class Sum
                 seed: new InfoSum(isBase:true),
                 func: (acc, it) => acc.AddWith(it));
 
-            switch (argThe)
+            switch (argThe.ToLower())
             {
                 case "dir":
                     Helper.PrintDir = (_) => InfoSum.Fake;

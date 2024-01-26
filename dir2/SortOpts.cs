@@ -223,7 +223,7 @@ static public class Sort
         "--reverse", help: "off | on", resolve: (parser, args) =>
         {
             var argThe = Helper.GetUnique(args, parser);
-            switch (argThe)
+            switch (argThe.ToLower())
             {
                 case "off":
                     ReverseInfo = Helper.itself;
@@ -251,7 +251,7 @@ static public class Sort
         {
             var argThe = Helper.GetUnique(args, parser);
 
-            if (0 == string.Compare("count", argThe, StringComparison.OrdinalIgnoreCase))
+            if (0 == string.Compare("count", argThe, ignoreCase: true))
             {
                 throw new ConfigException("""
                     Total file count within option '--take' if '--sum' is given.
@@ -261,7 +261,7 @@ static public class Sort
                     """);
             }
 
-            if (0 == string.Compare("size", argThe, StringComparison.OrdinalIgnoreCase))
+            if (0 == string.Compare("size", argThe, ignoreCase: true))
             {
                 throw new ConfigException("""
                     Total file size within option '--take' if '--sum' is given.

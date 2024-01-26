@@ -14,7 +14,7 @@ static internal partial class Show
             init: Always<bool>.True, resolve: (parser, args) =>
             {
                 var argThe = Helper.GetUnique(args, parser);
-                switch (argThe)
+                switch (argThe.ToLower())
                 {
                     case "csv":
                         var a3 = ((IParse)PrintDirOpt).Parse(
