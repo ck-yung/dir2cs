@@ -6,12 +6,19 @@ static internal partial class Show
 {
     static internal class Color
     {
-        static Color()
+        static internal void InternalReset()
         {
             ForegroundColorDefault = Console.ForegroundColor;
             ForegroundColorSwitch = Console.ForegroundColor;
             ForegroundColorPerLineCount = Console.ForegroundColor;
             ForegroundColorTotalLine = Console.ForegroundColor;
+            Reset = ReturnZero;
+            TotalLine = ReturnZero;
+        }
+
+        static Color()
+        {
+            InternalReset();
         }
 
         static internal string[] GetColorNames() =>
@@ -112,13 +119,13 @@ static internal partial class Show
             Reset = () =>
             {
                 Console.ResetColor();
-                return 3;
+                return 5;
             };
 
             TotalLine = () =>
             {
                 Console.ForegroundColor = ForegroundColorTotalLine;
-                return 4;
+                return 6;
             };
 
             return (_) => (false, 1); // lineCountResetFlag always is FALSE
@@ -221,7 +228,7 @@ static internal partial class Show
 
     static internal readonly IInovke<int, IEnumerable<Func<int>>> ColorOpt =
         new ParseInvoker<int, IEnumerable<Func<int>>>("--color",
-            help: "COLOR | INTEGER,COLOR,COLOR-OF-TOTAL-LINE (Check dir2 --color +?)",
+            help: "off | COLOR | INTEGER,COLOR,COLOR-OF-TOTAL-LINE (Check dir2 --color +?)",
             init: (_) => Color.GetZeroes(), resolve: (parser, args) =>
             {
                 if (Console.IsOutputRedirected) return;
@@ -248,8 +255,16 @@ static internal partial class Show
                 switch (aa.Length)
                 {
                     case 1:
-                        incFunc = Color.Init(parser, aa[0]);
-                        parser.SetImplementation((arg) => Color.ForegroundColors(arg, incFunc));
+                        if (0 == string.Compare("off", aa[0]))
+                        {
+                            Color.InternalReset();
+                            parser.SetImplementation((arg) => Color.GetZeroes()) ;
+                        }
+                        else
+                        {
+                            incFunc = Color.Init(parser, aa[0]);
+                            parser.SetImplementation((arg) => Color.ForegroundColors(arg, incFunc));
+                        }
                         break;
                     case 3:
                         if (int.TryParse(aa[0], out var lineCountToChangeBackgroundColor))
