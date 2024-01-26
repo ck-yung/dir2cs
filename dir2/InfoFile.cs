@@ -445,7 +445,7 @@ static public partial class Helper
                         parser.SetImplementation((it) => it.IsHidden());
                         break;
                     default:
-                        throw new ConfigException($"'{argThe}' is bad value to {argThe}");
+                        throw new ConfigException($"'{argThe}' is bad value to {parser.Name}");
                 }
             });
 

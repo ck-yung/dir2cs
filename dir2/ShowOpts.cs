@@ -35,9 +35,10 @@ static internal partial class Show
         help: "date,size,count,mode,owner,last,link",
         resolve: (parser, args) =>
         {
-            foreach (var arg in Helper.CommonSplit(args))
+            foreach (var arg in Helper.CommonSplit(args)
+            .Distinct(comparer: StringComparer.InvariantCultureIgnoreCase))
             {
-                switch (arg)
+                switch (arg.ToLower())
                 {
                     case Helper.ExtraHelp:
                         throw new ShowSyntaxException(parser);
@@ -80,9 +81,10 @@ static internal partial class Show
         help: "date,size,count,mode,owner,last,link,link-size,link-date",
         resolve: (parser, args) =>
         {
-            foreach (var arg in Helper.CommonSplit(args))
+            foreach (var arg in Helper.CommonSplit(args)
+            .Distinct(comparer: StringComparer.InvariantCultureIgnoreCase))
             {
-                switch (arg)
+                switch (arg.ToLower())
                 {
                     case Helper.ExtraHelp:
                         throw new ShowSyntaxException(parser);

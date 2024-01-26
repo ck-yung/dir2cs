@@ -33,8 +33,7 @@ public partial class Helper
     {
         var rtn = args
             .Where((it) => it.Length > 0)
-            .Select((it) => it.ToLower())
-            .Distinct()
+            .Distinct(comparer: StringComparer.InvariantCultureIgnoreCase)
             .Take(2)
             .ToArray();
 
