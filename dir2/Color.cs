@@ -255,7 +255,7 @@ static internal partial class Show
                 switch (aa.Length)
                 {
                     case 1:
-                        if (0 == string.Compare("off", aa[0]))
+                        if (0 == string.Compare("off", aa[0], ignoreCase: true))
                         {
                             Color.InternalReset();
                             parser.SetImplementation((arg) => Color.GetZeroes()) ;
@@ -283,6 +283,21 @@ static internal partial class Show
                 }
             });
 
+    static void ConsoleReadKey()
+    {
+        Console.Write("Press any key (q to quick) ");
+        var inp = Console.ReadKey();
+        Console.Write("\r");
+        // sole.Write("Press any key (q to quick) AB");
+        Console.Write("                             ");
+        Console.Write("\r");
+        if (inp.KeyChar == 'q' || inp.KeyChar == 'Q')
+        {
+            Console.ResetColor();
+            Environment.Exit(0);
+        }
+    }
+
     static internal readonly IInovke<bool, bool> PauseOpt =
         new ParseInvoker<bool, bool>("--pause",
             help: "off | on | INTEGER", init: Helper.itself, resolve: (parser, args) =>
@@ -292,8 +307,7 @@ static internal partial class Show
 
                 int lineCount = 0;
                 int lineCountToPause = 0;
-                int cursorRow = 0;
-                switch (argThe, int.TryParse(argThe, out lineCountToPause))
+                switch (argThe.ToLower(), int.TryParse(argThe, out lineCountToPause))
                 {
                     case ("off", _):
                         parser.SetImplementation((_) => false);
@@ -306,29 +320,17 @@ static internal partial class Show
                             if (lineCount >= lineCountToPause)
                             {
                                 lineCount = 0;
-                                Console.Write("Press any key to continue (q to quick) ");
-                                var inpChar = Console.ReadKey();
-                                if (inpChar.KeyChar == 'q' || inpChar.KeyChar == 'Q')
-                                {
-                                    Console.ResetColor();
-                                    Console.SetCursorPosition(left: 0, top: cursorRow);
-                                    // sole.Write("Press any key to continue (q to quick) Q");
-                                    Console.Write("                                        ");
-                                    Console.SetCursorPosition(left: 0, top: cursorRow);
-                                    Environment.Exit(0);
-                                }
-                                (var _, cursorRow) = Console.GetCursorPosition();
-                                Console.SetCursorPosition(left: 0, top: cursorRow);
+                                ConsoleReadKey();
                                 lineCountToPause = Console.WindowHeight - 1;
                             }
                             return false;
                         });
                         break;
                     case (_, true):
-                        if (lineCountToPause < 6)
+                        if (lineCountToPause < 3)
                         {
                             throw new ConfigException(
-                                $"Line count to {parser.Name} SHOULD be greater 5 but {lineCountToPause} is found.");
+                                $"Line count to {parser.Name} SHOULD be greater 2 but {lineCountToPause} is found.");
                         }
                         parser.SetImplementation((_) =>
                         {
@@ -336,19 +338,7 @@ static internal partial class Show
                             if (lineCount >= lineCountToPause)
                             {
                                 lineCount = 0;
-                                (var _, cursorRow) = Console.GetCursorPosition();
-                                Console.Write("Press any key to continue (q to quick) ");
-                                var inpChar = Console.ReadKey();
-                                if (inpChar.KeyChar == 'q' || inpChar.KeyChar == 'Q')
-                                {
-                                    Console.ResetColor();
-                                    Console.SetCursorPosition(left: 0, top: cursorRow);
-                                    // sole.Write("Press any key to continue (q to quick) Q");
-                                    Console.Write("                                        ");
-                                    Console.SetCursorPosition(left: 0, top: cursorRow);
-                                    Environment.Exit(0);
-                                }
-                                Console.SetCursorPosition(left: 0, top: cursorRow);
+                                ConsoleReadKey();
                             }
                             return false;
                         });
