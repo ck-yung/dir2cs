@@ -101,7 +101,7 @@ static public partial class Helper
                 }
 
                 Func<DateTimeOffset, string> rtn = (_) => string.Empty;
-                switch (formatFound)
+                switch (formatFound.ToLower())
                 {
                     case "unix":
                         if (Show.IsOututCsv)
@@ -126,6 +126,17 @@ static public partial class Helper
                     case "short":
                         rtn = ParseToDateShortFormat(timespanFound);
                         break;
+                    case "utc+hh:mm":
+                        Console.WriteLine("""
+                            Format of time zone setting:
+                                --date-format UTC+hh:mm
+                            For example,
+                                --date-format UTC+08:00
+                                --date-format UTC-07:30
+                                --date-format UTC+06
+                                --date-format UTC-5
+                            """);
+                        throw new ConfigException(string.Empty);
                     default:
                         var fmtThe = System.Net.WebUtility.UrlDecode(formatFound);
                         rtn = (value) => value.ToString(fmtThe);

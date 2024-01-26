@@ -103,10 +103,14 @@ public class Program
         {
             ((IParse) Show.PauseOpt).Parse(new List<(bool, ArgType, string)>
             {(true, ArgType.CommandLine, "on")});
+
+            ((IParse)Show.PauseOpt).Parse(
+                mainArgs.Select((it) => (false, ArgType.CommandLine, it)));
+
             foreach (var line in GetSyntax().Split(Environment.NewLine))
             {
-                Show.PauseOpt.Invoke(false);
                 Console.WriteLine(line);
+                Show.PauseOpt.Invoke(false);
             }
             return false;
         }

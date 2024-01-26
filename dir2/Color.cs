@@ -29,10 +29,10 @@ static internal partial class Show
             string colorToAlterColumnColor,
             string colorTotalLine)
         {
-            if (Enum.TryParse(typeof(ConsoleColor), colorToAlterColumnColor,
-                ignoreCase: true, out var result2))
+            ConsoleColor tmp;
+            if (TryParseToForeColor(colorToAlterColumnColor, out tmp))
             {
-                ForegroundColorPerLineCount = (ConsoleColor)result2;
+                ForegroundColorPerLineCount = tmp;
             }
             else
             {
@@ -49,10 +49,9 @@ static internal partial class Show
                 return "";
             };
 
-            if (Enum.TryParse(typeof(ConsoleColor), colorTotalLine,
-                ignoreCase: true, out var result3))
+            if (TryParseToForeColor(colorTotalLine, out tmp))
             {
-                ForegroundColorTotalLine = (ConsoleColor)result3;
+                ForegroundColorTotalLine = tmp;
             }
             else
             {
@@ -94,10 +93,10 @@ static internal partial class Show
         static internal Func<int, (bool, int)> Init(IParse parser,
             string colorToAlterColumnColor)
         {
-            if (Enum.TryParse(typeof(ConsoleColor), colorToAlterColumnColor,
-                ignoreCase: true, out var result2))
+            ConsoleColor tmp;
+            if (TryParseToForeColor( colorToAlterColumnColor, out tmp))
             {
-                ForegroundColorPerLineCount = (ConsoleColor)result2;
+                ForegroundColorPerLineCount = tmp;
             }
             else
             {
@@ -224,11 +223,29 @@ static internal partial class Show
         static ConsoleColor ForegroundColorSwitch { get; set; }
         static ConsoleColor ForegroundColorPerLineCount { get; set; }
         static ConsoleColor ForegroundColorTotalLine { get; set; }
+
+        static bool TryParseToForeColor(string arg, out ConsoleColor output)
+        {
+            if (arg == "-")
+            {
+                output = Console.ForegroundColor;
+                return true;
+            }
+
+            if (Enum.TryParse(typeof(ConsoleColor), arg,
+                ignoreCase: true, out var result))
+            {
+                output = (ConsoleColor)result;
+                return true;
+            }
+            output = ConsoleColor.White;
+            return false;
+        }
     }
 
     static internal readonly IInovke<int, IEnumerable<Func<int>>> ColorOpt =
         new ParseInvoker<int, IEnumerable<Func<int>>>("--color",
-            help: "off | COLOR | INTEGER,COLOR,COLOR-OF-TOTAL-LINE (Check dir2 --color +?)",
+            help: "off | COLOR | INTEGER,COLOR,COLOR-OF-TOTAL-LINE",
             init: (_) => Color.GetZeroes(), resolve: (parser, args) =>
             {
                 if (Console.IsOutputRedirected) return;

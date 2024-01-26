@@ -116,7 +116,6 @@ static public partial class Helper
          File only        -f  => --dir off
 
         https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md
-
         """;
 
     static public string GetSyntax()
