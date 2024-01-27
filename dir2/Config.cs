@@ -12,14 +12,14 @@ public enum ArgType
 
 static class Config
 {
-    static public string GetFilename()
+    static public string GetFilename(string fileExt)
     {
         var pathHome = Environment.GetEnvironmentVariable("HOME");
         if (string.IsNullOrEmpty(pathHome))
         {
             pathHome = Environment.GetEnvironmentVariable("UserProfile");
         }
-        return Path.Join(pathHome, ".local", "dir2.opt");
+        return Path.Join(pathHome, ".local", "dir2" + fileExt);
     }
 
     static IEnumerable<(ArgType, string)> SelectArgsFromLines( ArgType type,
@@ -46,12 +46,19 @@ static class Config
         }
     }
 
+    static readonly string FirstCfgExt = "-cfg.txt";
+    static public readonly string ShortDateCfg = "-date-short.txt";
     static public IEnumerable<(ArgType, string)> ParseConfigFile()
     {
         var cfgFilename = "[undefined]";
         try
         {
-            cfgFilename = GetFilename();
+            cfgFilename = new string[] { FirstCfgExt, ".opt" }
+            .Select((it) => GetFilename(it))
+            .FirstOrDefault((it) => File.Exists(it))
+            ?? ":cfg-not-found";
+            if (false == File.Exists(cfgFilename))
+                return Enumerable.Empty<(ArgType, string)>();
             var buf2 = new byte[2048];
             int readCnt = 0;
             using (var inpFp = File.OpenRead(cfgFilename))
@@ -116,7 +123,7 @@ static class Config
     static public string GetHelp()
     {
         var rtn = new StringBuilder(
-            $"Load following options from '{GetFilename()}'");
+            $"Load following options from '{GetFilename(FirstCfgExt)}'");
         rtn.AppendLine();
 
         foreach (var optThe in MyOptions.ConfigParsers)

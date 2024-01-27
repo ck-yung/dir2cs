@@ -22,7 +22,7 @@
 
 * [Complete option list](https://github.com/ck-yung/dir2cs/blob/main/docs/info-options.md)
 
-* [Config file ```dir2.opt```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-config-file.md)
+* [Config file  ```dir2-cfg.txt```, ```dir2.opt```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-config-file.md)
 
 * [Envir variable ```dir2```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-envir.md)
 

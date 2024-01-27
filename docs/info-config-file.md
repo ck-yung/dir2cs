@@ -1,6 +1,9 @@
-# Inforamton of Configuration File ```dir2.opt```
+# Inforamton of Configuration File ```dir2-cfg.txt```
 
-## Sample Configuration File
+* Old config file ```dir2.opt``` will be loaded if ```dir2-cfg.txt``` is NOT found.
+* But ```dir2.opt``` will be skipped in coming release.
+
+## Sample Content of Configuration File
 
 ```
 --utf8
@@ -11,7 +14,7 @@
 ```
 
 ## Configuration File
-* Options will be loaded from ```%USERPROFILE%\.local\dir2.opt``` or ```~/.local/dir2.opt``` before parsing command line.
+* Options will be loaded from ```%USERPROFILE%\.local\dir2-cfg.txt``` or ```~/.local/dir2-cfg.txt``` before parsing command line.
 * But the file will be skipped if ```--cfg-off``` is found in Envir ```dir``` or Command-Lin Options.
 * Run command ```dir2 -? cfg``` to find your personal configuration file.
 * Short-cut of option is **NOT** loaded from the configuration file.

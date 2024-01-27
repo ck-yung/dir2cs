@@ -33,11 +33,13 @@ dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb --color green
 
 ### On-line help
 
-| Command | Description |
-| ------- | ----------- |
-| ```dir2 -?```         | To list common-used options
-| ```dir2 -??```        | [To list all options](https://github.com/ck-yung/dir2cs/blob/main/docs/info-options.md)
-| ```dir2 -? cfg```     | To list options loading by config file [```dir2.opt```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-config-file.md)
+| Command           | Description |
+| -------           | ----------- |
+| ```dir2 -?```     | To list common-used options
+| ```dir2 -??```    | [To list all options](https://github.com/ck-yung/dir2cs/blob/main/docs/info-options.md)
+| ```dir2 -? cfg``` | To list options loading by config file [```dir2-cfg.txt```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-config-file.md)
+| ```dir2 -? -```   | To list short-cut options
+| ```dir2 -? +```   | To list options support quick-help ```+?```
 
 ### [Quick help](https://github.com/ck-yung/dir2cs/blob/main/docs/info-short-help.md) to an option
 

@@ -347,7 +347,7 @@ static public partial class Helper
         };
         #endregion
 
-        var cfgFilename = Config.GetFilename()[..^4] + ".date-short.opt";
+        var cfgFilename = Config.GetFilename(Config.ShortDateCfg);
         if (File.Exists(cfgFilename))
         {
             #region Read the Date-Short Format Config File
