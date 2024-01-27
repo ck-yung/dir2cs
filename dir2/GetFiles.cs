@@ -1,3 +1,4 @@
+using System.IO;
 using static dir2.MyOptions;
 
 namespace dir2;
@@ -38,7 +39,7 @@ static public partial class Helper
         static public string InitPath { get; private set; } = "?";
         static public string RealInitPath { get; private set; } = string.Empty;
         static public Func<string, string> GetRelativeName
-        { get; private set; } = (arg) => arg;
+        { get; private set; } = (arg) => Show.OutputName(arg);
 
         static public string GetFullPath(string path)
         {
@@ -51,16 +52,7 @@ static public partial class Helper
             {
                 lenThe -= path.Length;
             }
-
-            if (Show.IsOututCsv)
-            {
-                GetRelativeName = (arg) => "\""+ arg.Substring(lenThe) + "\"";
-            }
-            else
-            {
-                GetRelativeName = (arg) => arg.Substring(lenThe);
-            }
-
+            GetRelativeName = (arg) => Show.OutputName(arg.Substring(lenThe));
             return InitPath;
         }
 

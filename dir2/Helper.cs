@@ -33,6 +33,8 @@ static public partial class Helper
 
     static public T itself<T>(T arg) => arg;
 
+    static public string AppendSpace(string arg) => arg + " ";
+
     /// <summary>
     /// Always return false
     /// </summary>
@@ -303,15 +305,6 @@ static public partial class Helper
         var rtn = path.Split(Path.DirectorySeparatorChar)
             .Take(2).FirstOrDefault();
         return string.IsNullOrEmpty(rtn) ? "." : rtn;
-    }
-
-    static internal string GetLastDir(string path)
-    {
-        return path
-            .TrimEnd(Path.DirectorySeparatorChar)
-            .Split(Path.DirectorySeparatorChar)
-            .AsEnumerable()
-            .Last();
     }
 
     static public string ToKiloUnit(long arg)

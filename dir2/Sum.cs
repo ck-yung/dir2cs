@@ -65,9 +65,11 @@ static public class Sum
             {
                 case "dir":
                     Helper.PrintDir = (_) => InfoSum.Fake;
+                    Show.FormatOuputName(false);
                     Reduce = (seq) => seq
-                        .GroupBy((it) => Helper.GetFirstDir(Path.GetDirectoryName(
-                            Helper.Io.GetRelativeName(it.FullName))))
+                        .GroupBy((it) => Helper.GetFirstDir(
+                            Path.GetDirectoryName(
+                                Helper.Io.GetRelativeName(it.FullName))))
                         .Select((grp) => grp.Aggregate(
                             seed: new InfoSum(Name:
                             string.IsNullOrEmpty(grp.Key) ? "." : grp.Key),
@@ -86,11 +88,13 @@ static public class Sum
                     break;
                 case "+dir":
                     Helper.PrintDir = (_) => InfoSum.Fake;
+                    Show.FormatOuputName(false);
                     Reduce = (seq) =>
                     {
                         var qry2 = seq
                         .GroupBy((it) => Helper.GetFirstDir(
-                            Path.GetDirectoryName(Helper.Io.GetRelativeName(it.FullName))))
+                            Path.GetDirectoryName(
+                                Helper.Io.GetRelativeName(it.FullName))))
                         .Select((grp) => grp.Aggregate(
                             seed: new InfoSum(Name:
                             string.IsNullOrEmpty(grp.Key) ? "." : grp.Key),

@@ -20,19 +20,19 @@ public record InfoBase(string Name
         {
             rtn.Append(
                 FileAttributes.HasFlag(FileAttributes.ReadOnly)
-                ? "R" : " ");
+                ? "R" : ".");
             rtn.Append(
                 FileAttributes.HasFlag(FileAttributes.Hidden)
-                ? "H":" ");
+                ? "H" : ".");
             rtn.Append(
                 FileAttributes.HasFlag(FileAttributes.System)
-                ? "S" : " ");
+                ? "S" : ".");
             rtn.Append(
                 FileAttributes.HasFlag(FileAttributes.Archive)
-                ? "A" : " ");
+                ? "A" : ".");
             rtn.Append(
                 FileAttributes.HasFlag(FileAttributes.Normal)
-                ? "N" : " ");
+                ? "N" : ".");
         }
         else
         {
@@ -67,7 +67,6 @@ public record InfoBase(string Name
                 UnixFileMode.HasFlag(UnixFileMode.OtherExecute)
                 ? "x" : "-");
         }
-        rtn.Append(" ");
         return rtn.ToString();
     }
 

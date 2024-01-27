@@ -20,12 +20,12 @@ static internal partial class Show
 
     static public Func<string, string> Size { get; private set; } = Helper.itself;
     static public Func<string, string> Count { get; private set; } = Helper.itself;
-    static public Func<InfoBase, string> Link { get; private set; } = (arg) =>
-    {
-        if (string.IsNullOrEmpty(arg.LinkTarget))
-            return string.Empty;
-        return $" -> {arg.LinkTarget}";
-    };
+    static public Func<InfoBase, string> Link { get; private set; } = (arg) => OutputString(
+        arg.LinkTarget, (arg2) =>
+        {
+            if (string.IsNullOrEmpty(arg2)) return string.Empty;
+            return $" -> {arg2}";
+        });
 
     static public Func<InfoBase, string> Attributes { get; private set; } = Blank;
     static public Func<InfoBase, string> Owner { get; private set; } = Blank;
@@ -105,19 +105,22 @@ static internal partial class Show
                         Last = getLastDateTimeText;
                         break;
                     case "link":
-                        Link = (arg) =>
-                        {
-                            if (string.IsNullOrEmpty(arg.LinkTarget))
-                                return string.Empty;
-                            return $" -> {arg.LinkTarget}";
-                        };
+                        Link = (arg) => OutputString(arg.LinkTarget,
+                            (arg2) =>
+                            {
+                                if (string.IsNullOrEmpty(arg2))
+                                    return string.Empty;
+                                return $" -> {arg2}";
+                            });
                         break;
                     case "mode":
                         Helper.DirPrefixText = Blank;
-                        Attributes = (arg) => arg.AttributeText();
+                        Attributes = (arg) => OutputString(arg.AttributeText(),
+                            Helper.AppendSpace);
                         break;
                     case "owner":
-                        Owner = (arg) => arg.OwnerText().PadRight(20);
+                        Owner = (arg) => OutputString(arg.OwnerText(),
+                            (arg2) => arg2.PadRight(20));
                         break;
                     case "link-size":
                         GetViewSize = (info) =>

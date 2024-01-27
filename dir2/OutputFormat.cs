@@ -9,6 +9,25 @@ static internal partial class Show
 
     static internal bool IsOututCsv { get; private set; } = false;
 
+    static internal Func<string, string> OutputName { get; private set; } = Helper.itself;
+    static internal void FormatOuputName(bool isAddClosingMark)
+    {
+        if (isAddClosingMark)
+        {
+            OutputName = (arg) => "\"" + arg + "\"";
+        }
+        else
+        {
+            OutputName = Helper.itself;
+        }
+    }
+
+    static internal Func<string, Func<string, string>, string> OutputString
+    { get; private set; } = (arg, format) =>
+    {
+        return format(arg);
+    };
+
     static internal readonly IInovke<bool, bool> OutputOpt =
         new ParseInvoker<bool, bool>("--output", help: "csv",
             init: Always<bool>.True, resolve: (parser, args) =>
@@ -33,21 +52,24 @@ static internal partial class Show
                         ((ParseInvoker<int, string>)CountFormat).SetImplementation(
                             (_) => string.Empty);
 
-                        Date = (arg) =>
+                        IsOututCsv = true;
+                        FormatOuputName(true);
+                        OutputString = (arg, _) =>
                         {
                             if (string.IsNullOrEmpty(arg)) return "";
                             return "\"" + arg + "\",";
                         };
 
-                        Last = Helper.itself;
+                        Date = (arg) => OutputString(arg, Helper.itself);
 
+                        Last = Helper.itself;
                         Link = (arg) =>
                         {
-                            if (string.IsNullOrEmpty(arg.LinkTarget)) return "";
+                            if (string.IsNullOrEmpty(arg.LinkTarget))
+                                return string.Empty;
                             return ",\"" + arg.LinkTarget + "\"";
                         };
 
-                        IsOututCsv = true;
                         impPrintInfoTotal = InfoSum.DoNothing;
                         break;
                     default:
