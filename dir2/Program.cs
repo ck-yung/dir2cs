@@ -120,52 +120,72 @@ public class Program
             (it) => it == "-?" || it == "-h" || it == "--help");
         if (-1 < ndxHelp)
         {
+            ((IParse)Show.PauseOpt).Parse(new List<(bool, ArgType, string)>
+            {(true, ArgType.CommandLine, "on")});
+
+            ((IParse)Show.PauseOpt).Parse(
+                mainArgs.Select((it) => (false, ArgType.CommandLine, it)));
+
+            var helpThe = new List<string>();
             if (ndxHelp+1 < mainArgs.Length)
             {
                 switch(mainArgs[ndxHelp+1])
                 {
                     case "cfg":
-                        Write(Config.GetHelp());
-                        return false;
+                        helpThe = Config.GetHelp().Split(Environment.NewLine).ToList();
+                        break;
+
                     case "config":
-                        Write(Config.GetHelp());
-                        return false;
+                        helpThe = Config.GetHelp().Split(Environment.NewLine).ToList();
+                        break;
 
                     case "-":
-                        WriteLine("Shortcut:");
+                        helpThe.Add("Shortcut:");
                         foreach (var optThe in GetOptionHelps()
                             .Where((it) => false == string.IsNullOrEmpty(it.Shortcut.Trim())))
                         {
-                            WriteLine($" {optThe.Name,16} {optThe.Shortcut}  {optThe.Help}");
+                            helpThe.Add($" {optThe.Name,16} {optThe.Shortcut}  {optThe.Help}");
                         }
 
                         foreach (var kvThe in MyOptions.ShortcutComplexOptions
                             .OrderBy((it) => it.Value.Item1)
                             .OrderBy((it) => it.Key))
                         {
-                            // te( ".1234567890123456");
-                            Write( "                 ");
-                            Write($" {kvThe.Key}");
+                            var a2 = new StringBuilder();
+                            // Append(".1234567890123456");
+                            a2.Append("                 ");
+                            a2.Append($" {kvThe.Key}");
                             var text2The = string.Join(" ", kvThe.Value.Item2);
-                            Write($"  => {text2The,-12}");
-                            WriteLine("");
+                            a2.Append($"  => {text2The,-12}");
+                            helpThe.Add(a2.ToString());
                         }
-                        return false;
+                        break;
 
                     case "+":
-                        WriteLine("Quick help +? can be the following options.");
+                        helpThe.Add("Quick help +? can be the following options.");
                         foreach (var optThe in GetOptionHelps()
                             .Where((it) => false == string.IsNullOrEmpty(it.Help)))
                         {
-                            WriteLine($" {optThe.Name,16} {optThe.Shortcut}  {optThe.Help}");
+                            helpThe.Add($" {optThe.Name,16} {optThe.Shortcut}  {optThe.Help}");
                         }
-                        return false;
+                        helpThe.Add("For example:");
+                        helpThe.Add("    dir2  --link  +?");
+                        break;
 
                     default:
+                        helpThe = ShortSyntax.Split(Environment.NewLine).ToList();
                         break;
                 }
-           }
-            Write(ShortSyntax);
+            }
+            else
+            {
+                helpThe = ShortSyntax.Split(Environment.NewLine).ToList();
+            }
+            foreach (var line in helpThe)
+            {
+                Console.WriteLine(line);
+                Show.PauseOpt.Invoke(false);
+            }
             return false;
         }
 

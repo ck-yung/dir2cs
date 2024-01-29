@@ -20,7 +20,7 @@ static public partial class Helper
 
     static public readonly IInovke<DateTimeOffset, string> DateFormatOpt =
         new ParseInvoker<DateTimeOffset, string>(name: "--date-format",
-            help: "DATE-FORMAT   e.g. short, yy-MM-dd%20HH:mm:ss, unix, unix+, UTC+hh:mm",
+            help: "DATE-FORMAT | ZONE  (short, yy-MM-dd%20HH:mm:ss, unix, unix+, UTC+hh:mm)",
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {
@@ -126,8 +126,10 @@ static public partial class Helper
                     case "short":
                         rtn = ParseToDateShortFormat(timespanFound);
                         break;
-                    case "utc+hh:mm":
-                        Console.WriteLine("""
+                    default:
+                        if (formatFound.StartsWith("utc") || formatFound == "zone")
+                        {
+                            Console.WriteLine("""
                             Format of time zone setting:
                                 --date-format UTC+hh:mm
                             For example,
@@ -136,8 +138,8 @@ static public partial class Helper
                                 --date-format UTC+06
                                 --date-format UTC-5
                             """);
-                        throw new ConfigException(string.Empty);
-                    default:
+                            throw new ConfigException(string.Empty);
+                        }
                         var fmtThe = System.Net.WebUtility.UrlDecode(formatFound);
                         rtn = (value) => value.ToString(fmtThe);
                         _ = rtn(DateTimeOffset.Now); // verify if the lambda is valid
@@ -246,7 +248,7 @@ static public partial class Helper
     private static Func<DateTimeOffset, string> ParseToDateShortFormat(
         TimeSpan timespanFound)
     {
-        #region KeyNames in 'dir2.date-short.opt'
+        #region KeyNames in 'dir2-date-short.txt'
         const string keyCulture = "culture";
         const string keyJust = "just";
         const string keyToday = "today";

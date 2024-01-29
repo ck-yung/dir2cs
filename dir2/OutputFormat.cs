@@ -36,12 +36,6 @@ static internal partial class Show
                 switch (argThe.ToLower())
                 {
                     case "csv":
-                        var a3 = ((IParse)PrintDirOpt).Parse(
-                            new List<(bool, ArgType, string)>
-                            {
-                                new(true, ArgType.CommandLine, "off")
-                            });
-
                         ((ParseInvoker<long, string>)LengthFormatOpt)
                         .SetImplementation((arg) => arg.ToString()+",");
 

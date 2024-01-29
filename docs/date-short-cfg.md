@@ -18,7 +18,7 @@
 * The formats of "Yesterday AM" and "Yesterday PM" are referred to "Yeserday".
 
 
-## Configuration file of ```~\.local\dir2.date-short.opt```
+## Configuration file of ```~\.local\dir2-date-short.txt```
 
 | Type       | Format              | Default Format        | Demo Display   |
 | ----       | -----------         | --------------        | ------------   |

@@ -257,13 +257,16 @@ static internal partial class Show
                 .Take(4)
                 .ToArray();
 
-                if (aa.Any((it) => it == Helper.ExtraHelp))
+                if (aa.Any((it) => it == Helper.ExtraHelp
+                || 0 == string.Compare(it, "color", ignoreCase: true)))
                 {
                     Console.WriteLine("Color name:");
+                    Console.WriteLine($"\t-");
                     foreach (var a2 in Color.GetColorNames())
                     {
                         Console.WriteLine($"\t{a2}");
                     }
+                    Console.WriteLine($"Current color would be used if -");
                     // TODO: Write Color-Help .MD URI
                     throw new ShowSyntaxException(parser);
                 }

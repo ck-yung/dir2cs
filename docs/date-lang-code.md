@@ -2,28 +2,79 @@
 
 ## 設定
 
-* Option ```--date-format```
+* Option ```--date-format short```
+    - Value ```short``` should be assigned to the option ```--date-format```.
     - 選項```--date-format```需指定為```short```。
     - オプション ```--date-format``` は ```short``` として指定する必要があります。
 
-* Language Code (Culture Info) in  ```dir2.date-short.opt```
+* Language Code (Culture Info) in  ```dir2-date-short.txt```
+    - English ```culture=en-US``` is the default value.
     - 漢字 Han ```culture=zh-TW```
     - 日文 Kanji ```culture=ja-JP```
 
-* Configuration File ```dir2.date-short.opt```
-    - 以下是設定文件```~\.local\dir2.date-short.opt```的一個範例。
-    - 以下は設定ファイル```~\.local\dir2.date-short.opt```の例です。
+* Default Configuration
+    -  Remark to escape character ```%```
+        - ```%09``` is a tab char.
+        - ```%20``` is a space.
+        - ```%22``` is a double closing mark.
+        - Any literal text is required to be enclosed by double closing marks.
+    - The defaul configuration is same to below ```~\.local\dir2.date-short.opt```.
 
 ```
-culture=LANGUAGE-CODE
+culture=en-US
+just = Just%20%20%20%20
+today= hh:mmtt%20
+ysday= %22Yd%22%20hhtt
+week = ddd%20hhtt
+month= MMM%20dd%20%20
+year = MMM%20dd%20%20
+else = yyyy%20MMM
+```
+
+
+* 漢字設定 / Configuration File ```dir2-date-short.txt``` in Han.
+    -  字符```%```之注解
+        - ```%09```即為 Tab 字符
+        - ```%20```即為空格
+    - 以下是設定文件```~\.local\dir2-date-short.txt```的一個範例。
+
+```
+culture=zh-TW
 just = 剛剛%20%09
 today= tth:mm%09
 ysday= 昨th時%09
 week = dddtt%09
-month= 本月d日%09
-year = MMMd日%09
+month= dd日tt%09
+year = MMMdd日%09
 else = yy年MMM%09
 ```
+
+* 漢字成果範例
+```
+ 145M 12年9月    年少無知◎公民廣場.mp4
+  52K 11月22日   《清室退位詔書》愛新覺羅．溥儀.1912.txt
+  33M 本月22日   《在台上我覓理想》梅艷芳.1984.mp3
+   4K 週一上午   軍官學校-黃埔軍校訓詞.1924.txt
+   3M 昨下10時   Nothing to Envy 我們最幸福-韓人民北的真實生活.2009.epub
+ 333M 上午11:26  百變1991告別舞台-梅艷芳.mp4
+ 151K 剛剛       On Liberty 論自由（嚴復《群己權界論》）Mill.1859.epub
+ ```
+
+
+* 日字設定 / Configuration File ```dir2-date-short.txt``` in Japanese.
+    - 以下は設定ファイル```~\.local\dir2-date-short.txt```の例です。
+
+```
+culture=ja-JP
+just = 剛剛%20%09
+today= tth:mm%09
+ysday= 昨tth%09
+week = dddtt%09
+month= dd日tt%09
+year = MMMdd日%09
+else = yy年MMM%09
+```
+
 
 ## 格式注解
 
@@ -41,7 +92,7 @@ else = yy年MMM%09
 | ```ddd tt```   | ```en-US``` | ```Wed PM``` |
 |                | ```zh-TW``` | ```週三 下午``` |
 |                | ```ja-JP``` | ```水 午後``` |
-| ```ddddt```    | ```en-US``` | ```wedensdayP``` |
+| ```ddddt```    | ```en-US``` | ```WedensdayP``` |
 |                | ```zh-TW``` | ```星期三下``` |
 |                | ```ja-JP``` | ```水曜日午``` |
 | ```MMM dd```   | ```en-US``` | ```Jun 12``` |
@@ -51,23 +102,10 @@ else = yy年MMM%09
 |                | ```zh-TW``` | ```2023 6月``` |
 |                | ```ja-JP``` | ```2023 6月``` |
 
-* 字符```%```之注解
-    - ```%20```即為空格
-    - ```%09```即為Tab
+
 * 文字%に関するコメント
     - ```%20```はスペースです。
     - ```%20```はTabです。
-
-* 成果範例 ```culture=zh-TW```
-```
- 145M 12年9月    年少無知◎公民廣場.mp4
-  52K 11月22日   《清室退位詔書》愛新覺羅．溥儀.1912.txt
-  33M 本月22日   《在台上我覓理想》梅艷芳.1984.mp3
-   4K 週一上午   軍官學校-黃埔軍校訓詞.1924.txt
-   3M 昨下10時   Nothing to Envy 我們最幸福-韓人民北的真實生活.2009.epub
- 333M 上午11:26  百變1991告別舞台-梅艷芳.mp4
- 151K 剛剛       On Liberty 論自由（嚴復《群己權界論》）Mill.1859.epub
- ```
 
 # 細緻時段
 
