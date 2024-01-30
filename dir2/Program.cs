@@ -159,6 +159,12 @@ public class Program
                             a2.Append($"  => {text2The,-12}");
                             helpThe.Add(a2.ToString());
                         }
+                        foreach (var kvThe in MyOptions.ShortcutExpandOptions
+                            .OrderBy((it) => it.Value.Item1))
+                        {
+                            helpThe.Append($" {kvThe.Value.Item1,-16} {kvThe.Key}");
+                        }
+
                         break;
 
                     case "+":

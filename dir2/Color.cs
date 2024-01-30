@@ -245,7 +245,7 @@ static internal partial class Show
 
     static internal readonly IInovke<int, IEnumerable<Func<int>>> ColorOpt =
         new ParseInvoker<int, IEnumerable<Func<int>>>("--color",
-            help: "off | COLOR | INTEGER,COLOR,COLOR-OF-TOTAL-LINE",
+            help: "off | COLOR[,NUMBER,COLOR-OF-TOTAL-LINE]",
             init: (_) => Color.GetZeroes(), resolve: (parser, args) =>
             {
                 if (Console.IsOutputRedirected) return;
@@ -261,13 +261,25 @@ static internal partial class Show
                 || 0 == string.Compare(it, "color", ignoreCase: true)))
                 {
                     Console.WriteLine("Color name:");
-                    Console.WriteLine($"\t-");
+                    var a3 = "-";
+                    Console.Write($"\t{a3,-12}");
+                    int ii = 1;
                     foreach (var a2 in Color.GetColorNames())
                     {
-                        Console.WriteLine($"\t{a2}");
+                        Console.Write($"\t{a2,-12}");
+                        ii += 1;
+                        if (ii > 3)
+                        {
+                            ii = 0;
+                            Console.WriteLine();
+                        }
                     }
-                    Console.WriteLine($"Current color would be used if -");
-                    // TODO: Write Color-Help .MD URI
+                    Console.WriteLine("""
+
+                        Current color would be used if -
+
+                        https://github.com/ck-yung/dir2cs/blob/main/docs/info-color.md
+                        """);
                     throw new ShowSyntaxException(parser);
                 }
 
@@ -287,15 +299,15 @@ static internal partial class Show
                         }
                         break;
                     case 3:
-                        if (int.TryParse(aa[0], out var lineCountToChangeBackgroundColor))
+                        if (int.TryParse(aa[1], out var lineCountToChangeBackgroundColor))
                         {
-                            incFunc = Color.Init(parser, lineCountToChangeBackgroundColor, aa[1], aa[2]);
+                            incFunc = Color.Init(parser, lineCountToChangeBackgroundColor, aa[0], aa[2]);
                             parser.SetImplementation((arg) => Color.ForegroundColors(arg, incFunc));
                         }
                         else
                         {
                             throw new ConfigException(
-                                $"Line count to {parser.Name} SHOULD be a number but '{aa[0]}' is found.");
+                                $"Line count to {parser.Name} should be a number but '{aa[1]}' is found.");
                         }
                         break;
                     default:
@@ -320,7 +332,7 @@ static internal partial class Show
 
     static internal readonly IInovke<bool, bool> PauseOpt =
         new ParseInvoker<bool, bool>("--pause",
-            help: "off | on | INTEGER", init: Helper.itself, resolve: (parser, args) =>
+            help: "off | on | NUMBER", init: Helper.itself, resolve: (parser, args) =>
             {
                 if (Console.IsOutputRedirected) return;
                 var argThe = Helper.GetUnique(args, parser);
@@ -350,7 +362,7 @@ static internal partial class Show
                         if (lineCountToPause < 3)
                         {
                             throw new ConfigException(
-                                $"Line count to {parser.Name} SHOULD be greater 2 but {lineCountToPause} is found.");
+                                $"Line count to {parser.Name} should be greater 2 but {lineCountToPause} is found.");
                         }
                         parser.SetImplementation((_) =>
                         {
@@ -365,7 +377,7 @@ static internal partial class Show
                         break;
                     default:
                         throw new ConfigException(
-                            $"Line count to {parser.Name} SHOULD be 'on', 'off', or a number, but '{argThe}' is found.");
+                            $"Value to {parser.Name} should be 'on', 'off', or a number, but '{argThe}' is found.");
                 }
             });
 }

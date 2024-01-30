@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Immutable;
+using static dir2.MyOptions;
 
 namespace dir2;
 
@@ -186,9 +187,16 @@ static public partial class MyOptions
                 }
                 else
                 {
-                    foreach (var chThe in current.Substring(1))
+                    if (current.Length > 2 && (current[1]<'0' || current[1]>'9'))
                     {
-                        yield return $"-{chThe}";
+                        foreach (var chThe in current.Substring(1))
+                        {
+                            yield return $"-{chThe}";
+                        }
+                    }
+                    else
+                    {
+                        yield return current;
                     }
                 }
             }
@@ -201,6 +209,20 @@ static public partial class MyOptions
             if (ShortcutOptions.TryGetValue(current, out string found))
             {
                 yield return found;
+            }
+            else if (ShortcutExpandOptions.TryGetValue(current,
+                out var a2))
+            {
+                if (it2.MoveNext())
+                {
+                    current = it2.Current;
+                    foreach (var opt in a2.Item2(current))
+                        yield return opt;
+                }
+                else
+                {
+                    throw new ConfigException($"Missing value to shortcut {current}");
+                }
             }
             else if (ShortcutComplexOptions.TryGetValue(current,
                 out (string, string[]) founds))
@@ -295,5 +317,20 @@ static public partial class MyOptions
             ["-p"] = ("", new[] { "--pause", "on" }),
             ["-b"] = ("Brief path name", new[] {
                 "--total", "off", "--hide", "date,size,count,mode,owner,link" }),
+        }.ToImmutableDictionary();
+
+    static internal ImmutableDictionary<string, (string, Func<string, string[]>, string)>
+        ShortcutExpandOptions
+        = new Dictionary<string, (string, Func<string, string[]>, string)>
+        {
+            ["-z"] = ("Time zone", (arg) =>
+            {
+                if (false == string.IsNullOrEmpty(arg)
+                && arg[0]!='+' && arg[0]!='-')
+                {
+                    return ["--date-format", "utc+" + arg];
+                }
+                return ["--date-format", "utc" + arg];
+            }, "For example, -z +08:00"),
         }.ToImmutableDictionary();
 }

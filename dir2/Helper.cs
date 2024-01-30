@@ -161,6 +161,11 @@ static public partial class Helper
             textThe.Append($"  => {text2The,-12}");
             rtn.AppendLine(textThe.ToString());
         }
+        foreach (var kvThe in MyOptions.ShortcutExpandOptions
+            .OrderBy ((it) => it.Value.Item1))
+        {
+            rtn.AppendLine($" {kvThe.Value.Item1,-16} {kvThe.Key}     {kvThe.Value.Item3}");
+        }
         rtn.AppendLine("""
 
             https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md
