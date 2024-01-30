@@ -323,7 +323,7 @@ static public partial class MyOptions
         ShortcutExpandOptions
         = new Dictionary<string, (string, Func<string, string[]>, string)>
         {
-            ["-z"] = ("Time zone", (arg) =>
+            ["-Z"] = ("Time Zone", (arg) =>
             {
                 if (false == string.IsNullOrEmpty(arg)
                 && arg[0]!='+' && arg[0]!='-')
