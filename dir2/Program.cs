@@ -151,10 +151,7 @@ public class Program
                             .OrderBy((it) => it.Value.Item1)
                             .OrderBy((it) => it.Key))
                         {
-                            var a2 = new StringBuilder();
-                            // Append(".1234567890123456");
-                            a2.Append("                 ");
-                            a2.Append($" {kvThe.Key}");
+                            var a2 = new StringBuilder($" {kvThe.Value.Item1,-16} {kvThe.Key}");
                             var text2The = string.Join(" ", kvThe.Value.Item2);
                             a2.Append($"  => {text2The,-12}");
                             helpThe.Add(a2.ToString());
@@ -162,9 +159,8 @@ public class Program
                         foreach (var kvThe in MyOptions.ShortcutExpandOptions
                             .OrderBy((it) => it.Value.Item1))
                         {
-                            helpThe.Append($" {kvThe.Value.Item1,-16} {kvThe.Key}");
+                            helpThe.Add($" {kvThe.Value.Item1,-16} {kvThe.Key}     {kvThe.Value.Item3}");
                         }
-
                         break;
 
                     case "+":

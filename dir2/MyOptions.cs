@@ -295,6 +295,7 @@ static public partial class MyOptions
         = new Dictionary<string, string>()
         {
             ["-c"] = "--case-sensitive",
+            ["-D"] = "--date-format",
             ["-o"] = "--sort",
             ["-k"] = "--keep-dir",
             ["-w"] = "--within",
@@ -331,6 +332,6 @@ static public partial class MyOptions
                     return ["--date-format", "utc+" + arg];
                 }
                 return ["--date-format", "utc" + arg];
-            }, "For example, -z +08:00"),
+            }, "For example, -Z +08 => --date-format utc+08"),
         }.ToImmutableDictionary();
 }

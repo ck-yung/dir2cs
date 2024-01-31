@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Data;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,12 +19,87 @@ static public partial class Helper
         RegexOptions.IgnoreCase)]
     private static partial Regex utcTimespan();
 
+    enum HelpType { Both, ContainingDate, ContainingTime };
+
     static public readonly IInovke<DateTimeOffset, string> DateFormatOpt =
         new ParseInvoker<DateTimeOffset, string>(name: "--date-format",
             help: "DATE-FORMAT | ZONE  (short, yy-MM-dd%20HH:mm:ss, unix, unix+, UTC+hh:mm)",
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {
+                void ShowFormatCode()
+                {
+                    Console.Write("""
+                        Code | Output
+                        ---- | ------
+                        yy   | 2-digit year
+                        yyyy | 4-digit year
+                        MM   | 2-digit month
+                        MMM  | 3-char month name (in en-US)
+                        dd   | 2-digit day of month
+                        ddd  | 3-char weekday name (in en-US)
+                        tt   | AM or PM
+                        HH   | 2-digit 24-hour
+                        hh   | 2-digit 12-hour
+                        mm   | 2-digit minute
+                        ss   | 2-digit second
+                        zz   | 3-digit time-zone (eg. +08)
+                        zzz  | 6-digit time-zone (eg. +08:00)
+
+                        Char Code | Format
+                        --------- | ------
+                        g         | Format customed by the computer
+                        r         | ddd, dd MMM yyyy HH:mm:ss "GMT"
+                        s         | yyyy-MM-ddTHH:mm:ss
+                        z         | yyyy-MM-ddTHH:mm:sszz
+                        """);
+                }
+                void ShowFormatHelp(HelpType type)
+                {
+                    IEnumerable<string> infoLines = DateTimeFormats;
+                    string extra = "Run 'dir2 -D time' show time formats.";
+                    switch (type)
+                    {
+                        case HelpType.ContainingDate:
+                            infoLines = DateTimeFormats
+                            .Where((it) => it.Contains('M'))
+                            .Union(new string[]
+                            {
+                                "(ddd) MMM dd, yyyy",
+                            });
+                            break;
+                        case HelpType.ContainingTime:
+                            infoLines = DateTimeFormats
+                            .Where((it) => it.Contains('m'));
+                            extra = "Run 'dir2 -D date' show time formats.";
+                            break;
+                        default:
+                            break;
+                    }
+                    Console.WriteLine("Format example:");
+                    foreach (var line in infoLines)
+                    {
+                        Console.WriteLine($"    --date-format \"{line}\"");
+                    }
+                    Console.WriteLine(extra);
+                    Console.Write("Run 'dir2 -D code' for the meaning of format code.");
+                }
+
+                void ShowTimeZoneHelp()
+                {
+                    Console.Write("""
+                            Format of time zone setting:
+                                --date-format UTC+hh:mm
+                            For example,
+                                -D +8
+                                -D -7
+                                --date-format UTC+08:00
+                                --date-format UTC-07:30
+                                --date-format UTC+06
+                                --date-format UTC-5
+                            """);
+                }
+
                 var timespanFound = TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow);
                 var regUtc = utcTimespan();
                 bool IsTimeSpan(string arg)
@@ -101,7 +177,8 @@ static public partial class Helper
                 }
 
                 Func<DateTimeOffset, string> rtn = (_) => string.Empty;
-                switch (formatFound.ToLower())
+                var formatLc = formatFound.ToLower();
+                switch (formatLc)
                 {
                     case "unix":
                         if (Show.IsOututCsv)
@@ -126,23 +203,41 @@ static public partial class Helper
                     case "short":
                         rtn = ParseToDateShortFormat(timespanFound);
                         break;
+                    case "z":
+                        rtn = (value) => value.ToString("yyyy-MM-ddTHH:mm:sszz");
+                        break;
+                    case "zone":
+                        ShowTimeZoneHelp();
+                        throw new ConfigException(string.Empty);
+                    case "date-format":
+                        ShowFormatHelp(HelpType.Both);
+                        throw new ConfigException(string.Empty);
+                    case "date":
+                        ShowFormatHelp(HelpType.ContainingDate);
+                        throw new ConfigException(string.Empty);
+                    case "time":
+                        ShowFormatHelp(HelpType.ContainingTime);
+                        throw new ConfigException(string.Empty);
+                    case "code":
+                        ShowFormatCode();
+                        throw new ConfigException(string.Empty);
                     default:
-                        if (formatFound.StartsWith("utc") || formatFound == "zone")
+                        if (formatLc.StartsWith("utc"))
                         {
-                            Console.WriteLine("""
-                            Format of time zone setting:
-                                --date-format UTC+hh:mm
-                            For example,
-                                --date-format UTC+08:00
-                                --date-format UTC-07:30
-                                --date-format UTC+06
-                                --date-format UTC-5
-                            """);
+                            ShowTimeZoneHelp();
                             throw new ConfigException(string.Empty);
                         }
                         var fmtThe = System.Net.WebUtility.UrlDecode(formatFound);
                         rtn = (value) => value.ToString(fmtThe);
-                        _ = rtn(DateTimeOffset.Now); // verify if the lambda is valid
+                        try
+                        {
+                            _ = rtn(DateTimeOffset.Now); // verify if the lambda is valid
+                        }
+                        catch (FormatException)
+                        {
+                            throw new ConfigException(
+                                $"Format '{formatFound}' is invalid to {parser.Name}");
+                        }
                         break;
                 };
                 parser.SetImplementation(rtn);
@@ -169,10 +264,9 @@ static public partial class Helper
         ];
     #endregion
 
-    static public bool TryParseDateTime(string arg, out DateTimeOffset result)
+    static public bool TryParseDateTime(string arg, out DateTimeOffset outputDate)
     {
-        result = DateTimeOffset.MinValue;
-        var pattern3 = new Dictionary<string, DateParse>()
+        ImmutableDictionary<string, DateParse> pattern3 = new Dictionary<string, DateParse>()
         {
             ["minute"] = new DateParse(@"^(?<minute>\d+)min$", (it) => TimeSpan.FromMinutes(it)),
             ["minutes"] = new DateParse(@"^(?<minutes>\d+)minutes$", (it) => TimeSpan.FromMinutes(it)),
@@ -183,7 +277,7 @@ static public partial class Helper
             ["days"] = new DateParse(@"^(?<days>\d+)days$", (it) => TimeSpan.FromDays(it)),
             ["year"] = new DateParse(@"^(?<year>\d+)year$", (it) => TimeSpan.FromDays(365 * it)),
             ["years"] = new DateParse(@"^(?<years>\d+)years$", (it) => TimeSpan.FromDays(365 * it)),
-        };
+        }.ToImmutableDictionary();
 
         foreach (var (keyThe, parseThe) in pattern3)
         {
@@ -191,40 +285,45 @@ static public partial class Helper
                 RegexOptions.IgnoreCase))
             {
                 var numThe = int.Parse(match.Groups[keyThe].ToString());
-                result = DateTimeOffset.UtcNow.Subtract(parseThe.ToTimeSpan(numThe));
+                outputDate = DateTimeOffset.UtcNow.Subtract(parseThe.ToTimeSpan(numThe));
                 return true;
             }
         }
 
-        if (DateTime.TryParseExact(arg, DefaultDateTimeFormatString,
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out DateTime goodValue))
-        {
-            result = FromUtcToReportTimeZone(goodValue);
-            return true;
-        }
+        string[] qq2 = [arg, System.Net.WebUtility.UrlDecode(arg)];
+        qq2 = new string[] { string.Empty, ReportTimeZone }
+            .SelectMany((it) => qq2.Select((it2) => it2 + it))
+            .Distinct()
+            .ToArray();
 
-        foreach (var arg2 in new string[] { arg, System.Net.WebUtility.UrlDecode(arg) })
+        foreach (var tz in TimeZoneFormats)
         {
-            foreach (var zoneThe in new string[] { ReportTimeZone, "" })
-            {
-                var argThe = arg2 + zoneThe;
-                foreach (var tzThe in TimeZoneFormats)
+            var formatsThe = DateTimeFormats
+                .Select((it) => it + tz)
+                .ToArray();
+            var parseResult = qq2
+                .Select((it) =>
                 {
-                    foreach (var fmtThe in DateTimeFormats)
+                    if (DateTimeOffset.TryParseExact(it,
+                    formats: formatsThe,
+                    formatProvider: CultureInfo.InvariantCulture,
+                    styles: DateTimeStyles.None, out var result))
                     {
-                        if (DateTimeOffset.TryParseExact(argThe, fmtThe + tzThe,
-                            CultureInfo.InvariantCulture,
-                            DateTimeStyles.None, out DateTimeOffset goodValue2))
-                        {
-                            result = goodValue2;
-                            return true;
-                        }
+                        return (Flag: true, Date: result);
                     }
-                }
+                    else
+                    {
+                        return (Flag: false, Date: DateTimeOffset.MinValue);
+                    }
+                })
+                .FirstOrDefault((it) => it.Flag);
+            if (parseResult.Flag)
+            {
+                outputDate = parseResult.Date;
+                return true;
             }
         }
-
+        outputDate = DateTimeOffset.MinValue;
         return false;
     }
 
