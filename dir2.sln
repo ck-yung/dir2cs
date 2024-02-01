@@ -26,7 +26,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A9B2CD0D-D
 		docs\info-within.md = docs\info-within.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "gifs", "gifs", "{05B04F7C-0E41-44FA-9B0A-73B5790BFE29}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jpgs", "jpgs", "{05B04F7C-0E41-44FA-9B0A-73B5790BFE29}"
+	ProjectSection(SolutionItems) = preProject
+		jpgs\dir2-01.jpg = jpgs\dir2-01.jpg
+		jpgs\dir2-02.jpg = jpgs\dir2-02.jpg
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
