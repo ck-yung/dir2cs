@@ -23,6 +23,7 @@ static public class Sort
 
     static public readonly IParse Opt = new SimpleParser(name: "--sort",
         help: "off | name | size | date | ext | count | last      (up to 2 columns)",
+        extraHelp: "For example, dir2 -o count,size",
         resolve: (parser, args) =>
         {
             var aa = Helper.CommonSplit(args).Take(3).ToArray();
@@ -33,6 +34,11 @@ static public class Sort
                 Files = (seq) => seq.OrderBy((it) => it.FullName, Wild.StringComparer);
                 Sums = (seq) => seq.OrderBy((it) => it.Name, Wild.StringComparer);
                 return;
+            }
+
+            if (aa.Any((it) => it == Helper.ExtraHelp))
+            {
+                throw new ShowSyntaxException(parser);
             }
 
             if (aa.Length == 1)

@@ -25,6 +25,11 @@ static public partial class Helper
     static public readonly IInovke<DateTimeOffset, string> DateFormatOpt =
         new ParseInvoker<DateTimeOffset, string>(name: "--date-format",
             help: "FORMAT (DATE, TIME) | short | unix | unix+",
+            extraHelp: """
+            For format help,
+                dir2 -D date
+                dir2 -D time
+            """,
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {
@@ -47,12 +52,14 @@ static public partial class Helper
                         zz   | 3-digit time-zone (eg. +08)
                         zzz  | 6-digit time-zone (eg. +08:00)
 
-                        Char Code | Format
-                        --------- | ------
-                        g         | Format customed by the computer
-                        r         | ddd, dd MMM yyyy HH:mm:ss "GMT"
-                        s         | yyyy-MM-ddTHH:mm:ss
-                        z         | yyyy-MM-ddTHH:mm:sszz
+                        1 Char Code | Format
+                        ----------- | ------
+                          g         | Format customed by the computer
+                          G         | Format customed by the computer + TAB
+                          d         | yyyy-MM-dd
+                          r         | ddd, dd MMM yyyy HH:mm:ss "GMT"
+                          s         | yyyy-MM-ddTHH:mm:ss
+                          z         | yyyy-MM-ddTHH:mm:sszz
                         """);
                 }
                 void ShowFormatHelp(HelpType type)
@@ -96,16 +103,16 @@ static public partial class Helper
                 void ShowTimeZoneHelp()
                 {
                     Console.Write("""
-                            Format of time zone setting:
-                                --date-format UTC+hh:mm
-                            For example,
-                                -D +8
-                                -D -7
-                                --date-format UTC+08:00
-                                --date-format UTC-07:30
-                                --date-format UTC+06
-                                --date-format UTC-5
-                            """);
+                                Format of time zone setting:
+                                    --date-format UTC+hh:mm
+                                For example,
+                                    --date-format UTC+08:00
+                                    --date-format UTC-07:30
+                                    --date-format UTC+06
+                                    --date-format UTC-5
+                                    -Z +8
+                                    -Z -7
+                                """);
                 }
 
                 var timespanFound = TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow);
@@ -185,69 +192,87 @@ static public partial class Helper
                 }
 
                 Func<DateTimeOffset, string> rtn = (_) => string.Empty;
-                var formatLc = formatFound.ToLower();
-                switch (formatLc)
+                if (formatFound.Length == 1)
                 {
-                    case "unix":
-                        if (Show.IsOututCsv)
-                        {
-                            rtn = (value) => value.ToUnixTimeSeconds().ToString();
-                        }
-                        else
-                        {
-                            rtn = (value) => $"{value.ToUnixTimeSeconds(),11}";
-                        }
-                        break;
-                    case "unix+":
-                        if (Show.IsOututCsv)
-                        {
-                            rtn = (value) => $"{value.ToUnixTimeSeconds()}.{value.Millisecond:D3}";
-                        }
-                        else
-                        {
-                            rtn = (value) => $"{value.ToUnixTimeSeconds(),11}.{value.Millisecond:D3}";
-                        }
-                        break;
-                    case "short":
-                        rtn = ParseToDateShortFormat(timespanFound);
-                        break;
-                    case "z":
-                        rtn = (value) => value.ToString("yyyy-MM-ddTHH:mm:sszz");
-                        break;
-                    case "zone":
-                        ShowTimeZoneHelp();
-                        throw new ConfigException(string.Empty);
-                    case "format":
-                        ShowFormatHelp(HelpType.Both);
-                        throw new ConfigException(string.Empty);
-                    case "date":
-                        ShowFormatHelp(HelpType.ContainingDate);
-                        throw new ConfigException(string.Empty);
-                    case "time":
-                        ShowFormatHelp(HelpType.ContainingTime);
-                        throw new ConfigException(string.Empty);
-                    case "code":
-                        ShowFormatCode();
-                        throw new ConfigException(string.Empty);
-                    default:
-                        if (formatLc.StartsWith("utc"))
-                        {
+                    switch (formatFound)
+                    {
+                        case "d":
+                            rtn = (value) => value.ToString("yyyy-MM-dd");
+                            break;
+                        case "G":
+                            rtn = (value) => value.ToString("g") + ((Char)9).ToString();
+                            break;
+                        case "z":
+                            rtn = (value) => value.ToString("yyyy-MM-ddTHH:mm:sszz");
+                            break;
+                        default:
+                            rtn = (value) => value.ToString(formatFound);
+                            break;
+                    }
+                }
+                else
+                {
+                    var formatLc = formatFound.ToLower();
+                    switch (formatLc)
+                    {
+                        case "unix":
+                            if (Show.IsOututCsv)
+                            {
+                                rtn = (value) => value.ToUnixTimeSeconds().ToString();
+                            }
+                            else
+                            {
+                                rtn = (value) => $"{value.ToUnixTimeSeconds(),11}";
+                            }
+                            break;
+                        case "unix+":
+                            if (Show.IsOututCsv)
+                            {
+                                rtn = (value) => $"{value.ToUnixTimeSeconds()}.{value.Millisecond:D3}";
+                            }
+                            else
+                            {
+                                rtn = (value) => $"{value.ToUnixTimeSeconds(),11}.{value.Millisecond:D3}";
+                            }
+                            break;
+                        case "short":
+                            rtn = ParseToDateShortFormat(timespanFound);
+                            break;
+                        case "zone":
                             ShowTimeZoneHelp();
                             throw new ConfigException(string.Empty);
-                        }
-                        var fmtThe = System.Net.WebUtility.UrlDecode(formatFound);
-                        rtn = (value) => value.ToString(fmtThe);
-                        try
-                        {
-                            _ = rtn(DateTimeOffset.Now); // verify if the lambda is valid
-                        }
-                        catch (FormatException)
-                        {
-                            throw new ConfigException(
-                                $"Format '{formatFound}' is invalid to {parser.Name}");
-                        }
-                        break;
-                };
+                        case "format":
+                            ShowFormatHelp(HelpType.Both);
+                            throw new ConfigException(string.Empty);
+                        case "date":
+                            ShowFormatHelp(HelpType.ContainingDate);
+                            throw new ConfigException(string.Empty);
+                        case "time":
+                            ShowFormatHelp(HelpType.ContainingTime);
+                            throw new ConfigException(string.Empty);
+                        case "code":
+                            ShowFormatCode();
+                            throw new ConfigException(string.Empty);
+                        default:
+                            if (formatLc.StartsWith("utc"))
+                            {
+                                ShowTimeZoneHelp();
+                                throw new ConfigException(string.Empty);
+                            }
+                            var fmtThe = System.Net.WebUtility.UrlDecode(formatFound);
+                            rtn = (value) => value.ToString(fmtThe);
+                            break;
+                    };
+                }
+                try
+                {
+                    _ = rtn(DateTimeOffset.Now); // verify if the lambda is valid
+                }
+                catch (FormatException)
+                {
+                    throw new ConfigException(
+                        $"Format '{formatFound}' is invalid to {parser.Name}");
+                }
                 parser.SetImplementation(rtn);
             });
 

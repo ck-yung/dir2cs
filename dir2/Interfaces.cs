@@ -5,6 +5,7 @@ public interface IParse
 {
     string Name { get; }
     string Help { get; }
+    string ExtraHelp { get; }
     public IEnumerable<(bool, ArgType, string)> Parse(
         IEnumerable<(bool, ArgType, string)> args);
 }
@@ -86,6 +87,11 @@ public class ShowSyntaxException: Exception
     internal ShowSyntaxException(IParse parser)
         : base(MyOptions.GetHelpText(parser))
     {
+        if (false ==
+            string.IsNullOrEmpty(parser.ExtraHelp))
+        {
+            base.Data["extra"] = parser.ExtraHelp;
+        }
     }
 }
 

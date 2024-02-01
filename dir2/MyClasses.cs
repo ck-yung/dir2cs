@@ -13,6 +13,7 @@ static public partial class MyOptions
         public string Name { get; init; }
 
         public string Help { get; init; }
+        public string ExtraHelp { get; init; }
         public readonly Action Action;
 
         public SwitchParser(string name, string help = "")
@@ -59,15 +60,18 @@ static public partial class MyOptions
         public string Name { get; init; }
 
         public string Help { get; init; }
+        public string ExtraHelp { get; init; }
         public Action<Parser, IEnumerable<string>>
             Resolve
         { get; init; }
 
         public Parser(string name, string help,
-            Action<Parser, IEnumerable<string>> resolve)
+            Action<Parser, IEnumerable<string>> resolve,
+            string extraHelp = "")
         {
             Name = name;
             Help = help;
+            ExtraHelp = extraHelp;
             Resolve = resolve;
         }
 
@@ -118,7 +122,8 @@ static public partial class MyOptions
     {
         public SimpleParser(string name,
             Action<Parser, IEnumerable<string>> resolve,
-            string help = "") : base(name, help, resolve)
+            string help = "", string extraHelp = "")
+            : base(name, help, resolve, extraHelp)
         {
         }
     }
@@ -128,9 +133,11 @@ static public partial class MyOptions
         protected Func<T, R> imp { get; private set; }
         public ParseInvoker(string name, Func<T, R> @init,
             Action<ParseInvoker<T, R>, IEnumerable<string>> resolve,
-            string help = "") : base(name, help,
+            string help = "", string extraHelp = "") :
+            base(name, help,
                 resolve: (obj, args) =>
-                resolve((ParseInvoker<T, R>)obj, args))
+                resolve((ParseInvoker<T, R>)obj, args),
+                extraHelp: extraHelp)
         {
             imp = @init;
         }

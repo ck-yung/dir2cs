@@ -356,11 +356,13 @@ static public partial class MyOptions
     static internal string GetHelpText(IParse parser)
     {
         var rtn = new StringBuilder();
-        rtn.AppendLine($"Syntax: {nameof(dir2)} {parser.Name,-16} {parser.Help}");
+        rtn.Append($"Syntax: {nameof(dir2)} {parser.Name,-16} {parser.Help}");
         var shortcut = GetShortCut(parser.Name);
         if (false == string.IsNullOrEmpty(shortcut))
-        { // ............. $"Syntax: {nameof(
-            rtn.AppendLine($"Or:     {nameof(dir2)} {shortcut,-16} {parser.Help}");
+        {
+            rtn.AppendLine();
+            // ....... $"Syntax: {nameof(
+            rtn.Append($"Or:     {nameof(dir2)} {shortcut,-16} {parser.Help}");
         }
         return rtn.ToString();
     }

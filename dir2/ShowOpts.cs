@@ -249,7 +249,8 @@ static internal partial class Show
 
     static public readonly IInovke<long, string> LengthFormatOpt =
         new ParseInvoker<long, string>(name: "--size-format",
-            help: "short | +short | comma;WIDTH",
+            help: "short | +short | comma,WIDTH",
+            extraHelp: "For example, dir2 --size-format comma,10",
             init: (it) => $"{it,8} ", resolve: (parser, args) =>
             {
                 var aa = Helper.CommonSplit(args).OrderBy((it) => it).Take(4).ToArray();

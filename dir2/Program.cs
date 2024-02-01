@@ -2,6 +2,7 @@
 using static dir2.MyOptions;
 using static dir2.Helper;
 using System.Text;
+using System.Collections;
 
 namespace dir2;
 public class Program
@@ -41,6 +42,15 @@ public class Program
         catch (ShowSyntaxException se)
         {
             Console.WriteLine(se.Message);
+            foreach (DictionaryEntry a2 in se.Data)
+            {
+                var a3 = a2.Key.ToString();
+                if (a2.Key.ToString() == "extra")
+                {
+                    Console.WriteLine(a2.Value.ToString());
+                    break;
+                }
+            }
         }
         catch (ConfigException aee)
         {

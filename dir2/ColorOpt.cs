@@ -242,10 +242,13 @@ static internal partial class Show
     static internal readonly IInovke<int, IEnumerable<Func<int>>> ColorOpt =
         new ParseInvoker<int, IEnumerable<Func<int>>>("--color",
             help: "off | COLOR[,NUMBER,COLOR-OF-TOTAL-LINE]",
+            extraHelp: """
+            For example,
+                dir2 --color darkred
+                dir2 --color yellow,10,green
+            """,
             init: (_) => Color.GetZeroes(), resolve: (parser, args) =>
             {
-                if (Console.IsOutputRedirected) return;
-
                 var aa = args
                 .Select((it) => it.Split(';', ','))
                 .SelectMany((it) => it)
@@ -261,6 +264,7 @@ static internal partial class Show
 
                     Action<bool, ConsoleColor> switchBackgroundColor = (isBlack, arg) =>
                     {
+                        Console.ForegroundColor = arg;
                         switch (isBlack, arg)
                         {
                             case (_, ConsoleColor.Black):
@@ -276,17 +280,23 @@ static internal partial class Show
                                 Console.BackgroundColor = ConsoleColor.Gray;
                                 break;
                         }
+                        Console.Write(isBlack ? " Good " : " Demo ");
                     };
+
+                    Action resetColor = () => Console.ResetColor();
+
+                    if (Console.IsOutputRedirected)
+                    {
+                        switchBackgroundColor = (_, _) => { };
+                        resetColor = () => { };
+                    }
 
                     foreach (ConsoleColor cr2 in Enum.GetValues(typeof(ConsoleColor)))
                     {
                         Console.Write($"\t{cr2,-12}");
-                        Console.ForegroundColor = cr2;
                         switchBackgroundColor(true, cr2);
-                        Console.Write(" Good ");
                         switchBackgroundColor(false, cr2);
-                        Console.Write(" Demo ");
-                        Console.ResetColor();
+                        resetColor();
                         Console.WriteLine();
                     }
                     Console.WriteLine("""
@@ -295,6 +305,8 @@ static internal partial class Show
                         """);
                     throw new ShowSyntaxException(parser);
                 }
+
+                if (Console.IsOutputRedirected) return;
 
                 Func<int, (bool, int)> incFunc;
                 switch (aa.Length)
