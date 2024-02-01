@@ -93,7 +93,7 @@ static public partial class Wild
                 }
                 else
                 {
-                    throw new ConfigException($"Missing value to {current}");
+                    throw ConfigException.MissingValue(current.Item2);
                 }
             }
         }

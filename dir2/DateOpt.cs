@@ -24,7 +24,7 @@ static public partial class Helper
 
     static public readonly IInovke<DateTimeOffset, string> DateFormatOpt =
         new ParseInvoker<DateTimeOffset, string>(name: "--date-format",
-            help: "DATE-FORMAT | ZONE  (short, yy-MM-dd%20HH:mm:ss, unix, unix+, UTC+hh:mm)",
+            help: "FORMAT (DATE, TIME) | short | unix | unix+",
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
             {
@@ -57,22 +57,32 @@ static public partial class Helper
                 }
                 void ShowFormatHelp(HelpType type)
                 {
-                    IEnumerable<string> infoLines = DateTimeFormats;
-                    string extra = "Run 'dir2 -D time' show time formats.";
+                    IEnumerable<string> infoLines = Enumerable.Empty<string>();
+                    string[] extraStrings =
+                    [
+                        "Run 'dir2 -D time' show time formats.",
+                        "Run 'dir2 -D date' show date formats.",
+                    ];
+                    string extra = string.Empty;
                     switch (type)
                     {
                         case HelpType.ContainingDate:
                             infoLines = DateTimeFormats
                             .Where((it) => it.Contains('M'))
                             .Union(ExtraDateFormatSample);
+                            extra = extraStrings[0];
                             break;
                         case HelpType.ContainingTime:
                             infoLines = DateTimeFormats
                             .Where((it) => it.Contains('m'));
-                            extra = "Run 'dir2 -D date' show time formats.";
+                            extra = extraStrings[1];
                             break;
                         default:
-                            break;
+                            foreach (var line in extraStrings)
+                            {
+                                Console.WriteLine(line);
+                            }
+                            return;
                     }
                     Console.WriteLine("Format example:");
                     foreach (var line in infoLines)
@@ -207,7 +217,7 @@ static public partial class Helper
                     case "zone":
                         ShowTimeZoneHelp();
                         throw new ConfigException(string.Empty);
-                    case "date-format":
+                    case "format":
                         ShowFormatHelp(HelpType.Both);
                         throw new ConfigException(string.Empty);
                     case "date":

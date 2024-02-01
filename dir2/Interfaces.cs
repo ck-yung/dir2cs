@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace dir2;
 public interface IParse
 {
@@ -35,7 +37,7 @@ public partial class Helper
 
         if (rtn.Length == 0)
         {
-            throw new ConfigException($"Missing value to '{opt.Name}'");
+            throw ConfigException.MissingValue(opt.Name);
         }
 
         if (rtn.Length > 1)
@@ -60,7 +62,7 @@ public partial class Helper
 
         if (rtn.Length == 0)
         {
-            throw new ConfigException($"Missing value to '{opt.Name}'");
+            throw ConfigException.MissingValue(opt.Name);
         }
 
         if (rtn.Length > max)
@@ -82,7 +84,7 @@ public partial class Helper
 public class ShowSyntaxException: Exception
 {
     internal ShowSyntaxException(IParse parser)
-        : base($"Syntax: {parser.Name} {parser.Help}")
+        : base(MyOptions.GetHelpText(parser))
     {
     }
 }
@@ -105,5 +107,18 @@ internal class ConfigException: Exception
     static public IEnumerable<Info> GetErrors()
     {
         return Errors;
+    }
+
+    static internal ConfigException MissingValue(string name)
+    {
+        var msg = new StringBuilder();// Shortcut:
+        msg.AppendLine($"Missing value to '{name}'");
+        var shortcutFound = MyOptions.GetShortCut(name);
+        if (string.IsNullOrEmpty(shortcutFound))
+        {
+            shortcutFound = name;
+        }
+        msg.Append($"Try 'dir2 {shortcutFound} +?'");
+        return new(msg.ToString());
     }
 }

@@ -88,8 +88,7 @@ static public partial class MyOptions
                     {
                         if (!it.MoveNext())
                         {
-                            throw new ConfigException(
-                                $"Missing value to {Name}");
+                            throw ConfigException.MissingValue(Name);
                         }
                         yield return
                             (true, it.Current.Item2, it.Current.Item3);

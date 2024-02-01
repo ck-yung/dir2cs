@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Immutable;
+using System.Data;
+using System.Text;
 using static dir2.MyOptions;
 
 namespace dir2;
@@ -221,7 +223,7 @@ static public partial class MyOptions
                 }
                 else
                 {
-                    throw new ConfigException($"Missing value to shortcut {current}");
+                    throw ConfigException.MissingValue(current);
                 }
             }
             else if (ShortcutComplexOptions.TryGetValue(current,
@@ -334,4 +336,32 @@ static public partial class MyOptions
                 return ["--date-format", "utc" + arg];
             }, "For example, -Z +08 => --date-format utc+08"),
         }.ToImmutableDictionary();
+
+    static internal string GetShortCut(string name)
+    {
+        var finding = ShortcutOptions
+            .Select((it) => new
+            {
+                Found = (it.Value == name),
+                it.Key
+            })
+            .FirstOrDefault((it) => it.Found);
+        if (finding?.Found ?? false)
+        {
+            return finding.Key;
+        }
+        return string.Empty;
+    }
+
+    static internal string GetHelpText(IParse parser)
+    {
+        var rtn = new StringBuilder();
+        rtn.AppendLine($"Syntax: {nameof(dir2)} {parser.Name,-16} {parser.Help}");
+        var shortcut = GetShortCut(parser.Name);
+        if (false == string.IsNullOrEmpty(shortcut))
+        { // ............. $"Syntax: {nameof(
+            rtn.AppendLine($"Or:     {nameof(dir2)} {shortcut,-16} {parser.Help}");
+        }
+        return rtn.ToString();
+    }
 }
