@@ -7,8 +7,8 @@
 | Culture    | Language         | ```"en-US"```   | ```culture=zh-TW```    |
 | Just now   | Within 2 minutes | ```"Just"```    | ```just="Now"%20%20``` |
 | Today      | Within today     | ```hh:mmtt```   | ```today=HH:mm:ss```   |
-| Yesterday  | Within yesterday | ```"Yd" hhtt``` | ```yesterday=%22Yesterday%22 HH``` |
-| This week  | Within 6 days    | ```ddd hhtt```  | ```week=ddd HH:mm```   |
+| Yesterday  | Within yesterday | ```"Yd" hhtt``` | ```ysday=%22Yesterday%22 HH``` |
+| This week  | Within 6 days    | ```ddd hhtt```  | ```wkday=ddd HH:mm```   |
 | This month | Within the month | ```MMM dd```    | ```month=MMM ddtt```   |
 | This year  | Within the year  | ```MMM dd```    | ```year=MMM dd```      |
 | else       | Else             | ```yyyy MMM```  | ```else=yyyy-MM```     |
@@ -18,7 +18,7 @@
 * The formats of "Yesterday AM" and "Yesterday PM" are referred to "Yeserday".
 
 
-## Configuration file of ```~\.local\dir2-date-short.txt```
+## Configuration file of  ```~/.local/dir2-date-short.txt``` or  ```%USERPRFILE%\.local\dir2-date-short.txt```
 
 | Type       | Format              | Default Format        | Demo Display   |
 | ----       | -----------         | --------------        | ------------   |
@@ -26,7 +26,7 @@
 | Just now   | ```Just=TEXT```     | ```Just="Just"```     | ```Just```     |
 | Today      | ```Today=```FORMAT  | ```Today=hh:mmtt```   | ```03:47PM```  |
 | Yesterday  | ```YsDay=```FORMAT  | ```YsDay="Yd" hhtt``` | ```Yd 03PM```  |
-| This week  | ```Week=```FORMAT   | ```Week=ddd hhtt```   | ```Wed 03PM``` |
+| This week  | ```WkDay=```FORMAT  | ```WkDay=ddd hhtt```   | ```Wed 03PM``` |
 | This month | ```Month=```FORMAT  | ```Month=MMM dd```    | ```Jun 12```   |
 | This year  | ```Year=```FORMAT   | ```Year=MMM dd```     | ```Jun 12```   |
 | else       | ```Else=```FORMAT   | ```Else=yyyy MMM```   | ```2019 Jun``` |

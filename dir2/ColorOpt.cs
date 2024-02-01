@@ -246,6 +246,8 @@ static internal partial class Show
             For example,
                 dir2 --color darkred
                 dir2 --color yellow,10,green
+
+            https://github.com/ck-yung/dir2cs/blob/main/docs/info-color.md
             """,
             init: (_) => Color.GetZeroes(), resolve: (parser, args) =>
             {
@@ -299,10 +301,6 @@ static internal partial class Show
                         resetColor();
                         Console.WriteLine();
                     }
-                    Console.WriteLine("""
-
-                        https://github.com/ck-yung/dir2cs/blob/main/docs/info-color.md
-                        """);
                     throw new ShowSyntaxException(parser);
                 }
 

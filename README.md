@@ -1,5 +1,5 @@
 # Dir2
-**v2.1.2.0**
+**v2.2.0.0**
 
 ## Syntax:
 ```
@@ -7,8 +7,6 @@ dir2 [DIR/WILD ..] [OPT ..]
 ```
 
 ### Features
-
-* Version 2.1.2 will be released on 2024 February.
 
 * Performs MSDOS DIR and UNIX LS command.
 
@@ -30,6 +28,18 @@ or
 ```
 dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb --color green
 ```
+
+### Major Enhancement
+
+* Color Feature
+
+![Color Feature](https://github.com/ck-yung/dir2cs/blob/main/jpgs/dir2-01.jpg)
+
+
+* File name of Local Configuration
+
+![Config File](https://github.com/ck-yung/dir2cs/blob/main/jpgs/dir2-02.jpg)
+
 
 ### On-line help
 

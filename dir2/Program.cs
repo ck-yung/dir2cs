@@ -181,7 +181,7 @@ public class Program
                             helpThe.Add($" {optThe.Name,16} {optThe.Shortcut}  {optThe.Help}");
                         }
                         helpThe.Add("For example:");
-                        helpThe.Add("    dir2  --link  +?");
+                        helpThe.Add("    dir2  --color  +?");
                         break;
 
                     default:

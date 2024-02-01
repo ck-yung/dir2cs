@@ -22,7 +22,7 @@ static public class Sort
     }
 
     static public readonly IParse Opt = new SimpleParser(name: "--sort",
-        help: "off | name | size | date | ext | count | last      (up to 2 columns)",
+        help: "off | name | size | date | ext | count | last",
         extraHelp: "For example, dir2 -o count,size",
         resolve: (parser, args) =>
         {

@@ -10,10 +10,10 @@
   <PropertyGroup>
     <Title>dir2</Title>
     <PackageId>dir2</PackageId>
-    <PackageVersion>2.1.2.0</PackageVersion>
-    <Version>2.1.2.0</Version>
+    <PackageVersion>2.2.0.0</PackageVersion>
+    <Version>2.2.0.0</Version>
     <Authors>Yung, Chun Kau</Authors>
-    <Description>List files sum by dir or ext, with filter on size, date, link.</Description>
+    <Description>List files dir-sum, ext-sum, size, date, link; color, time-zone</Description>
     <Summary>
        The tool performs MSDOS DIR and UNIX LS command in latest dotnet envronment.
        Features: Group by File-Ext, Group by Dir; Filter: Date, Size, Link; Column Selection;

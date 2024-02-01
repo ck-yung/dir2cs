@@ -29,6 +29,8 @@ static public partial class Helper
             For format help,
                 dir2 -D date
                 dir2 -D time
+
+            https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md
             """,
             init: (value) => value.ToString(DefaultDateTimeFormatString),
             resolve: (parser, args) =>
