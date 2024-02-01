@@ -19,6 +19,9 @@
 * Run command ```dir2 -? cfg``` to find your personal configuration file.
 * Short-cut of option is **NOT** loaded from the configuration file.
 * The configuration file contains the following options only.
+* Time zone in configuration file: ```--date-format utc+```*hh:mm*
+    * For exampe, ```--date-format utc+08:00```
+
 
 | Option  | Description |
 | ------  | --------- |
@@ -28,13 +31,14 @@
 | --utf8  | Text Encoding |
 | --regex | Regular Expression |
 | --case-sensitive | |
-| --date-format    | |
-| --size-format    | |
-| --count-format  | |
+| [--color](https://github.com/ck-yung/dir2cs/blob/main/docs/info-color.md) | |
+| [--date-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md) | |
+| [--size-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-size-format.md) | |
+| --count-format   | |
 | --hidden   | Hidden file selection |
 | --reverse  | Ordering |
-| --end-time |          |
-| --excl     | Excluding files |
-| --excl-dir | Excluding directories |
+| --end-time | Time stamp |
+| --excl     | Excluding files. Literal ```:link``` to exclude link files.|
+| --excl-dir | Excluding directories. Literal ```:link``` to exclude directory links.|
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)

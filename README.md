@@ -1,4 +1,4 @@
-# Dir2
+﻿# Dir2
 **v2.2.0.0**
 
 ## Syntax:
@@ -55,7 +55,7 @@ dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb --color green
 
 | Sample Command | Sample Ouput |
 | -------------  | ------------ |
-| ```dir2 --sum +?``` | ```--sum ext | dir | +dir | year``` |
+| ```dir2 --sum +?``` | ```--sum ext ｜ dir ｜ +dir ｜ year``` |
 | ```dir2 -w size```  | ```--within 123kb``` |
 |                     | ```--wihtin 123mb``` |
 
