@@ -21,9 +21,6 @@ static internal partial class Show
             InternalReset();
         }
 
-        static internal string[] GetColorNames() =>
-            Enum.GetNames<ConsoleColor>().ToArray();
-
         static internal Func<int, (bool, int)> Init(IParse parser,
             int lineCountToAlterColumnColor,
             string colorToAlterColumnColor,
@@ -260,21 +257,39 @@ static internal partial class Show
                 || 0 == string.Compare(it, "color", ignoreCase: true)))
                 {
                     Console.WriteLine("Color name:");
-                    Console.Write($"\t{Color.ShortcutOriginalForeColor,-12}");
-                    int ii = 1;
-                    foreach (var a2 in Color.GetColorNames())
+                    Console.WriteLine($"\t{Color.ShortcutOriginalForeColor,-12} Current color");
+
+                    Action<bool, ConsoleColor> switchBackgroundColor = (isBlack, arg) =>
                     {
-                        Console.Write($"\t{a2,-12}");
-                        ii += 1;
-                        if (ii > 3)
+                        switch (isBlack, arg)
                         {
-                            ii = 0;
-                            Console.WriteLine();
+                            case (_, ConsoleColor.Black):
+                                Console.BackgroundColor = ConsoleColor.Gray;
+                                break;
+                            case (_, ConsoleColor.Gray):
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                break;
+                            case (true, _):
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                break;
+                            default:
+                                Console.BackgroundColor = ConsoleColor.Gray;
+                                break;
                         }
+                    };
+
+                    foreach (ConsoleColor cr2 in Enum.GetValues(typeof(ConsoleColor)))
+                    {
+                        Console.Write($"\t{cr2,-12}");
+                        Console.ForegroundColor = cr2;
+                        switchBackgroundColor(true, cr2);
+                        Console.Write(" Good ");
+                        switchBackgroundColor(false, cr2);
+                        Console.Write(" Demo ");
+                        Console.ResetColor();
+                        Console.WriteLine();
                     }
                     Console.WriteLine("""
-
-                        Current color would be used if -
 
                         https://github.com/ck-yung/dir2cs/blob/main/docs/info-color.md
                         """);
