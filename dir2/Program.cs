@@ -89,7 +89,7 @@ public class Program
 	{
         if (GetExeEnvr().Contains("--debug:on"))
         {
-            MyDebugWrite = (msg) => Console.Error.WriteLine(msg);
+            MyDebugWrite = (msg) => Console.Error.WriteLine($"dbg: {msg}");
         }
 
 		if (mainArgs.Contains("--version") ||
@@ -237,7 +237,7 @@ public class Program
             {
                 var tmp5 = string.Join(" ",
                     tmp4.Select((it) => it.Item2).ToArray());
-                if (!tmp5.StartsWith("--debug:"))
+                if (!tmp5.Contains("debug:") && !tmp5.Contains("exception"))
                 {
                     Console.Error.WriteLine(
                         $"Unknown {tmp4.Key} options: {tmp5}");

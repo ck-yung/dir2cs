@@ -29,7 +29,7 @@ static class Config
             .Select((it) => it.Trim())
             .Where((it) => it.StartsWith("--")))
         {
-            var bb = arg.Split(new char[] { ' ', '\t' }, 2);
+            var bb = arg.Split([' ', '\t'], 2);
             if (bb.Length == 2)
             {
                 yield return (type, $"{bb[0].Trim()}");

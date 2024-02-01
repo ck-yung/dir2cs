@@ -9,8 +9,7 @@ namespace dir2;
 
 static public partial class Helper
 {
-    record DateParse(string Pattern, Func<int, TimeSpan> ToTimeSpan);
-
+    record DateRegexParser(string Name, Regex Regex, Func<int, TimeSpan> ToTimeSpan);
     static public readonly string DefaultDateTimeFormatString
         = "yyyy-MM-dd HH:mm";
 
@@ -20,6 +19,8 @@ static public partial class Helper
     private static partial Regex utcTimespan();
 
     enum HelpType { Both, ContainingDate, ContainingTime };
+
+    static readonly string[] ExtraDateFormatSample =[ "(ddd) MMM dd, yyyy" ];
 
     static public readonly IInovke<DateTimeOffset, string> DateFormatOpt =
         new ParseInvoker<DateTimeOffset, string>(name: "--date-format",
@@ -35,12 +36,12 @@ static public partial class Helper
                         yy   | 2-digit year
                         yyyy | 4-digit year
                         MM   | 2-digit month
-                        MMM  | 3-char month name (in en-US)
+                        MMM  | 3-char month name (in en-US), eg. Jan
                         dd   | 2-digit day of month
-                        ddd  | 3-char weekday name (in en-US)
+                        ddd  | 3-char weekday name (in en-US), eg. Tue
                         tt   | AM or PM
-                        HH   | 2-digit 24-hour
-                        hh   | 2-digit 12-hour
+                        HH   | 2-digit 24-hour (00 - 23)
+                        hh   | 2-digit 12-hour (12, 01 - 11)
                         mm   | 2-digit minute
                         ss   | 2-digit second
                         zz   | 3-digit time-zone (eg. +08)
@@ -63,10 +64,7 @@ static public partial class Helper
                         case HelpType.ContainingDate:
                             infoLines = DateTimeFormats
                             .Where((it) => it.Contains('M'))
-                            .Union(new string[]
-                            {
-                                "(ddd) MMM dd, yyyy",
-                            });
+                            .Union(ExtraDateFormatSample);
                             break;
                         case HelpType.ContainingTime:
                             infoLines = DateTimeFormats
@@ -108,7 +106,7 @@ static public partial class Helper
                     if (matchUtc.Success)
                     {
                         var textFound = matchUtc.Groups["timespan"].Value;
-                        var a3 = textFound.StartsWith('+') ? textFound.Substring(1) : textFound;
+                        var a3 = textFound.StartsWith('+') ? textFound[1..] : textFound;
                         if (false == a3.Contains(':'))
                         {
                             a3 += ":00";
@@ -134,7 +132,7 @@ static public partial class Helper
                             }
                             else
                             {
-                                ReportTimeZone = " "+a4;
+                                ReportTimeZone = " "+ a4;
                             }
 
                             timespanFound = timespanThe;
@@ -250,7 +248,7 @@ static public partial class Helper
     static public readonly ImmutableArray<string> DateTimeFormats =
         [
             "yyyy-MM-dd",
-            "yyyyMMdd",
+            "yyyy-MMdd",
             "yyyy-MM-ddTHH:mm:ss",
             "yyyy-MM-dd HH:mm:ss",
             "yyyy-MM-ddTHH:mm",
@@ -266,28 +264,37 @@ static public partial class Helper
 
     static public bool TryParseDateTime(string arg, out DateTimeOffset outputDate)
     {
-        ImmutableDictionary<string, DateParse> pattern3 = new Dictionary<string, DateParse>()
+        var parseResult = new List<DateRegexParser>()
         {
-            ["minute"] = new DateParse(@"^(?<minute>\d+)min$", (it) => TimeSpan.FromMinutes(it)),
-            ["minutes"] = new DateParse(@"^(?<minutes>\d+)minutes$", (it) => TimeSpan.FromMinutes(it)),
-            ["hour"] = new DateParse(@"^(?<hour>\d+)hour$", (it) => TimeSpan.FromHours(it)),
-            ["hours"] = new DateParse(@"^(?<hours>\d+)hours$", (it) => TimeSpan.FromHours(it)),
-            ["hr"] = new DateParse(@"^(?<hr>\d+)hr$", (it) => TimeSpan.FromHours(it)),
-            ["day"] = new DateParse(@"^(?<day>\d+)day$", (it) => TimeSpan.FromDays(it)),
-            ["days"] = new DateParse(@"^(?<days>\d+)days$", (it) => TimeSpan.FromDays(it)),
-            ["year"] = new DateParse(@"^(?<year>\d+)year$", (it) => TimeSpan.FromDays(365 * it)),
-            ["years"] = new DateParse(@"^(?<years>\d+)years$", (it) => TimeSpan.FromDays(365 * it)),
-        }.ToImmutableDictionary();
+            new("minute", RegMinute(), (it) => TimeSpan.FromMinutes(it)),
+            new("minutes", RegMinutes(), (it) => TimeSpan.FromMinutes(it)),
+            new("min", RegMin(), (it) => TimeSpan.FromMinutes(it)),
+            new("hour", RegHour(), (it) => TimeSpan.FromHours(it)),
+            new("hours", RegHours(), (it) => TimeSpan.FromHours(it)),
+            new("hr", RegHr(), (it) => TimeSpan.FromHours(it)),
+            new("day", RegDay(), (it) => TimeSpan.FromDays(it)),
+            new("days", RegDays(), (it) => TimeSpan.FromDays(it)),
+            new("year", RegYear(), (it) => TimeSpan.FromDays(365 * it)),
+            new("years", RegYears(), (it) => TimeSpan.FromDays(365 * it)),
+        }
+        .Select((it) => new
+        {
+            it.Name,
+            it.ToTimeSpan,
+            Match = it.Regex.Match(arg),
+        })
+        .Select((it) =>
+        (it.Match.Success &&
+        int.TryParse(it.Match.Groups[it.Name].ToString(), out var numThe))
+        ? (Flag: true, Date: DateTimeOffset.UtcNow.Subtract(it.ToTimeSpan(numThe)))
+        : (Flag: false, Date: DateTimeOffset.MinValue)
+        )
+        .FirstOrDefault((it) => it.Flag);
 
-        foreach (var (keyThe, parseThe) in pattern3)
+        if (parseResult.Flag)
         {
-            foreach (Match match in Regex.Matches(arg, parseThe.Pattern,
-                RegexOptions.IgnoreCase))
-            {
-                var numThe = int.Parse(match.Groups[keyThe].ToString());
-                outputDate = DateTimeOffset.UtcNow.Subtract(parseThe.ToTimeSpan(numThe));
-                return true;
-            }
+            outputDate = parseResult.Date;
+            return true;
         }
 
         string[] qq2 = [arg, System.Net.WebUtility.UrlDecode(arg)];
@@ -301,25 +308,19 @@ static public partial class Helper
             var formatsThe = DateTimeFormats
                 .Select((it) => it + tz)
                 .ToArray();
-            var parseResult = qq2
+            var parseResult2 = qq2
                 .Select((it) =>
-                {
-                    if (DateTimeOffset.TryParseExact(it,
+                DateTimeOffset.TryParseExact(it,
                     formats: formatsThe,
                     formatProvider: CultureInfo.InvariantCulture,
-                    styles: DateTimeStyles.None, out var result))
-                    {
-                        return (Flag: true, Date: result);
-                    }
-                    else
-                    {
-                        return (Flag: false, Date: DateTimeOffset.MinValue);
-                    }
-                })
+                    styles: DateTimeStyles.None, out var result)
+                    ? (Flag: true, Date: result)
+                    : (Flag: false, Date: DateTimeOffset.MinValue)
+                )
                 .FirstOrDefault((it) => it.Flag);
-            if (parseResult.Flag)
+            if (parseResult2.Flag)
             {
-                outputDate = parseResult.Date;
+                outputDate = parseResult2.Date;
                 return true;
             }
         }
@@ -329,17 +330,17 @@ static public partial class Helper
 
     [GeneratedRegex(
         @"^culture(=|\s*=\s*)(?<Culture>\w.*})$",
-        RegexOptions.IgnoreCase, "en-US")]
+        RegexOptions.IgnoreCase)]
     private static partial Regex RegCulture();
 
     [GeneratedRegex(
         @"^Just(=|\s*=\s*)(?<Format>\w.*)$",
-        RegexOptions.IgnoreCase, "en-US")]
+        RegexOptions.IgnoreCase)]
     private static partial Regex RegJustText();
 
     [GeneratedRegex(
         @"^(?<Name>[a-zA-Z0-9~]{1,21})(=|\s*=\s*)(?<Format>\w.*)$",
-        RegexOptions.IgnoreCase, "en-US")]
+        RegexOptions.IgnoreCase)]
     private static partial Regex RegNameFormat();
 
     private record FormatFunc(bool NeedConverted, Func<DateTimeOffset, string> Func);
@@ -615,11 +616,11 @@ static public partial class Helper
         }
         #endregion
 
-        Func<DateTimeOffset, string> rtn = (timeThe) =>
+        string shortDateText(DateTimeOffset timeThe)
         {
             if (timeThe > withinTwoMinutes)
             {
-                if (timeThe  < notWithinTenMinutes) return fnJust(timeThe);
+                if (timeThe < notWithinTenMinutes) return fnJust(timeThe);
                 return fnElse(timeThe);
             }
 
@@ -634,7 +635,39 @@ static public partial class Helper
                 return fnYear(timeThe);
             }
             return fnElse(timeThe);
-        };
-        return rtn;
+        }
+        return shortDateText;
     }
+
+    #region static partial Regex()
+    [GeneratedRegex(@"^(?<minute>\d+)minute$", RegexOptions.IgnoreCase)]
+    private static partial Regex RegMinute();
+
+    [GeneratedRegex(@"^(?<minutes>\d+)minute$", RegexOptions.IgnoreCase)]
+    private static partial Regex RegMinutes();
+
+    [GeneratedRegex(@"^(?<min>\d+)min", RegexOptions.IgnoreCase)]
+    private static partial Regex RegMin();
+
+    [GeneratedRegex(@"^(?<hour>\d+)hour$", RegexOptions.IgnoreCase)]
+    private static partial Regex RegHour();
+
+    [GeneratedRegex(@"^(?<hours>\d+)hours$", RegexOptions.IgnoreCase)]
+    private static partial Regex RegHours();
+
+    [GeneratedRegex(@"^(?<hr>\d+)hr$", RegexOptions.IgnoreCase)]
+    private static partial Regex RegHr();
+
+    [GeneratedRegex(@"^(?<day>\d+)day$", RegexOptions.IgnoreCase)]
+    private static partial Regex RegDay();
+
+    [GeneratedRegex(@"^(?<days>\d+)days$", RegexOptions.IgnoreCase)]
+    private static partial Regex RegDays();
+
+    [GeneratedRegex(@"^(?<year>\d+)year$", RegexOptions.IgnoreCase)]
+    private static partial Regex RegYear();
+
+    [GeneratedRegex(@"^(?<years>\d+)years$", RegexOptions.IgnoreCase)]
+    private static partial Regex RegYears();
+    #endregion
 }

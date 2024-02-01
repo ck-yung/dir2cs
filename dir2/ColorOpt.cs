@@ -29,8 +29,7 @@ static internal partial class Show
             string colorToAlterColumnColor,
             string colorTotalLine)
         {
-            ConsoleColor tmp;
-            if (TryParseToForeColor(colorToAlterColumnColor, out tmp))
+            if (TryParseToForeColor(colorToAlterColumnColor, out var tmp))
             {
                 ForegroundColorPerLineCount = tmp;
             }
@@ -93,8 +92,7 @@ static internal partial class Show
         static internal Func<int, (bool, int)> Init(IParse parser,
             string colorToAlterColumnColor)
         {
-            ConsoleColor tmp;
-            if (TryParseToForeColor( colorToAlterColumnColor, out tmp))
+            if (TryParseToForeColor(colorToAlterColumnColor, out var tmp))
             {
                 ForegroundColorPerLineCount = tmp;
             }
@@ -189,7 +187,7 @@ static internal partial class Show
             while (true) yield return ReturnZero;
         }
 
-        static internal IEnumerable<Func<int>> ForegroundColors(int dbgMarker,
+        static internal IEnumerable<Func<int>> ForegroundColors(
             Func<int, (bool, int)> incLineCount)
         {
             bool isLineCountReset = false;
@@ -224,9 +222,10 @@ static internal partial class Show
         static ConsoleColor ForegroundColorPerLineCount { get; set; }
         static ConsoleColor ForegroundColorTotalLine { get; set; }
 
+        static public readonly string ShortcutOriginalForeColor = "=";
         static bool TryParseToForeColor(string arg, out ConsoleColor output)
         {
-            if (arg == "-")
+            if (arg == ShortcutOriginalForeColor)
             {
                 output = Console.ForegroundColor;
                 return true;
@@ -261,8 +260,7 @@ static internal partial class Show
                 || 0 == string.Compare(it, "color", ignoreCase: true)))
                 {
                     Console.WriteLine("Color name:");
-                    var a3 = "-";
-                    Console.Write($"\t{a3,-12}");
+                    Console.Write($"\t{Color.ShortcutOriginalForeColor,-12}");
                     int ii = 1;
                     foreach (var a2 in Color.GetColorNames())
                     {
@@ -295,14 +293,14 @@ static internal partial class Show
                         else
                         {
                             incFunc = Color.Init(parser, aa[0]);
-                            parser.SetImplementation((arg) => Color.ForegroundColors(arg, incFunc));
+                            parser.SetImplementation((_) => Color.ForegroundColors(incFunc));
                         }
                         break;
                     case 3:
                         if (int.TryParse(aa[1], out var lineCountToChangeBackgroundColor))
                         {
                             incFunc = Color.Init(parser, lineCountToChangeBackgroundColor, aa[0], aa[2]);
-                            parser.SetImplementation((arg) => Color.ForegroundColors(arg, incFunc));
+                            parser.SetImplementation((_) => Color.ForegroundColors(incFunc));
                         }
                         else
                         {
@@ -332,14 +330,15 @@ static internal partial class Show
 
     static internal readonly IInovke<bool, bool> PauseOpt =
         new ParseInvoker<bool, bool>("--pause",
-            help: "off | on | NUMBER", init: Helper.itself, resolve: (parser, args) =>
+            help: "off | on | NUMBER", init: Helper.itself,
+            resolve: (parser, args) =>
             {
                 if (Console.IsOutputRedirected) return;
                 var argThe = Helper.GetUnique(args, parser);
 
                 int lineCount = 0;
-                int lineCountToPause = 0;
-                switch (argThe.ToLower(), int.TryParse(argThe, out lineCountToPause))
+                switch (argThe.ToLower(), int.TryParse(argThe,
+                    out var lineCountToPause))
                 {
                     case ("off", _):
                         parser.SetImplementation((_) => false);

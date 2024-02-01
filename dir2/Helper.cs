@@ -397,18 +397,18 @@ static public partial class Helper
     }
 
     [GeneratedRegex(@"^(?<valueFound>\d{1,})(?<unitFound>[kmgt])b$",
-        RegexOptions.IgnoreCase, "en-US")]
+        RegexOptions.IgnoreCase)]
     private static partial Regex RegexSizeWithUnitB();
 
     [GeneratedRegex(@"^(?<valueFound>\d{1,})(?<unitFound>[kmgt])$",
-        RegexOptions.IgnoreCase, "en-US")]
+        RegexOptions.IgnoreCase)]
     private static partial Regex RegexSizeWithUnit();
 
     [GeneratedRegex(@"^(?<valueFound>\d{1,})b$",
-        RegexOptions.IgnoreCase, "en-US")]
+        RegexOptions.IgnoreCase)]
     private static partial Regex RegexSizeB();
 
     [GeneratedRegex(@"^(?<valueFound>\d{1,})$",
-        RegexOptions.IgnoreCase, "en-US")]
+        RegexOptions.IgnoreCase)]
     private static partial Regex RegexSize();
 }

@@ -25,7 +25,7 @@
 | ```DarkMagenta``` | |
 | ```DarkYellow``` | |
 | ```DarkGray``` | |
-| ```-``` | Current foreground color |
+| ```=``` | Current foreground color |
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
  
