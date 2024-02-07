@@ -15,7 +15,7 @@
 
 ## Configuration File
 * Options will be loaded from ```%USERPROFILE%\.local\dir2-cfg.txt``` or ```~/.local/dir2-cfg.txt``` before parsing command line.
-* But the file will be skipped if ```--cfg-off``` is found in Envir ```dir``` or Command-Lin Options.
+* But the file will be skipped if ```--cfg-off``` is found in Envir ```dir2``` or Command-Lin Options.
 * Run command ```dir2 -? cfg``` to find your personal configuration file.
 * Short-cut of option is **NOT** loaded from the configuration file.
 * The configuration file contains the following options only.

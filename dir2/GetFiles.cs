@@ -24,7 +24,9 @@ static public partial class Helper
         {
             Show.Color.TotalLine();
             Show.PauseOpt.Invoke(false);
-            Console.WriteLine(msg);
+            Console.Write(msg);
+            Show.Color.Reset();
+            Console.WriteLine();
         }
 
         if (isExtraNewLine)

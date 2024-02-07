@@ -33,12 +33,12 @@ dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb --color green
 
 * Color Feature
 
-![Color Feature](https://github.com/ck-yung/dir2cs/blob/main/jpgs/dir2-01.jpg)
+![Color Feature](https://github.com/ck-yung/dir2cs/blob/main/jpgs/dir2-01.gif)
 
 
 * File name of Local Configuration
 
-![Config File](https://github.com/ck-yung/dir2cs/blob/main/jpgs/dir2-02.jpg)
+![Config File](https://github.com/ck-yung/dir2cs/blob/main/jpgs/dir2-02.gif)
 
 
 ### On-line help

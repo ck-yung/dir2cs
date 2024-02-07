@@ -9,6 +9,7 @@ static internal partial class Show
         static internal void InternalReset()
         {
             ForegroundColorDefault = Console.ForegroundColor;
+            BackgroundColorTotalLine = Console.BackgroundColor;
             ForegroundColorSwitch = Console.ForegroundColor;
             ForegroundColorPerLineCount = Console.ForegroundColor;
             ForegroundColorTotalLine = Console.ForegroundColor;
@@ -24,7 +25,8 @@ static internal partial class Show
         static internal Func<int, (bool, int)> Init(IParse parser,
             int lineCountToAlterColumnColor,
             string colorToAlterColumnColor,
-            string colorTotalLine)
+            string colorTotalLine,
+            string backColorTotalLine = "")
         {
             if (TryParseToForeColor(colorToAlterColumnColor, out var tmp))
             {
@@ -55,6 +57,19 @@ static internal partial class Show
                     $"Total line '{colorTotalLine}' (to {parser.Name}) is NOT color name.");
             }
 
+            if (false == string.IsNullOrEmpty(backColorTotalLine))
+            {
+                if (TryParseToForeColor(backColorTotalLine, out tmp))
+                {
+                    BackgroundColorTotalLine = tmp;
+                }
+                else
+                {
+                    throw new ConfigException(
+                        $"Background of total line '{colorTotalLine}' (to {parser.Name}) is NOT color name.");
+                }
+            }
+
             Reset = () =>
             {
                 Console.ResetColor();
@@ -64,6 +79,7 @@ static internal partial class Show
             TotalLine = () =>
             {
                 Console.ForegroundColor = ForegroundColorTotalLine;
+                Console.BackgroundColor = BackgroundColorTotalLine;
                 return 4;
             };
 
@@ -119,6 +135,7 @@ static internal partial class Show
             TotalLine = () =>
             {
                 Console.ForegroundColor = ForegroundColorTotalLine;
+                Console.BackgroundColor = BackgroundColorTotalLine;
                 return 6;
             };
 
@@ -218,6 +235,7 @@ static internal partial class Show
         static ConsoleColor ForegroundColorSwitch { get; set; }
         static ConsoleColor ForegroundColorPerLineCount { get; set; }
         static ConsoleColor ForegroundColorTotalLine { get; set; }
+        static ConsoleColor BackgroundColorTotalLine { get; set; }
 
         static public readonly string ShortcutOriginalForeColor = "=";
         static bool TryParseToForeColor(string arg, out ConsoleColor output)
@@ -241,7 +259,7 @@ static internal partial class Show
 
     static internal readonly IInovke<int, IEnumerable<Func<int>>> ColorOpt =
         new ParseInvoker<int, IEnumerable<Func<int>>>("--color",
-            help: "off | COLOR[,NUMBER,COLOR-OF-TOTAL-LINE]",
+            help: "off | COLOR[,NUMBER,COLOR-OF-TOTAL-LINE[,BACKGROUND-COLOR-OF-TOTAL-LINE]]",
             extraHelp: """
             For example,
                 dir2 --color darkred
@@ -255,7 +273,7 @@ static internal partial class Show
                 .Select((it) => it.Split(';', ','))
                 .SelectMany((it) => it)
                 .Where((it) => it.Length > 0)
-                .Take(4)
+                .Take(5)
                 .ToArray();
 
                 if (aa.Any((it) => it == Helper.ExtraHelp
@@ -307,6 +325,7 @@ static internal partial class Show
                 if (Console.IsOutputRedirected) return;
 
                 Func<int, (bool, int)> incFunc;
+                int lineCountToChangeBackgroundColor;
                 switch (aa.Length)
                 {
                     case 1:
@@ -322,9 +341,21 @@ static internal partial class Show
                         }
                         break;
                     case 3:
-                        if (int.TryParse(aa[1], out var lineCountToChangeBackgroundColor))
+                        if (int.TryParse(aa[1], out lineCountToChangeBackgroundColor))
                         {
                             incFunc = Color.Init(parser, lineCountToChangeBackgroundColor, aa[0], aa[2]);
+                            parser.SetImplementation((_) => Color.ForegroundColors(incFunc));
+                        }
+                        else
+                        {
+                            throw new ConfigException(
+                                $"Line count to {parser.Name} should be a number but '{aa[1]}' is found.");
+                        }
+                        break;
+                    case 4:
+                        if (int.TryParse(aa[1], out lineCountToChangeBackgroundColor))
+                        {
+                            incFunc = Color.Init(parser, lineCountToChangeBackgroundColor, aa[0], aa[2], aa[3]);
                             parser.SetImplementation((_) => Color.ForegroundColors(incFunc));
                         }
                         else
