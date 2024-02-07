@@ -10,8 +10,8 @@
   <PropertyGroup>
     <Title>dir2</Title>
     <PackageId>dir2</PackageId>
-    <PackageVersion>2.2.0.0</PackageVersion>
-    <Version>2.2.0.0</Version>
+    <PackageVersion>2.2.1.0</PackageVersion>
+    <Version>2.2.1.0</Version>
     <Authors>Yung, Chun Kau</Authors>
     <Description>List files dir-sum, ext-sum, size, date, link; color, time-zone</Description>
     <Summary>
