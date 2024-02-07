@@ -49,14 +49,25 @@ static public partial class Wild
 
     static internal Func<string, bool> ToWildMatch(string arg)
     {
+        if (arg == "!")
+        {
+            return Helper.AnyText;
+        }
+
+        if (arg.StartsWith("!"))
+        {
+            var matchingText = arg[1..];
+            return (it) => it == matchingText;
+        }
+
         var regThe = MakeRegex(ToRegexText(arg));
         return (it) => regThe.Match(it).Success;
     }
 
     static internal Func<string, bool> CheckIfFileNameMatched
-    { get; private set; } = Always<string>.True;
+    { get; private set; } = Helper.AnyText;
     static internal Func<string, bool> CheckIfDirNameMatched
-    { get; private set; } = Always<string>.True;
+    { get; private set; } = Helper.AnyText;
 
     static internal void InitMatchingNames(IEnumerable<string> names)
     {
@@ -64,6 +75,7 @@ static public partial class Wild
             .Where((it) => it.Length > 0)
             .Distinct()
             .Select((it) => ToWildMatch(it))
+            .Where((it) => it != Helper.AnyText)
             .ToArray();
         if (matchFuncs.Length == 0) return;
         CheckIfFileNameMatched = (it) => matchFuncs.Any((chk) => chk(it));
@@ -121,8 +133,12 @@ static public partial class Wild
                     }
                     var checkFuncs = aa3
                     .Select((it) => ToWildMatch(it))
+                    .Where((it) => it != Helper.AnyText)
                     .ToArray();
-                    parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
+                    if (checkFuncs.Length > 0)
+                    {
+                        parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
+                    }
                 }
             });
 
@@ -149,8 +165,12 @@ static public partial class Wild
 
                     var checkFuncs = aa3
                     .Select((it) => ToWildMatch(it))
+                    .Where((it) => it != Helper.AnyText)
                     .ToArray();
-                    parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
+                    if (checkFuncs.Length > 0)
+                    {
+                        parser.SetImplementation((arg) => checkFuncs.Any((chk) => chk(arg)));
+                    }
                 }
             });
 

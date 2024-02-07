@@ -12,6 +12,8 @@ public class Always<T>
 
 static public partial class Helper
 {
+    static public readonly Func<String, bool> AnyText = (_) => true;
+
     static public IEnumerable<T> Invoke<T>(this IEnumerable<T> seq,
         Func<IEnumerable<T>, IEnumerable<T>> func)
     {
