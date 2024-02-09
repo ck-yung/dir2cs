@@ -3,7 +3,7 @@
 ## Syntax
 ```--color COLOR```
 
-```--color INTEGER,COLOR,COLOR-OF-TOTAL-LINE```
+```--color COLOR,INTEGER,COLOR-OF-TOTAL-LINE```
 
 ## Color Name
 

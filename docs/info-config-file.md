@@ -1,4 +1,4 @@
-# Inforamton of Configuration File ```dir2-cfg.txt```
+﻿# Inforamton of Configuration File ```dir2-cfg.txt```
 
 * Old config file ```dir2.opt``` will be loaded if ```dir2-cfg.txt``` is NOT found.
 * But ```dir2.opt``` will be skipped in coming release.
@@ -23,22 +23,25 @@
     * For exampe, ```--date-format utc+08:00```
 
 
-| Option  | Description |
-| ------  | --------- |
-| --sort  | Ordering  |
-| --show  | Selection |
-| --hide  | Selection |
-| --utf8  | Text Encoding |
-| --regex | Regular Expression |
-| --case-sensitive | |
-| [--color](https://github.com/ck-yung/dir2cs/blob/main/docs/info-color.md) | |
-| [--date-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md) | |
-| [--size-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-size-format.md) | |
-| --count-format   | |
-| --hidden   | Hidden file selection |
-| --reverse  | Ordering |
-| --end-time | Time stamp |
-| --excl     | Excluding files. Literal ```:link``` to exclude link files.|
-| --excl-dir | Excluding directories. Literal ```:link``` to exclude directory links.|
+| Option  | Available Value | Example | Description |
+| ------  | --------------- | ------- | ----------- |
+| --sort  | ```off``` ```name,size,date,ext,count,last``` | ```--sort count,size```| Ordering [up to 2 columns] |
+| --show  | ```date,size,cout,mode,owner,last,link,link-size,link-date``` | ```--show mode,owner``` | Column Selection |
+| --hide  | ```date,size,cout,mode,owner,last,link``` | ```--hide size,link``` | Column Selection |
+| --utf8  | | ```--utf8``` | Text Encoding |
+| --regex | | ```--regex``` | Regular Expression |
+| --case-sensitive | | ```--case-sensitive``` |
+| [--color](https://github.com/ck-yung/dir2cs/blob/main/docs/info-color.md) | COLOR[,INTEGER,COLOR-OF-TOTAL-LINE] | ```--color green,10,cyan``` | Color Selection |
+| [--date-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md) |```short```｜```unix```｜```unix+```｜FORMAT ｜```utc```OFFSET | ```--date-format yyyy-MM-ddTHH:mm:ss``` | Date Format
+|         | | ```--date-format yy-MM-dd%20HH:mm ``` | [See also](https://github.com/ck-yung/dir2cs/blob/main/docs/info-encode-char.md)
+|         | | ```--date-format utc+8 ``` | Time zone
+| [--size-format](https://github.com/ck-yung/dir2cs/blob/main/docs/info-size-format.md) | INTEGER[,```commna```]｜```short```｜```+short```  | ```--size-format 12,comma``` | Size Format
+|                  |                         | ```--size-format short```
+| --count-format   | INTEGER[,```commna```]｜```short``` | ```--size-format 12,comma``` | Count Format
+| --hidden         | ```incl```｜```excl```｜```only``` | ```--hidden excl``` | Hidden file selection |
+| --reverse        | ```off```｜```on``` | ```--reverse off``` | Ordering |
+| [--end-time](https://github.com/ck-yung/dir2cs/blob/main/docs/info-date-format.md) | FORMAT | ```--end-time Done%20yyyy-MM-ddTHH:mm```  | Time Marking
+| --excl           | WILD[,WILD ..] and [```:link```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-file.md) | ```--excl *.tmp,*.temp,:link``` | Wild Cards of Excluding Files
+| --excl-dir       | WILD[,WILD ..] and [```:link```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-link-dir.md) | ```--excl-dir obj,bin,:link``` | Wild Cards of Excluding Files
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
