@@ -6,7 +6,7 @@
 ```--color COLOR,INTEGER,COLOR-OF-TOTAL-LINE```
 
 ## Demo
-![Demo](https://github.com/ck-yung/dir2cs/blob/main/docs/color-demo.gif)
+![Demo](https://github.com/ck-yung/dir2cs/blob/main/jpgs/color-demo.gif)
 
 ## Color Name
 
