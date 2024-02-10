@@ -52,7 +52,7 @@ static class NativeLib
         Assembly assembly, DllImportSearchPath? searchPath)
     {
         var rid = RuntimeInformation.RuntimeIdentifier;
-        var aa = rid.Split(new char[] { '-' }, 2);
+        var aa = rid.Split(['-'], 2);
         if (libraryName == "dir2.dll")
         {
             if (isInited)

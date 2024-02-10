@@ -189,7 +189,9 @@ static public partial class MyOptions
                 }
                 else
                 {
-                    if (current.Length > 2 && (current[1]<'0' || current[1]>'9'))
+                    if (current.Length > 2 &&
+                        current[1] != ',' && current[1] != ';' &&
+                        (current[1] < '0' || current[1] > '9'))
                     {
                         foreach (var chThe in current.Substring(1))
                         {

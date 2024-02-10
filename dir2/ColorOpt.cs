@@ -66,7 +66,7 @@ static internal partial class Show
                 else
                 {
                     throw new ConfigException(
-                        $"Background of total line '{colorTotalLine}' (to {parser.Name}) is NOT color name.");
+                        $"Background of total line '{backColorTotalLine}' (to {parser.Name}) is NOT color name.");
                 }
             }
 
@@ -83,10 +83,15 @@ static internal partial class Show
                 return 4;
             };
 
-            if (2 > lineCountToAlterColumnColor)
+            if (1 > lineCountToAlterColumnColor)
             {
                 throw new ConfigException(
-                    $"Line counter {lineCountToAlterColumnColor} (to {parser.Name}) MUST be greater 1.");
+                    $"Line counter {lineCountToAlterColumnColor} (to {parser.Name}) MUST be greater 0.");
+            }
+
+            if (1 == lineCountToAlterColumnColor)
+            {
+                return (_) => (false, 1);
             }
 
             return (lineCount) =>
@@ -238,22 +243,28 @@ static internal partial class Show
         static ConsoleColor BackgroundColorTotalLine { get; set; }
 
         static public readonly string ShortcutOriginalForeColor = "=";
+        static public readonly string ShortcutOriginalBackColor = "-";
         static bool TryParseToForeColor(string arg, out ConsoleColor output)
         {
+            bool rtn = false;
             if (arg == ShortcutOriginalForeColor)
             {
                 output = Console.ForegroundColor;
-                return true;
-            }
-
-            if (Enum.TryParse(typeof(ConsoleColor), arg,
+                rtn = true;
+            } else if (arg == ShortcutOriginalBackColor)
+            {
+                output = Console.BackgroundColor;
+                rtn = true;
+            } else if (Enum.TryParse(typeof(ConsoleColor), arg,
                 ignoreCase: true, out var result))
             {
                 output = (ConsoleColor)result;
-                return true;
+                rtn = true;
+            } else
+            {
+                output = ConsoleColor.White;
             }
-            output = ConsoleColor.White;
-            return false;
+            return rtn;
         }
     }
 

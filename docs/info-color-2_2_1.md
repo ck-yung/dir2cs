@@ -7,6 +7,9 @@
 
 ```--color INTEGER,COLOR,COLOR-OF-TOTAL-LINE,BACKGROUND-COLOR-OF-TOTAL-LINE```
 
+## Demo
+![Demo](https://github.com/ck-yung/dir2cs/blob/main/docs/color-demo.gif)
+
 ## Color Name
 
 | Name | Remark |
@@ -27,6 +30,7 @@
 | ```DarkMagenta``` | |
 | ```DarkYellow``` | |
 | ```DarkGray``` | |
+| ```-``` | Current background color |
 | ```=``` | Current foreground color |
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
