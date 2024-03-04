@@ -15,6 +15,11 @@ static public partial class MyOptions
         RegexOptions.IgnoreCase)]
     private static partial Regex RegThousandSeparator();
 
+    [GeneratedRegex(
+        @"^Config.Thousand.Separator(=|\s*=\s*)%20$",
+        RegexOptions.IgnoreCase)]
+    private static partial Regex RegThousandSeparatorSpace();
+
     static public IEnumerable<string> Init(IEnumerable<string> lines)
     {
         var prefixGroupBy = lines
@@ -24,12 +29,16 @@ static public partial class MyOptions
         {
             var regThousandSep = RegThousandSeparator();
             var thousSepGroup = matched
-                .Select((it) => (it, regThousandSep.Match(it)))
-                .GroupBy((it) => it.Item2.Success)
+                .Select((it) => new
+                {
+                    Text = it,
+                    Match = regThousandSep.Match(it),
+                })
+                .GroupBy((it) => it.Match.Success)
                 .ToImmutableDictionary((grp) => grp.Key, (grp) => grp);
             if (thousSepGroup.TryGetValue(true, out var thSeps))
             {
-                var aa = thSeps.Select((it) => it.Item2.Groups["Text"].Value)
+                var aa = thSeps.Select((it) => it.Match.Groups["Text"].Value)
                     .Distinct().Take(2).ToArray();
                 if (aa.Length == 1)
                 {
@@ -38,6 +47,18 @@ static public partial class MyOptions
                 else if (aa.Length > 1)
                 {
                     // TODO: Only report too many different values
+                }
+            }
+            else if (thousSepGroup.TryGetValue(false, out var notSeps))
+            {
+                var regThousSepSpace = RegThousandSeparatorSpace();
+                if (notSeps
+                    .Select((it) => it.Text)
+                    .Select((it) => regThousSepSpace.Match(it))
+                    .Where((it) => it.Success)
+                    .Any())
+                {
+                    ThousandSeparator = " ";
                 }
             }
         }
