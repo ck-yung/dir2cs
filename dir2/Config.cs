@@ -59,15 +59,15 @@ static class Config
             ?? ":cfg-not-found";
             if (false == File.Exists(cfgFilename))
                 return Enumerable.Empty<(ArgType, string)>();
-            var buf2 = new byte[2048];
+            var buf2 = new byte[4096];
             int readCnt = 0;
             using (var inpFp = File.OpenRead(cfgFilename))
             {
                 readCnt = inpFp.Read(buf2);
             }
-            var args = SelectArgsFromLines(ArgType.ConfigFile,
-                Encoding.UTF8.GetString(buf2, 0, readCnt)
-                .Split('\n', '\r'))
+            var lines = SummaryInfo.Init(Encoding.UTF8.GetString(buf2, 0, readCnt)
+                .Split('\n', '\r'));
+            var args = SelectArgsFromLines(ArgType.ConfigFile, lines)
                 .Select((it) => (false, it.Item1, it.Item2));
             var tmp = MyOptions.ConfigParsers
                 .Aggregate(args, (acc, opt) => opt.Parse(acc))

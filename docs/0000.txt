@@ -29,9 +29,11 @@ EXCL>excl.txt
 EXCL-WILD>excl.txt
 WIDTH>numb.txt
 
-var regFormat2 = new Regex(
-  @"^(?<Name>\w{4,5})(\s=\s|\s=|=\s|=)""(?<Format>\w.*)""$",
-  RegexOptions.IgnoreCase);
+Summary.NoFileFound=找不到文件
+Summary.NoDirFound=找不到文集
+Summary.OneFileFound=只找到一個文件：
+Summary.OneDirFound=只找到一個文集
+Summary.Format.FilesFound=找到 {0}個文集
+Summary.Format.NoFilesFound.Wild.Dir=在文集“{1}”沒有文件乎合“{0}”
+Summary.Format.NoFilesFound.Wild=沒有文件乎合“{0}”
 
-var dateFmtThe = System.Net.WebUtility.UrlDecode(
-  check.Groups["Format"].Value);

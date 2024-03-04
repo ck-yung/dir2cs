@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
+using static dir2.SummaryInfo;
 
 namespace dir2;
 
@@ -254,7 +255,7 @@ static public partial class Helper
                 {
                     if ((wilds.Length > 0) && !string.IsNullOrEmpty(wilds[0]))
                     {
-                        txt.Append($"No file is found for '{wilds[0]}'.");
+                        txt.Append(Format(StringFormat.FileZeroWithWild, wilds[0]));
                     }
                     else
                     {
@@ -265,19 +266,20 @@ static public partial class Helper
                 {
                     if (Directory.Exists(path))
                     {
-                        txt.Append("No file is found");
                         if ((wilds.Length > 0) && !string.IsNullOrEmpty(wilds[0]))
                         {
-                            txt.Append($" for '{wilds[0]}'");
+                            txt.Append(NoFileWithWildOnDir(wilds[0], path));
                         }
-                        txt.Append($" on '{path}'");
+                        else
+                        {
+                            txt.Append(Format(StringFormat.FileZeroOnDir, path));
+                        }
                         DumpArgsAction(path, wilds);
                     }
                     else
                     {
-                        txt.Append($"Dir '{path}' is not found");
+                        txt.Append(Format(StringFormat.DirNotFound, path));
                     }
-                    txt.Append(".");
                 }
                 txt.Append(Show.EndTime.Invoke(true));
                 break;
@@ -285,7 +287,7 @@ static public partial class Helper
             case 1:
                 if (printEvenCountOne)
                 {
-                    txt.Append("One file is found: ");
+                    txt.Append(Text(FixedText.OneFile));
                     txt.Append(Show.Size(Show.LengthFormatOpt.Invoke(sum.Length)));
                     txt.Append(Show.Date(DateFormatOpt.Invoke(sum.StartTime)));
                     txt.Append(Show.EndTime.Invoke(true));

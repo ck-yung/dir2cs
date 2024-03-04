@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Immutable;
 using System.Data;
 using System.Text;
-using static dir2.MyOptions;
+using static dir2.SummaryInfo;
 
 namespace dir2;
 
@@ -120,13 +119,14 @@ static public partial class MyOptions
             case (<2, true):
                 return;
             case (1, _):
-                Helper.WriteTotalLine("One dir is found.", addNewLine);
+                Helper.WriteTotalLine(Text(FixedText.OneDir), addNewLine);
                 break;
             case (0, _):
-                Helper.WriteTotalLine("No dir is found.", addNewLine);
+                Helper.WriteTotalLine(Text(FixedText.ZeroDir), addNewLine);
                 break;
             default:
-                Helper.WriteTotalLine($"{count} dirs are found.", addNewLine);
+                Helper.WriteTotalLine(Format(StringFormat.DirOther, count),
+                    addNewLine); ;
                 break;
         }
     }
