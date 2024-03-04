@@ -1,3 +1,16 @@
+Summary.NoFileFound=找不到文件
+Summary.Format.NoDirFound=找不到文集 “{0}”
+Summary.OneFileFound=只找到一個文件：
+Summary.OneDirFound=只找到一個文集
+Summary.Format.FilesFound=找到 {0}個文件
+Summary.Format.DirsFound=找到 {0}個文集
+Summary.Format.NoFileFound.Wild.Dir=在文集 “{1}”，沒有文件乎合 “{0}”
+Summary.Format.NoFileFound.Wild=沒有文件乎合 “{0}”
+Summary.Format.NoDirFound.Wild=沒有文集乎合 “{0}”
+Summary.Format.NoDirFound.Wild.Dir=在文集 “{1}”，沒有文集乎合 “{0}”
+Summary.Format.TooManyDirsFound.Wild.Dir=在文集 “{1}”，太多文集乎合 “{0}”
+Summary.Format.TooManyDirsFound.Wild=太多文集乎合 “{0}”
+
 cfg>cnfg.txt
 cfg-off>cnfg.txt
 config>cnfg.txt
@@ -28,12 +41,3 @@ SIZE>numb.txt
 EXCL>excl.txt
 EXCL-WILD>excl.txt
 WIDTH>numb.txt
-
-Summary.NoFileFound=找不到文件
-Summary.NoDirFound=找不到文集
-Summary.OneFileFound=只找到一個文件：
-Summary.OneDirFound=只找到一個文集
-Summary.Format.FilesFound=找到 {0}個文集
-Summary.Format.NoFilesFound.Wild.Dir=在文集“{1}”沒有文件乎合“{0}”
-Summary.Format.NoFilesFound.Wild=沒有文件乎合“{0}”
-

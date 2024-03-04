@@ -3,6 +3,7 @@ using static dir2.MyOptions;
 using static dir2.Helper;
 using System.Text;
 using System.Collections;
+using System.IO;
 
 namespace dir2;
 public class Program
@@ -518,14 +519,13 @@ public class Program
                 switch (ff.Length)
                 {
                     case 0:
-                        throw new ConfigException(
-                                $"No dir matching  '{d3}'");
+                        throw new ConfigException(SummaryInfo.Format(
+                            SummaryInfo.StringFormat.DirNotFound, d3));
                     case 1:
                         d3 = ff[0];
                         break;
                     default:
-                        throw new ConfigException(
-                            $"Too many dir matching '{d3}'");
+                        throw new ConfigException(SummaryInfo.TooManyDir(d3));
                 }
             }
             d3 += Path.DirectorySeparatorChar;
@@ -550,14 +550,14 @@ public class Program
                     else
                     {
                         throw new ConfigException(
-                            $"No dir matching '{ee[ndx]}' on '{d3}'");
+                            SummaryInfo.ZeroDirOnDir(wild: ee[ndx], dir: d3));
                     }
                 case 1:
                     d3 = ff[0];
                     break;
                 default:
                     throw new ConfigException(
-                        $"Too many dir matching '{ee[ndx]}' on '{d3}'");
+                        SummaryInfo.TooManyDirOnDir(wild: ee[ndx], dir: d3));
             }
         }
         return (path: d3, wild: e2);

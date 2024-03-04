@@ -143,7 +143,8 @@ static public partial class Helper
         var infoThe = ToInfoDir(path);
         if (infoThe.IsFake)
         {
-            Console.WriteLine($"Dir '{path}' is NOT found!");
+            Console.WriteLine(SummaryInfo.Format(
+                SummaryInfo.StringFormat.DirNotFound, path));
         }
         else
         {

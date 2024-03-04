@@ -31,13 +31,24 @@ internal static class SummaryInfo
     const string PrefixOneFileFound = "Summary.OneFileFound=";
     const string PrefixOneDirFound = "Summary.OneDirFound=";
     const string PrefixNoFileFound = "Summary.NoFileFound=";
-    const string PrefixNoDirFound = "Summary.NoDirFound=";
+    const string PrefixNoDirFoundFormat = "Summary.Format.NoDirFound=";
 
     const string PrefixFilesFoundFormat = "Summary.Format.FilesFound=";
-    const string PrefixnoFilesFoundWithWildOnDirFormat =
-        "Summary.Format.NoFilesFound.Wild.Dir=";
-    const string PrefixnoFilesFoundWithWildFormat =
-        "Summary.Format.NoFilesFound.Wild=";
+    const string PrefixDirsFoundFormat = "Summary.Format.DirsFound=";
+
+    const string PrefixNoFileFoundWithWildOnDirFormat =
+        "Summary.Format.NoFileFound.Wild.Dir=";
+    const string PrefixNoFileFoundWithWildFormat =
+        "Summary.Format.NoFileFound.Wild=";
+
+    const string PrefixNoDirFoundWithWildFormat =
+        "Summary.Format.NoDirFound.Wild=";
+    const string PrefixNoDirFoundWithWildOnDirFormat =
+        "Summary.Format.NoDirFound.Wild.Dir=";
+    const string PrefixTooManyDirsFoundWithWildOnDirFormat =
+        "Summary.Format.TooManyDirsFound.Wild.Dir=";
+    const string PrefixTooManyDirsFoundWithWildFormat =
+        "Summary.Format.TooManyDirsFound.Wild=";
 
     public static IEnumerable<string> Init(IEnumerable<string> lines)
     {
@@ -73,12 +84,12 @@ internal static class SummaryInfo
                     TextMap[FixedText.ZeroFile] = textFound;
                 }
             }
-            else if (current.StartsWith(PrefixNoDirFound))
+            else if (current.StartsWith(PrefixNoDirFoundFormat))
             {
-                textFound = current.Substring(PrefixNoDirFound.Length);
+                textFound = current.Substring(PrefixNoDirFoundFormat.Length);
                 if (false == string.IsNullOrEmpty(textFound))
                 {
-                    TextMap[FixedText.ZeroDir] = textFound;
+                    FormatMap[StringFormat.DirNotFound] = textFound;
                 }
             }
             else if (current.StartsWith(PrefixFilesFoundFormat))
@@ -89,22 +100,66 @@ internal static class SummaryInfo
                     FormatMap[StringFormat.FileOther] = textFound;
                 }
             }
-            else if (current.StartsWith(PrefixnoFilesFoundWithWildOnDirFormat))
+            else if (current.StartsWith(PrefixDirsFoundFormat))
+            {
+                textFound = current.Substring(PrefixDirsFoundFormat.Length);
+                if (false == string.IsNullOrEmpty(textFound))
+                {
+                    FormatMap[StringFormat.DirOther] = textFound;
+                }
+            }
+            else if(current.StartsWith(PrefixNoFileFoundWithWildOnDirFormat))
             {
                 textFound = current.Substring(
-                    PrefixnoFilesFoundWithWildOnDirFormat.Length);
+                    PrefixNoFileFoundWithWildOnDirFormat.Length);
                 if (false == string.IsNullOrEmpty(textFound))
                 {
                     FormatFileZeroWithWildOnDir = textFound;
                 }
             }
-            else if (current.StartsWith(PrefixnoFilesFoundWithWildFormat))
+            else if (current.StartsWith(PrefixNoFileFoundWithWildFormat))
             {
                 textFound = current.Substring(
-                    PrefixnoFilesFoundWithWildFormat.Length);
+                    PrefixNoFileFoundWithWildFormat.Length);
                 if (false == string.IsNullOrEmpty(textFound))
                 {
                     FormatMap[StringFormat.FileZeroWithWild] = textFound;
+                }
+            }
+            else if (current.StartsWith(PrefixNoDirFoundWithWildOnDirFormat))
+            {
+                textFound = current.Substring(
+                    PrefixNoDirFoundWithWildOnDirFormat.Length);
+                if (false == string.IsNullOrEmpty(textFound))
+                {
+                    FormatZeroDirOnDir = textFound;
+                }
+            }
+            else if (current.StartsWith(PrefixNoDirFoundWithWildFormat))
+            {
+                textFound = current.Substring(
+                    PrefixNoDirFoundWithWildFormat.Length);
+                if (false == string.IsNullOrEmpty(textFound))
+                {
+                    FormatMap[StringFormat.DirZeroWithWild] = textFound;
+                }
+            }
+            else if (current.StartsWith(PrefixTooManyDirsFoundWithWildOnDirFormat))
+            {
+                textFound = current.Substring(
+                    PrefixTooManyDirsFoundWithWildOnDirFormat.Length);
+                if (false == string.IsNullOrEmpty(textFound))
+                {
+                    FormatTooManyDirOnDir = textFound;
+                }
+            }
+            else if (current.StartsWith(PrefixTooManyDirsFoundWithWildFormat))
+            {
+                textFound = current.Substring(
+                    PrefixTooManyDirsFoundWithWildFormat.Length);
+                if (false == string.IsNullOrEmpty(textFound))
+                {
+                    FormatTooManyDir = textFound;
                 }
             }
             else
@@ -161,10 +216,34 @@ internal static class SummaryInfo
     }
 
     static string FormatFileZeroWithWildOnDir { get; set; }
-    = "No file is found for '{0}' on {1}.";
+        = "No file is found for '{0}' on {1}.";
 
     public static string NoFileWithWildOnDir(string wild, string dir)
     {
         return String.Format(FormatFileZeroWithWildOnDir, wild, dir);
+    }
+
+    static string FormatZeroDirOnDir { get; set; }
+        = "No dir matching '{0}' on '{1}'";
+
+    public static string ZeroDirOnDir(string wild, string dir)
+    {
+        return String.Format(FormatZeroDirOnDir, wild, dir);
+    }
+
+    static string FormatTooManyDirOnDir { get; set; }
+        = "Too many dir matching '{0}' on '{1}'";
+
+    public static string TooManyDirOnDir(string wild, string dir)
+    {
+        return String.Format(FormatTooManyDirOnDir, wild, dir);
+    }
+
+    static string FormatTooManyDir { get; set; }
+        = "Too many dir matching '{0}'";
+
+    public static string TooManyDir(string wild)
+    {
+        return String.Format(FormatTooManyDir, wild);
     }
 }
