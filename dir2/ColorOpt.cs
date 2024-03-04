@@ -1,4 +1,5 @@
-﻿using static dir2.MyOptions;
+﻿using System.Runtime.InteropServices;
+using static dir2.MyOptions;
 
 namespace dir2;
 
@@ -274,7 +275,7 @@ static internal partial class Show
             extraHelp: """
             For example,
                 dir2 --color darkred
-                dir2 --color yellow,10,green
+                dir2 --color yellow,10,green,blue
 
             https://github.com/ck-yung/dir2cs/blob/main/docs/info-color.md
             """,
@@ -291,7 +292,12 @@ static internal partial class Show
                 || 0 == string.Compare(it, "color", ignoreCase: true)))
                 {
                     Console.WriteLine("Color name:");
-                    Console.WriteLine($"\t{Color.ShortcutOriginalForeColor,-12} Current color");
+
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        Console.WriteLine($"\t{Color.ShortcutOriginalForeColor,-12} Current foreground color");
+                        Console.WriteLine($"\t{Color.ShortcutOriginalBackColor,-12} Current background color");
+                    }
 
                     Action<bool, ConsoleColor> switchBackgroundColor = (isBlack, arg) =>
                     {
@@ -330,6 +336,17 @@ static internal partial class Show
                         resetColor();
                         Console.WriteLine();
                     }
+
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        Console.WriteLine("""
+
+                            For example,
+                              dir2 --color green,1,-,=
+
+                            """);
+                    }
+
                     throw new ShowSyntaxException(parser);
                 }
 
