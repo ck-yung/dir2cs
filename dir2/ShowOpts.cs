@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using static dir2.MyOptions;
@@ -209,7 +210,13 @@ static internal partial class Show
                         break;
 
                     case (1, true, false):
-                        parser.SetImplementation((it) => $"{it,5:N0} ");
+                        var nfi = new NumberFormatInfo
+                        {
+                            NumberGroupSeparator = MyOptions.ThousandSeparator,
+                            NumberDecimalDigits = 0
+                        };
+                        parser.SetImplementation(
+                            (it) => it.ToString("n", nfi).PadLeft(5, ' ') + " ");
                         break;
 
                     case (1, false, false):
@@ -228,8 +235,13 @@ static internal partial class Show
                         {
                             if (width2 > 30)
                                 throw new ConfigException($"'{aa[0]}' is too largth width to {parser.Name}");
-                            var fmtThe = $"{{0,{width2}:N0}} ";
-                            parser.SetImplementation((it) => string.Format(fmtThe, it));
+                            var nfi2 = new NumberFormatInfo
+                            {
+                                NumberGroupSeparator = MyOptions.ThousandSeparator,
+                                NumberDecimalDigits = 0
+                            };
+                            parser.SetImplementation(
+                                (it) => it.ToString("n", nfi2).PadLeft(width2, ' ') + " ");
                             return;
                         }
                         throw new ConfigException($"'{aa[0]}' is NOT width to {parser.Name}");
@@ -299,7 +311,13 @@ static internal partial class Show
                 {
                     if (aa[0] == "comma")
                     {
-                        parser.SetImplementation((it) => $"{it,8:N0} ");
+                        var nfi = new NumberFormatInfo
+                        {
+                            NumberGroupSeparator = MyOptions.ThousandSeparator,
+                            NumberDecimalDigits = 0
+                        };
+                        parser.SetImplementation(
+                            (it) => it.ToString("n", nfi).PadLeft(8, ' ')+" ");
                         return;
                     }
                     else
@@ -323,8 +341,13 @@ static internal partial class Show
                         if (width > 30)
                             throw new ConfigException(
                                 $"'{aa[0]}' is too largth width to {parser.Name}");
-                        var fmtThe = $"{{0,{width}:N0}} ";
-                        parser.SetImplementation((it) => string.Format(fmtThe, it));
+                        var nfi = new NumberFormatInfo
+                        {
+                            NumberGroupSeparator = MyOptions.ThousandSeparator,
+                            NumberDecimalDigits = 0
+                        };
+                        parser.SetImplementation(
+                            (it) => it.ToString("n", nfi).PadLeft(width, ' ')+" ");
                         return;
                     }
                     throw new ConfigException(

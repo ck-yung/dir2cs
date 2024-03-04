@@ -65,8 +65,11 @@ static class Config
             {
                 readCnt = inpFp.Read(buf2);
             }
-            var lines = SummaryInfo.Init(Encoding.UTF8.GetString(buf2, 0, readCnt)
-                .Split('\n', '\r'));
+            var lines = SummaryInfo.Init(MyOptions.Init(
+                Encoding.UTF8.GetString(buf2, 0, readCnt)
+                .Split('\n', '\r')
+                .Select((it) => it.Trim())
+                .Where((it) => it.Length>0)));
             var args = SelectArgsFromLines(ArgType.ConfigFile, lines)
                 .Select((it) => (false, it.Item1, it.Item2));
             var tmp = MyOptions.ConfigParsers

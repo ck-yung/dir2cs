@@ -41,6 +41,9 @@ internal static class SummaryInfo
     const string PrefixNoFileFoundWithWildFormat =
         "Summary.Format.NoFileFound.Wild=";
 
+    const string PrefixNoFileFoundOnDirFormat =
+        "Summary.Format.NoFileFound.Dir=";
+
     const string PrefixNoDirFoundWithWildFormat =
         "Summary.Format.NoDirFound.Wild=";
     const string PrefixNoDirFoundWithWildOnDirFormat =
@@ -108,7 +111,16 @@ internal static class SummaryInfo
                     FormatMap[StringFormat.DirOther] = textFound;
                 }
             }
-            else if(current.StartsWith(PrefixNoFileFoundWithWildOnDirFormat))
+            else if (current.StartsWith(PrefixNoFileFoundOnDirFormat))
+            {
+                textFound = current.Substring(
+                    PrefixNoFileFoundOnDirFormat.Length);
+                if (false == string.IsNullOrEmpty(textFound))
+                {
+                    FormatMap[StringFormat.FileZeroOnDir] = textFound;
+                }
+            }
+            else if (current.StartsWith(PrefixNoFileFoundWithWildOnDirFormat))
             {
                 textFound = current.Substring(
                     PrefixNoFileFoundWithWildOnDirFormat.Length);

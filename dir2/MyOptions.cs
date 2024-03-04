@@ -1,12 +1,53 @@
 using System.Collections.Immutable;
-using System.Data;
 using System.Text;
+using System.Text.RegularExpressions;
 using static dir2.SummaryInfo;
 
 namespace dir2;
 
 static public partial class MyOptions
 {
+    const string ConfigPrefix = "Config.";
+    public static string ThousandSeparator { get; private set; } = ",";
+
+    [GeneratedRegex(
+        @"^Config.Thousand.Separator(=|\s*=\s*)(?<Text>.)$",
+        RegexOptions.IgnoreCase)]
+    private static partial Regex RegThousandSeparator();
+
+    static public IEnumerable<string> Init(IEnumerable<string> lines)
+    {
+        var prefixGroupBy = lines
+            .GroupBy((it) => it.StartsWith(ConfigPrefix))
+            .ToImmutableDictionary((grp) => grp.Key, (grp) => grp);
+        if (prefixGroupBy.TryGetValue(true, out var matched))
+        {
+            var regThousandSep = RegThousandSeparator();
+            var thousSepGroup = matched
+                .Select((it) => (it, regThousandSep.Match(it)))
+                .GroupBy((it) => it.Item2.Success)
+                .ToImmutableDictionary((grp) => grp.Key, (grp) => grp);
+            if (thousSepGroup.TryGetValue(true, out var thSeps))
+            {
+                var aa = thSeps.Select((it) => it.Item2.Groups["Text"].Value)
+                    .Distinct().Take(2).ToArray();
+                if (aa.Length == 1)
+                {
+                    ThousandSeparator = aa[0];
+                }
+                else if (aa.Length > 1)
+                {
+                    // TODO: Only report too many different values
+                }
+            }
+        }
+        if (prefixGroupBy.TryGetValue(false, out var notMatched))
+        {
+            return notMatched;
+        }
+        return Array.Empty<string>();
+    }
+
     static public IEnumerable<(ArgType, string)> Resolve(this IParse[] parsers,
         IEnumerable<(ArgType, string)> args, bool isIncludeExclNameOptions)
     {
