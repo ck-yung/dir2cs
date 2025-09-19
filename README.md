@@ -1,5 +1,5 @@
 ﻿# Dir2
-**v2.2.0.0**
+**v2.2.2.0**
 
 ## Syntax:
 ```
@@ -33,12 +33,12 @@ dir2 ~\Proj*\dir* -s -X bin,obj -x *.user -w 3days -W 2Mb --color green
 
 * Color Feature
 
-![Color Feature](https://github.com/ck-yung/dir2cs/blob/main/jpgs/dir2-01.gif)
+![Color Feature](https://raw.githubusercontent.com/ck-yung/dir2cs/master/jpgs/dir2-01.gif)
 
 
 * File name of Local Configuration
 
-![Config File](https://github.com/ck-yung/dir2cs/blob/main/jpgs/dir2-02.gif)
+![Config File](https://raw.githubusercontent.com/ck-yung/dir2cs/master/jpgs/dir2-02.gif)
 
 
 ### On-line help
@@ -95,4 +95,4 @@ Yung, Chun Kau
 
 <yung.chun.kau@gmail.com>
 
-2024 Feb
+<<DATE>>
