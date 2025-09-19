@@ -333,6 +333,7 @@ static public partial class MyOptions
         (IParse) Show.EndTime,
         (IParse) Show.ColorOpt,
         (IParse) Show.PauseOpt,
+        Show.SetCultureOpt,
     };
 
     static public readonly IParse[] ConfigParsers = new IParse[]
@@ -351,6 +352,7 @@ static public partial class MyOptions
         (IParse) Show.EndTime,
         (IParse) Show.ColorOpt,
         (IParse) Show.PauseOpt,
+        Show.SetCultureOpt,
     };
 
     static public readonly IParse[] ExclFileDirParsers = Parsers

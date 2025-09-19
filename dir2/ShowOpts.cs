@@ -259,6 +259,22 @@ static internal partial class Show
             EncodeConsoleOutput = () => Console.OutputEncoding = Encoding.UTF8;
         });
 
+    static public readonly IParse SetCultureOpt = new SimpleParser(
+        "--culture", help: "(eg en-US)", resolve: (parser, args) =>
+        {
+            var argThe = Helper.GetUnique(args, parser);
+            try
+            {
+                CultureInfo.CurrentCulture = new CultureInfo(argThe,
+                    useUserOverride: false);
+            }
+            catch (Exception ee)
+            {
+                Console.Error.WriteLine($"Fail to set '{argThe}' as {parser.Name}");
+                Console.Error.WriteLine(ee.Message);
+            }
+        });
+
     static public readonly IInovke<long, string> LengthFormatOpt =
         new ParseInvoker<long, string>(name: "--size-format",
             help: "short | +short | comma,WIDTH",
