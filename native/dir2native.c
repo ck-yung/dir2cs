@@ -39,13 +39,15 @@ int GetFileOwner( int maxRefText, char* szPath, char* szOwner)
 
     maxLength = maxRefText;
     pPwd = getpwuid(fStat.st_uid);
+    if (0 == pPwd) return 0;
     strncpy(szOwner, pPwd->pw_name, maxLength);
-
     nowLength = strlen(szOwner);
-    szOwner[nowLength] = '/'; nowLength += 1;
 
-    maxLength = maxRefText - nowLength;
     pGrp = getgrgid(fStat.st_gid);
+    if (0 == pGrp) return nowLength;
+    szOwner[nowLength] = '/'; nowLength += 1;
+    maxLength = maxRefText - nowLength;
+
     strncpy(szOwner + nowLength, pGrp->gr_name, maxLength);
     return strlen(szOwner);
 #endif
