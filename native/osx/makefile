@@ -14,5 +14,5 @@ $(DllFile): $(objForDll)
 
 $(ObjDir)/dir2native.o: ../dir2native.h ../dir2native.c
 	@mkdir -p $(ObjDir)
-	gcc -c ../dir2native.c -o $(ObjDir)/dir2native.o
+	gcc -D _OSX_ -c ../dir2native.c -o $(ObjDir)/dir2native.o
 

@@ -9,6 +9,15 @@
 #include <grp.h>
 #endif
 
+#ifdef _OSX_
+#include <stdio.h>
+#include <string.h>
+#include <sys/attr.h>
+#include <sys/time.h>
+#include <time.h>
+#include <unistd.h>
+#endif
+
 #include "dir2native.h"
 
 int Init()
@@ -53,4 +62,40 @@ int GetFileOwner( int maxRefText, char* szPath, char* szOwner)
 #endif
     return 1;
 }
+
+#ifdef _OSX_
+struct attr_list_date_added {
+    u_int32_t length;
+    struct timespec date_added;
+};
+
+int getFileAddedDate(char* szPath,
+    int* year, int* month, int* day,
+    int* hour, int* minute, int* second) {
+    struct attr_list_date_added data;
+    struct attrlist attrList;
+
+    memset(&attrList, 0, sizeof(attrList));
+    attrList.bitmapcount = ATTR_BIT_MAP_COUNT;
+    attrList.commonattr = ATTR_CMN_ADDEDTIME;
+
+    int result = getattrlist(szPath, &attrList, &data, sizeof(data), 0);
+
+    if (result == 0)
+    {
+        return 0;
+    }
+
+    struct tm *ts;
+    char buf[80];
+    ts = localtime(&data.date_added.tv_sec);
+    *year  = ts->tm_year;
+    *month = ts->tm_mon;
+    *day   = ts->tm_wday;
+    *hour   = ts->tm_hour;
+    *second = ts->tm_sec;
+
+    return 1;
+}
+#endif
 /* eof dir2native.c *** */
