@@ -12,6 +12,8 @@
     <PackageId>dir2</PackageId>
     <PackageVersion>2.2.2.0</PackageVersion>
     <Version>2.2.2.0</Version>
+    <AssemblyVersion>2.2.2.0</AssemblyVersion>
+    <FileVersion>2.2.2.0</FileVersion>
     <Authors>Yung, Chun Kau</Authors>
     <Description>List files dir-sum, ext-sum, size, date, link; color, time-zone</Description>
     <Summary>
