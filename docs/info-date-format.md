@@ -45,13 +45,10 @@ Please check [encoding-list](https://github.com/ck-yung/dir2cs/blob/main/docs/in
 | ```D``` | Long Date | ```Wednesday, June 12, 2019```|
 | ```f``` | Full short | ```Wednesday, June 12, 2019 03:47 PM``` |
 | ```F``` | Full long | ```Wednesday, June 12, 2019 15:47:10```|
-| ```g``` | General short   | ```12-Jun-19 03:47 PM``` |
-| ```G``` | General long | ```12-Jun-19 15:47:10```|
 | ```m``` | Month      | ```June 12``` |
 | ```M``` | Month | ```June 12```|
 | ```o``` | Round-trip | ```2019-06-12T15:47:10.0000000``` |
 | ```O``` | Round-trip | ```2019-06-12T15:47:10.0000000```|
-| ```s``` | Sortabl | ```2019-06-12T15:47:10``` |
 | ```t``` | Short time | ```03:47 PM``` |
 | ```T``` | Long time | ```15:47:10```|
 | ```u``` | Universal sortable | ```2019-06-12 15:47:10Z``` |
@@ -59,17 +56,29 @@ Please check [encoding-list](https://github.com/ck-yung/dir2cs/blob/main/docs/in
 | ```y``` | Year | ```June 2019``` |
 | ```Y``` | Year | ```June 2019```|
 
-# Time zone format
+## Specialized single char format
 
-* The feature will be implemented at ```v2.1.2``` (2024 Feb).
+| Format  | Pattern    | Format | Example |
+| ------  | -------    | ------ | ------- |
+| ```g``` | By the computer   | | ```19/6/2019 3:47 pm``` |
+| ```G``` | By the computer + TAB | | ```19/6/2019 3:47 pm``` |
+| ```r``` | Regular | ```ddd, dd MMM yyyy HH:mm:ss 'GMT'``` | ```Wed, 19 Jun 2019 15:47:10 GMT``` |
+| ```s``` | For sorting | ```yyyy-MM-ddTHH:mm:ss``` | ```2019-06-12T15:47:10```|
+| ```z``` | For sorting with timezone | ```yyyy-MM-ddTHH:mm:sszz``` | ```2019-06-12T15:47:10+08``` |
+
+# Time zone format
 
 * Define "Standard Time" (STD) offsets from "UTC" in hours and minutes.
 
-| Format | STD Offset | Example |
-| ------ | ----------- | ------- |
-| ```--date-time timezone=```FORMAT | Asia/Hong Kong | ```--date-time UTC+8``` |
-| | Asia/Japan | ```--date-time UTC+9``` |
-| | US/Central | ```--date-time UTC-6``` |
-| | Australia/Yancowinna | ```--date-time UTC+09:30``` |
+* Short Form (```-Z +8``` or ```-Z -8```) is preferred than the Long Form.
+
+* Format: ```--date-format```TIMEZONE
+
+| STD Offset | Example | Short Form |
+| ---------- | ------- | ---------- |
+| Asia/Hong Kong | ```--date-time UTC+8``` | ```-Z +8``` |
+| Asia/Japan | ```--date-time UTC+9``` | ```-Z +9``` |
+| US/Central | ```--date-time UTC-6``` | ```-Z -6``` |
+| Australia/Yancowinna | ```--date-time UTC+09:30``` | ```-Z +09:30``` |
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
