@@ -20,6 +20,8 @@ dir2 [DIR/WILD ..] [OPT ..]
 
 * Color: Column, Total Line
 
+* Custom: Time-Zone
+
 ### Example:
 ```
 dir2 ~/Projects/dir2cs --sub all --excl-dir bin,obj --excl "*.user" --within 3days --not-within 2Mb
@@ -95,4 +97,4 @@ Yung, Chun Kau
 
 <yung.chun.kau@gmail.com>
 
-<<DATE>>
+July 2026

@@ -10,6 +10,7 @@ Please check [encoding-list](https://github.com/ck-yung/dir2cs/blob/main/docs/in
 * [Custom configuartion to ```--date-format short```](https://github.com/ck-yung/dir2cs/blob/main/docs/date-short-cfg.md)
 * [顯示中文日期](https://github.com/ck-yung/dir2cs/blob/main/docs/date-lang-code.md)
 * [日付を日本語で表示](https://github.com/ck-yung/dir2cs/blob/main/docs/date-lang-code.md)
+* See also [option ```--end-time```](https://github.com/ck-yung/dir2cs/blob/main/docs/info-options.md) of Time-Zone support.
 
 ## Format specifier
 
