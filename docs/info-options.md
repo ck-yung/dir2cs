@@ -43,8 +43,8 @@
 |          |                  |              | ```--take 500Mb```
 |          | --total          | ```off```｜```only```｜```always``` | ```--total always```
 |          | [--sum](https://github.com/ck-yung/dir2cs/blob/main/docs/info-sum.md) | ```ext```｜```dir```｜```+dir```｜```year``` | ```--sum ext```
-|          | --end-time       | DATE-FORMAT  | ```--end-time %22TimeZone%20%22zz``` [See also](https://github.com/ck-yung/dir2cs/blob/main/docs/info-encode-char.md)
-|          |                  |              | ```--end-time %22Done%20at%20%22yyyy-MMM-dd%20HH:mm%20zz```
+|          | --end-time       | DATE-FORMAT  | ```--end-time %7c%22TimeZone%20%22zz``` [See also](https://github.com/ck-yung/dir2cs/blob/main/docs/info-encode-char.md)
+|          |                  |              | ```--end-time %5b%22Done%20at%20%22yyyy-MMM-dd%20HH:mm%20zz%5d```
 |          | --ouput          | ```csv```    | ```--output csv```
 | -Z       |                  | ```+hh:mm``` | ```-Z +08``` to Hong Kong time zone ```+08:00```
 

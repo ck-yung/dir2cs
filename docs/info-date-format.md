@@ -70,7 +70,7 @@ Please check [encoding-list](https://github.com/ck-yung/dir2cs/blob/main/docs/in
 
 * Define "Standard Time" (STD) offsets from "UTC" in hours and minutes.
 
-* Short Form (```-Z +8``` or ```-Z -8```) is preferred than the Long Form.
+* In command line, short Form (```-Z +8``` or ```-Z -8```) is preferred than long form.
 
 * Format: ```--date-format```TIMEZONE
 
@@ -80,5 +80,24 @@ Please check [encoding-list](https://github.com/ck-yung/dir2cs/blob/main/docs/in
 | Asia/Japan | ```--date-time UTC+9``` | ```-Z +9``` |
 | US/Central | ```--date-time UTC-6``` | ```-Z -6``` |
 | Australia/Yancowinna | ```--date-time UTC+09:30``` | ```-Z +09:30``` |
+
+ * Windows environment variable ```dir2```
+
+| STD Offset | Example |
+| ---------- | ------- |
+| Asia/Hong Kong | ```set dir2=--date-time UTC+8; --end-time ['TZ='zz]``` |
+| Asia/Japan | ```set dir2=--date-time UTC+9``` |
+| US/Central | ```set dir2=--date-time UTC-6``` |
+| Australia/Yancowinna | ```set dir2=--date-time UTC+09:30``` |
+
+
+ * OSX/Linux environment variable ```dir2```
+
+| STD Offset | Example |
+| ---------- | ------- |
+| Asia/Hong Kong | ```export dir2="--date-time UTC+8; --end-time ['TZ='zz]"``` |
+| Asia/Japan | ```export dir2="--date-time UTC+9"``` |
+| US/Central | ```export dir2="--date-time UTC-6"``` |
+| Australia/Yancowinna | ```export dir2="--date-time UTC+09:30"``` |
 
 [Back to Help Topics](https://github.com/ck-yung/dir2cs/blob/main/docs/HELP.md)
